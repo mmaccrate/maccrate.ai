@@ -1,0 +1,157 @@
+---
+// 4096: Context Conductor — maccrate.ai playable AI-context game
+---
+
+<div class="shell" id="shell">
+  <canvas id="stageCanvas" aria-hidden="true"></canvas>
+
+  <main class="game" aria-label="4096 Context Conductor">
+    <header class="topbar">
+      <div>
+        <span class="kicker"><i></i> 4096 / CONTEXT CONDUCTOR</span>
+        <h1>Arrange the AI ensemble before the window closes.</h1>
+      </div>
+      <div class="meters" aria-label="score meters">
+        <div class="meter"><b>CONTEXT LEFT</b><strong id="ctxValue">4096</strong><span><i id="ctxBar"></i></span></div>
+        <div class="meter"><b>CHART</b><strong id="chartValue">0%</strong><span><i id="chartBar"></i></span></div>
+        <div class="meter"><b>NOISE</b><strong id="noiseValue">0%</strong><span><i id="noiseBar"></i></span></div>
+      </div>
+    </header>
+
+    <section class="stage" aria-label="playable stage">
+      <div class="curtain left"></div><div class="curtain right"></div>
+      <div class="stage-copy">
+        <span>TONIGHT'S RUN</span>
+        <b>Build a four-section context chart.</b>
+        <small>Front row facts, middle-row structure, back-row verification, then give the conductor a final cue. Distractions sound flashy but burn the 4096-token window.</small>
+      </div>
+      <div class="spotlight" id="spotlight"><b id="spotlightLabel">empty stand</b></div>
+      <div class="band" id="band" aria-label="ensemble rows"></div>
+      <div class="cards" id="cards" aria-label="context cards"></div>
+    </section>
+
+    <aside class="scoreboard">
+      <section class="panel conductor">
+        <div class="panel-head"><span>CONDUCTOR</span><b id="modeBadge">checking…</b></div>
+        <p id="modeText">This public-safe build uses a deterministic local scoring loop. WebGPU is only detected as a browser capability; no private local model is exposed.</p>
+        <div class="cue" id="cue">Pick the chart sections that would actually help an AI reason. Avoid applause, vibes, and repeated prompts.</div>
+        <button id="startBtn" type="button">Baton ready</button>
+      </section>
+
+      <section class="panel chart-panel">
+        <div class="panel-head"><span>ARRANGEMENT</span><b id="sectionCount">0 / 4 sections</b></div>
+        <div class="slots" id="slots"></div>
+      </section>
+
+      <section class="panel preview-panel">
+        <div class="panel-head"><span>SELECTION</span><b id="lastTag">ready</b></div>
+        <div class="preview" id="preview">
+          <em>No card selected</em>
+          <strong>Hover, focus, or tap a music stand.</strong>
+          <small>Good cards complete one of the four sections. Bad cards add noise and steal context.</small>
+        </div>
+        <div class="log" id="log"><p>Reviewer rule: if the option does not make musical and AI-context sense, it does not belong in the game.</p></div>
+      </section>
+
+      <section class="actions">
+        <button id="trimBtn" type="button">Cut loudest noise</button>
+        <button id="finishBtn" type="button">Cue final run</button>
+        <button id="restartBtn" type="button">Restart</button>
+      </section>
+    </aside>
+  </main>
+
+  <section class="intro" id="intro" aria-labelledby="introTitle">
+    <div class="intro-card">
+      <span>MACCRATE.AI PLAYABLE ARTIFACT</span>
+      <h2 id="introTitle">Conduct the context window.</h2>
+      <p>4096 tokens is the whole stage. Choose which signals enter the chart, keep the ensemble clean, and cue the AI before noise takes over.</p>
+      <div class="rules">
+        <b>Need: 4 chart sections</b><b>Budget: 4096 tokens</b><b>Win: clean final run</b><b>Lose: noisy improvisation</b>
+      </div>
+      <button id="introStart" type="button">Open the curtain</button>
+    </div>
+  </section>
+
+  <section class="result" id="result" hidden>
+    <div class="result-card">
+      <span id="resultKicker">FINAL RUN</span>
+      <h2 id="resultTitle">Scored</h2>
+      <p id="resultText"></p>
+      <div class="score-grid" id="scoreGrid"></div>
+      <div class="packet" id="packet"></div>
+      <button id="againBtn" type="button">Play again</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var MAX_CTX = 4096;
+  var REQUIRED = ['source','constraints','plan','verify'];
+  var CARDS = [
+    {id:'source', section:'source', type:'signal', row:'sax', label:'Source notes', icon:'♩', cost:420, chart:28, noise:-6, text:'raw user constraints, exact language, must-keep details'},
+    {id:'constraints', section:'constraints', type:'signal', row:'sax', label:'Constraint melody', icon:'♬', cost:480, chart:28, noise:-5, text:'budget, platform, safety, mobile-first boundaries'},
+    {id:'plan', section:'plan', type:'structure', row:'bone', label:'Arrangement map', icon:'𝄞', cost:520, chart:26, noise:-4, text:'ordered plan: what enters, what stays silent, when to verify'},
+    {id:'verify', section:'verify', type:'structure', row:'bone', label:'Verifier hits', icon:'✓', cost:500, chart:26, noise:-6, text:'tests, visual review, failure checks before shipping'},
+    {id:'memory', section:'support', type:'accent', row:'trumpet', label:'Memory motif', icon:'◇', cost:360, chart:12, noise:-2, text:'stable preferences reused without drowning the chart'},
+    {id:'sample', section:'support', type:'accent', row:'trumpet', label:'Tiny demo take', icon:'◈', cost:440, chart:14, noise:3, text:'one concrete example that clarifies the intended output'},
+    {id:'applause', section:'noise', type:'noise', row:'crowd', label:'Applause track', icon:'✦', cost:620, chart:-10, noise:22, text:'praise and vibes; sounds good, teaches the AI nothing'},
+    {id:'solo', section:'noise', type:'noise', row:'crowd', label:'Endless solo', icon:'↻', cost:700, chart:-14, noise:26, text:'asking again without new evidence; louder, not smarter'},
+    {id:'fog', section:'noise', type:'noise', row:'crowd', label:'Fog machine', icon:'≈', cost:560, chart:-8, noise:20, text:'aesthetic language with no testable instruction'},
+    {id:'pyro', section:'noise', type:'noise', row:'crowd', label:'Pyro cue', icon:'!', cost:760, chart:-18, noise:34, text:'flashy tangent that steals the final chorus'},
+    {id:'compress', section:'tool', type:'tool', row:'stagehand', label:'Compress rests', icon:'▤', cost:260, chart:8, noise:-10, text:'summarize repeated material and recover attention'},
+    {id:'diff', section:'tool', type:'tool', row:'stagehand', label:'Compare takes', icon:'⧉', cost:340, chart:10, noise:-4, text:'contrast options before locking the chart'}
+  ];
+  var state = {ctx:MAX_CTX, chart:0, noise:0, baton:false, used:{}, chosen:[], cuts:0, over:false, log:[]};
+  var $ = function(id){ return document.getElementById(id); };
+  var shell=$('shell'), cards=$('cards'), band=$('band'), slots=$('slots'), preview=$('preview'), log=$('log'), canvas=$('stageCanvas'), ctx=canvas.getContext('2d');
+
+  function resize(){ canvas.width=innerWidth*devicePixelRatio; canvas.height=innerHeight*devicePixelRatio; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
+  addEventListener('resize', resize); resize();
+  function draw(){
+    var w=innerWidth,h=innerHeight,t=performance.now()/1000,danger=state.noise/100;
+    ctx.clearRect(0,0,w,h);
+    var g=ctx.createRadialGradient(w*.5,h*.38,20,w*.5,h*.42,Math.max(w,h));
+    g.addColorStop(0,'rgba(232,189,115,.20)'); g.addColorStop(.38,'rgba(36,18,12,.78)'); g.addColorStop(1,'#030305'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+    ctx.globalAlpha=.20+danger*.35;
+    for(var i=0;i<72;i++){
+      var x=(i*97 + Math.sin(t+i)*80)%w, y=h*.18+(i%9)*h*.075+Math.sin(t*1.4+i)*12;
+      ctx.strokeStyle=i%3?'#8fe5ff':'#e8bd73'; ctx.lineWidth=.6+(i%4)*.35; ctx.beginPath(); ctx.moveTo(x-70,y); ctx.quadraticCurveTo(x,y-22,x+88,y+Math.sin(i)*18); ctx.stroke();
+    }
+    ctx.globalAlpha=1; requestAnimationFrame(draw);
+  } draw();
+
+  function detect(){ if(navigator.gpu){ $('modeBadge').textContent='WebGPU ready'; $('modeBadge').className='ready'; } else { $('modeBadge').textContent='deterministic'; $('modeBadge').className='fallback'; } }
+  function signed(n){ return n>0?'+'+n:String(n); }
+  function describe(c){ return c.label+' · '+c.type+' · '+c.cost+' tokens · chart '+signed(c.chart)+' · noise '+signed(c.noise); }
+  function sections(){ var got={}; state.chosen.forEach(function(c){ if(REQUIRED.indexOf(c.section)>=0) got[c.section]=true; }); return REQUIRED.filter(function(s){return got[s];}).length; }
+  function score(){ var noiseCards=state.chosen.filter(function(c){return c.type==='noise';}).length; var baton=state.baton?6:-10; return Math.max(0,Math.min(100,Math.round(sections()*18 + state.chart*.42 - state.noise*.62 - noiseCards*7 + state.ctx/MAX_CTX*12 + baton))); }
+
+  function addLog(text, kind){ state.log.unshift({text:text,kind:kind||'event'}); state.log=state.log.slice(0,5); $('lastTag').textContent=kind||'event'; log.innerHTML=state.log.map(function(e){return '<p class="'+e.kind+'">'+e.text+'</p>';}).join(''); }
+  function previewCard(c){ preview.className='preview '+c.type; preview.innerHTML='<em>'+c.row+' row · '+c.section+'</em><strong>'+describe(c)+'</strong><small>'+c.text+'</small>'; $('spotlightLabel').textContent=c.label; }
+  function resetPreview(){ if(state.chosen.length) return; preview.className='preview'; preview.innerHTML='<em>No card selected</em><strong>Hover, focus, or tap a music stand.</strong><small>Good cards complete one of the four sections. Bad cards add noise and steal context.</small>'; $('spotlightLabel').textContent='empty stand'; }
+
+  function renderCards(){ cards.innerHTML=''; CARDS.forEach(function(c){ var b=document.createElement('button'); b.type='button'; b.className='card '+c.type+' '+c.row+(state.used[c.id]?' used':''); b.disabled=!!state.used[c.id]||state.over; b.dataset.id=c.id; b.setAttribute('aria-label',describe(c)+'. '+c.text); b.innerHTML='<i>'+c.icon+'</i><b>'+c.label+'</b><small><em>'+c.section+'</em>'+c.cost+' tokens</small>'; b.addEventListener('mouseenter',function(){previewCard(c)}); b.addEventListener('focus',function(){previewCard(c)}); b.addEventListener('touchstart',function(){previewCard(c)},{passive:true}); b.addEventListener('mouseleave',resetPreview); b.addEventListener('click',function(){choose(c)}); cards.appendChild(b); }); }
+  function renderBand(){ band.innerHTML=''; ['sax','bone','trumpet','stagehand','crowd'].forEach(function(row){ var d=document.createElement('div'); d.className='row '+row; var label={sax:'front row / source',bone:'middle row / structure',trumpet:'back row / accents',stagehand:'tools',crowd:'noise'}[row]; d.innerHTML='<span>'+label+'</span>'+CARDS.filter(function(c){return c.row===row && state.used[c.id]}).map(function(c){return '<b class="'+c.type+'">'+c.icon+' '+c.label+'</b>';}).join(''); band.appendChild(d); }); }
+  function renderSlots(){ slots.innerHTML=''; REQUIRED.forEach(function(sec){ var c=state.chosen.find(function(x){return x.section===sec}); var d=document.createElement('div'); d.className='slot '+(c?'filled':''); d.innerHTML=c?'<b>'+c.label+'</b><small>'+c.text+'</small>':'<b>'+sec+'</b><small>missing chart section</small>'; slots.appendChild(d); }); }
+  function update(){ $('ctxValue').textContent=state.ctx; $('finishBtn').textContent = sections()<4 ? 'Need '+(4-sections())+' more sections' : 'Cue final run'; $('chartValue').textContent=Math.max(0,state.chart)+'%'; $('noiseValue').textContent=state.noise+'%'; $('ctxBar').style.width=Math.max(0,state.ctx/MAX_CTX*100)+'%'; $('chartBar').style.width=Math.max(0,Math.min(100,state.chart))+'%'; $('noiseBar').style.width=state.noise+'%'; $('sectionCount').textContent=sections()+' / 4 sections'; $('cue').textContent= state.noise>55?'Too much crowd in the mics. Cut noise before the final run.': sections()===4?'The chart has all four sections. Cue the final run before you spend the room.': state.chosen.length?'Good. Fill the missing sections; accents cannot replace source, constraints, plan, and verification.':'Open the curtain, then build the chart from evidence that belongs in the arrangement.'; shell.style.setProperty('--noise', state.noise/100); }
+
+  function choose(c){ if(state.over||state.used[c.id]) return; state.used[c.id]=true; state.ctx=Math.max(0,state.ctx-c.cost); state.chart=Math.max(0,Math.min(100,state.chart+c.chart)); state.noise=Math.max(0,Math.min(100,state.noise+c.noise)); state.chosen.push(c); previewCard(c); addLog((c.type==='noise'?'Noise entered: ':'Chart added: ')+describe(c), c.type); flash(c.type); renderCards(); renderBand(); renderSlots(); update(); if(state.ctx<=0||state.noise>=100) finish('collapse'); }
+  function cut(){ if(state.over||!state.chosen.length) return; var worst=-1,idx=-1; state.chosen.forEach(function(c,i){ var v=(c.type==='noise'?100:0)+c.noise-c.chart; if(v>worst){worst=v;idx=i;} }); var c=state.chosen.splice(idx,1)[0]; state.used[c.id]=false; state.cuts++; state.ctx=Math.min(MAX_CTX,state.ctx+(c.type==='noise'?430:140)); state.noise=Math.max(0,state.noise-(c.type==='noise'?22:5)); state.chart=Math.max(0,state.chart-(c.type==='noise'?0:8)); addLog('Cut from chart: '+c.label, 'tool'); flash('tool'); renderCards(); renderBand(); renderSlots(); update(); }
+  function baton(){ state.baton=true; $('startBtn').disabled=true; $('startBtn').textContent='Baton raised'; addLog('Baton raised. The ensemble is listening.', 'signal'); update(); }
+  function finish(reason){ if(state.over) return; if(reason!=='collapse' && sections()<4){ addLog('Final run refused: complete source, constraints, plan, and verification first.', 'noise'); flash('noise'); update(); return; } state.over=true; var s=score(); var title=s>=82?'The ensemble lands the run':s>=62?'The run holds together':s>=38?'The chart wobbles': 'Noise eats the chorus'; $('resultTitle').textContent=title; $('resultText').textContent=s>=62?'The context window carried a clear arrangement: source, constraints, plan, and verification were audible above the noise.':'The AI had fragments, vibes, or repeated prompts instead of a complete chart. The final output improvised around missing structure.'; $('scoreGrid').innerHTML='<div><b>Run score:</b><strong>'+s+'%</strong></div><div><b>Sections:</b><strong>'+sections()+'/4</strong></div><div><b>Context left:</b><strong>'+state.ctx+'</strong></div><div><b>Noise:</b><strong>'+state.noise+'%</strong></div><div><b>Cuts:</b><strong>'+state.cuts+'</strong></div><div><b>Mode:</b><strong>'+(navigator.gpu?'WebGPU':'sim')+'</strong></div>'; $('packet').innerHTML='<b>Final chart</b><ul>'+(state.chosen.length?state.chosen.map(function(c){return '<li class="'+c.type+'"><strong>'+c.label+'</strong><span>'+c.text+'</span></li>';}).join(''):'<li><strong>No chart built.</strong><span>Complete the required sections before cueing the run.</span></li>')+'</ul>'; $('result').className='result '+(s>=62?'success':'failure'); $('result').hidden=false; addLog('Final run scored '+s+'% · '+title, s>=62?'signal':'noise'); }
+  function flash(kind){ shell.className='shell flash-'+kind; setTimeout(function(){shell.className='shell'},240); try{ if(navigator.vibrate) navigator.vibrate(kind==='noise'?45:12); }catch(e){} }
+  function start(){ $('intro').hidden=true; baton(); }
+  function restart(){ location.reload(); }
+
+  $('startBtn').addEventListener('click',baton); $('introStart').addEventListener('click',start); $('trimBtn').addEventListener('click',cut); $('finishBtn').addEventListener('click',finish); $('restartBtn').addEventListener('click',restart); $('againBtn').addEventListener('click',restart);
+  detect(); renderCards(); renderBand(); renderSlots(); update();
+})();
+</script>
+
+<style>
+:root{--cream:#f5e8d0;--gold:#e8bd73;--amber:#d2994c;--red:#c45a40;--ice:#8fe5ff;--green:#6ee7a8;--ink:#030305}.shell{position:fixed;inset:0;overflow:hidden;background:var(--ink);color:var(--cream);font-family:Inter,system-ui,sans-serif;--noise:0}#stageCanvas{position:absolute;inset:0;width:100%;height:100%;opacity:.96}.shell:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 25%,transparent 0 40%,rgba(0,0,0,calc(.28 + var(--noise)*.45)) 76%),repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 5px);mix-blend-mode:screen}.game{position:relative;z-index:2;max-width:1240px;height:100svh;margin:0 auto;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-rows:auto minmax(0,1fr);gap:14px}.topbar{grid-column:1/-1;display:flex;align-items:end;justify-content:space-between;gap:16px}.kicker{font:10px JetBrains Mono,monospace;letter-spacing:.18em;color:rgba(232,189,115,.76);text-transform:uppercase}.kicker i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3d2f;box-shadow:0 0 14px #ff3d2f;margin-right:7px;animation:blink 1.2s infinite}.topbar h1{font:clamp(30px,4.8vw,62px)/.94 Georgia,serif;color:var(--gold);margin:6px 0 0;text-shadow:0 0 34px rgba(232,189,115,.35);max-width:820px}.meters{display:grid;grid-template-columns:repeat(3,90px);gap:8px}.meter{border:1px solid rgba(232,189,115,.2);border-radius:14px;background:rgba(3,3,5,.62);padding:8px}.meter b,.panel-head{font:9px JetBrains Mono,monospace;letter-spacing:.11em;text-transform:uppercase;color:rgba(245,232,208,.58)}.meter strong{display:block;color:var(--gold);font:700 18px JetBrains Mono,monospace}.meter span{display:block;height:6px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.08);margin-top:5px}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--gold),var(--ice));transition:width .25s}#noiseBar{background:linear-gradient(90deg,var(--gold),var(--red))}.stage{position:relative;overflow:hidden;border:1px solid rgba(143,229,255,.24);border-radius:26px;background:linear-gradient(180deg,rgba(8,13,18,.62),rgba(8,4,5,.78));box-shadow:inset 0 0 70px rgba(143,229,255,.06)}.curtain{position:absolute;top:0;bottom:0;width:21%;background:repeating-linear-gradient(90deg,rgba(70,12,18,.72) 0 18px,rgba(112,24,28,.58) 18px 34px);opacity:.35;filter:blur(.2px)}.curtain.left{left:0}.curtain.right{right:0}.stage-copy{position:absolute;left:22px;right:22px;top:18px;z-index:3;border:1px solid rgba(232,189,115,.18);border-radius:18px;background:rgba(3,3,5,.62);padding:14px 16px;backdrop-filter:blur(8px)}.stage-copy span{display:block;font:10px JetBrains Mono,monospace;letter-spacing:.14em;color:var(--ice)}.stage-copy b{display:block;margin-top:4px;font:700 18px Georgia,serif;color:var(--gold)}.stage-copy small{display:block;margin-top:4px;color:rgba(245,232,208,.68);line-height:1.35}.spotlight{position:absolute;left:50%;top:48%;width:250px;height:250px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(232,189,115,.22),rgba(143,229,255,.10) 48%,transparent 70%);display:grid;place-items:center;text-align:center;color:rgba(245,232,208,.7);text-transform:uppercase;font:10px JetBrains Mono,monospace;letter-spacing:.12em}.band{position:absolute;left:20px;right:20px;bottom:18px;z-index:3;display:grid;gap:8px}.row{min-height:34px;border:1px solid rgba(143,229,255,.14);border-radius:14px;background:rgba(3,3,5,.45);display:flex;align-items:center;gap:8px;padding:7px 10px}.row span{min-width:145px;font:9px JetBrains Mono,monospace;text-transform:uppercase;color:rgba(232,189,115,.66)}.row b{font:10px JetBrains Mono,monospace;border-radius:999px;padding:5px 8px;background:rgba(255,255,255,.07)}.row b.signal,.row b.structure{color:var(--ice)}.row b.noise{color:#ff9b82}.cards{position:absolute;z-index:4;left:18px;right:18px;top:150px;bottom:210px;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,minmax(78px,1fr));gap:9px}.card{border:1px solid rgba(232,189,115,.22);border-radius:16px;background:linear-gradient(145deg,rgba(17,22,28,.84),rgba(4,4,7,.84));color:var(--cream);padding:10px;text-align:left;display:flex;flex-direction:column;gap:4px;justify-content:space-between;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.22);transition:transform .16s,border-color .16s,background .16s}.card:hover,.card:focus-visible{transform:translateY(-4px);border-color:var(--gold);outline:none}.card i{font-style:normal;font-size:24px;color:var(--gold)}.card b{font:800 12px/1.1 JetBrains Mono,monospace}.card small{font:9px JetBrains Mono,monospace;color:rgba(245,232,208,.56);display:flex;align-items:center;justify-content:space-between;gap:6px}.card small em{font-style:normal;text-transform:uppercase;color:var(--ice);background:rgba(143,229,255,.12);border:1px solid rgba(143,229,255,.18);border-radius:999px;padding:2px 5px}.card.signal,.card.structure{border-color:rgba(143,229,255,.3)}.card.noise{border-color:rgba(196,90,64,.38);background:linear-gradient(145deg,rgba(54,16,15,.84),rgba(5,3,4,.88))}.card.tool,.card.accent{border-color:rgba(110,231,168,.28)}.card.used{opacity:.38;filter:saturate(.5);transform:none}.scoreboard{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:10px;min-height:0;overflow:hidden}.panel{border:1px solid rgba(232,189,115,.18);border-radius:20px;background:rgba(3,3,5,.58);padding:12px;box-shadow:inset 0 0 34px rgba(232,189,115,.04);min-height:0}.panel-head{display:flex;justify-content:space-between;gap:8px}.panel-head b.ready,.ready{color:var(--green)}.fallback{color:var(--gold)}.conductor p{font-size:12px;line-height:1.4;color:rgba(245,232,208,.64)}.cue{border-left:3px solid var(--gold);background:rgba(232,189,115,.08);padding:10px;border-radius:10px;font:12px/1.35 JetBrains Mono,monospace;margin:10px 0}.button,button{font-family:inherit}.conductor button,.actions button,.intro-card button,.result-card button{border:0;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--amber));color:#1b1008;font-weight:900;text-transform:uppercase;letter-spacing:.07em;min-height:42px;padding:0 12px;cursor:pointer}.conductor button:disabled{opacity:.58;cursor:default}.chart-panel{overflow:hidden}.slots{display:grid;gap:8px;max-height:100%;overflow:auto}.slot{border:1px dashed rgba(143,229,255,.18);border-radius:14px;padding:10px;background:rgba(255,255,255,.035)}.slot.filled{border-style:solid;border-color:rgba(143,229,255,.42);background:rgba(143,229,255,.07)}.slot b{display:block;font:11px JetBrains Mono,monospace;text-transform:uppercase;color:var(--cream)}.slot small{display:block;margin-top:4px;color:rgba(245,232,208,.58);line-height:1.25}.preview-panel{overflow:hidden}.preview{border:1px solid rgba(232,189,115,.2);border-radius:14px;background:rgba(255,255,255,.035);padding:10px}.preview em{font:9px JetBrains Mono,monospace;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,189,115,.7);font-style:normal}.preview strong{display:block;margin-top:4px;font:700 12px/1.25 JetBrains Mono,monospace}.preview small{display:block;margin-top:5px;color:rgba(245,232,208,.62);line-height:1.3}.preview.noise{border-color:rgba(196,90,64,.58);background:rgba(70,24,20,.58)}.preview.signal,.preview.structure{border-color:rgba(143,229,255,.44);background:rgba(20,58,70,.5)}.log{display:grid;gap:6px;margin-top:8px;max-height:110px;overflow:auto}.log p{margin:0;border-left:2px solid rgba(232,189,115,.35);background:rgba(255,255,255,.035);border-radius:8px;padding:6px 8px;font:10px/1.25 JetBrains Mono,monospace;color:rgba(245,232,208,.72)}.log p.noise{border-color:var(--red)}.log p.signal,.log p.structure{border-color:var(--ice)}.log p.tool{border-color:var(--green)}.actions{display:grid;grid-template-columns:1fr;gap:8px}.actions button:nth-child(2){background:linear-gradient(135deg,var(--ice),#5fb4d1)}.actions button:nth-child(3){background:rgba(255,255,255,.1);color:var(--cream);border:1px solid rgba(255,255,255,.14)}.intro{position:absolute;inset:0;z-index:8;display:grid;place-items:center;padding:18px;background:radial-gradient(circle at 50% 40%,rgba(232,189,115,.18),rgba(3,3,5,.9) 50%,#030305);backdrop-filter:blur(8px)}.intro[hidden]{display:none}.intro-card{max-width:650px;border:1px solid rgba(232,189,115,.36);border-radius:30px;background:linear-gradient(145deg,rgba(36,14,12,.94),rgba(4,9,13,.94));box-shadow:0 30px 100px rgba(0,0,0,.66),inset 0 0 70px rgba(232,189,115,.07);padding:clamp(24px,4vw,44px)}.intro-card span{font:10px JetBrains Mono,monospace;letter-spacing:.16em;color:var(--ice)}.intro-card h2{font:clamp(42px,7vw,78px)/.86 Georgia,serif;color:var(--gold);margin:12px 0}.intro-card p{color:rgba(245,232,208,.76);font-size:16px;line-height:1.55}.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:20px 0}.rules b{border:1px solid rgba(143,229,255,.18);border-radius:14px;background:rgba(143,229,255,.07);padding:10px;font:11px JetBrains Mono,monospace}.intro-card button{width:100%;min-height:54px}.result{position:absolute;inset:0;z-index:9;display:grid;place-items:center;padding:18px;background:rgba(3,3,5,.82);backdrop-filter:blur(8px)}.result[hidden]{display:none}.result-card{width:min(780px,100%);border:1px solid rgba(232,189,115,.32);border-radius:28px;background:linear-gradient(150deg,rgba(16,10,8,.96),rgba(5,9,12,.95));padding:clamp(22px,4vw,40px);box-shadow:0 28px 90px rgba(0,0,0,.66)}.result.success .result-card{box-shadow:0 0 110px rgba(143,229,255,.16),0 28px 90px rgba(0,0,0,.66)}.result.failure .result-card{box-shadow:0 0 110px rgba(196,90,64,.17),0 28px 90px rgba(0,0,0,.66)}.result-card span{font:10px JetBrains Mono,monospace;letter-spacing:.16em;color:var(--ice)}.result-card h2{font:clamp(36px,6vw,70px)/.9 Georgia,serif;color:var(--gold);margin:10px 0}.result-card p{color:rgba(245,232,208,.75);line-height:1.5}.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}.score-grid div,.packet{border:1px solid rgba(143,229,255,.16);border-radius:14px;background:rgba(143,229,255,.06);padding:10px}.score-grid b,.packet b{display:block;font:9px JetBrains Mono,monospace;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,232,208,.58)}.score-grid strong{display:block;font:800 22px JetBrains Mono,monospace;color:var(--gold)}.packet p{font:12px/1.45 JetBrains Mono,monospace}.packet ul{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.packet li{border-left:3px solid rgba(143,229,255,.45);background:rgba(255,255,255,.04);border-radius:10px;padding:8px}.packet li.noise{border-left-color:var(--red);background:rgba(196,90,64,.08)}.packet li.tool{border-left-color:var(--green)}.packet li strong{display:block;font:700 11px JetBrains Mono,monospace;color:var(--cream)}.packet li span{display:block;margin-top:3px;font:10px/1.3 JetBrains Mono,monospace;color:rgba(245,232,208,.65)}.result-card button{min-width:180px;margin-top:14px}.flash-noise{animation:hitRed .24s}.flash-signal,.flash-structure{animation:hitBlue .24s}.flash-tool{animation:hitGreen .24s}@keyframes blink{50%{opacity:.25}}@keyframes hitRed{50%{filter:sepia(1) hue-rotate(310deg)}}@keyframes hitBlue{50%{filter:drop-shadow(0 0 24px rgba(143,229,255,.45))}}@keyframes hitGreen{50%{filter:drop-shadow(0 0 24px rgba(110,231,168,.35))}}
+@media(max-width:900px){.game{grid-template-columns:1fr;grid-template-rows:auto minmax(540px,1fr) auto;overflow:auto;height:100svh}.topbar{align-items:start;flex-direction:column}.meters{width:100%;grid-template-columns:repeat(3,1fr)}.scoreboard{grid-template-rows:auto auto auto auto;overflow:visible}.cards{top:132px;bottom:176px;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,76px)}.band{bottom:10px}.row{min-height:26px;padding:5px 8px}.row span{min-width:96px}.row b{display:none}.stage{min-height:560px}.log{max-height:80px}.slots{grid-template-columns:repeat(2,1fr)}.score-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.game{padding:9px;gap:9px}.topbar h1{font-size:31px}.stage-copy{left:10px;right:10px;top:10px;padding:11px}.stage-copy b{font-size:15px}.stage-copy small{font-size:11px}.cards{left:10px;right:10px;top:122px;bottom:150px;gap:7px;grid-template-rows:repeat(4,72px)}.card{border-radius:13px;padding:7px}.card i{font-size:20px}.card b{font-size:10px}.card small{font-size:8px;display:block}.card small em{display:inline-block;margin-right:4px}.band{left:10px;right:10px}.row span{font-size:8px}.spotlight{width:170px;height:170px}.rules,.slots,.score-grid,.packet ul{grid-template-columns:1fr}.intro-card{padding:23px}.intro-card h2{font-size:45px}.preview-panel{display:none}}
+</style>

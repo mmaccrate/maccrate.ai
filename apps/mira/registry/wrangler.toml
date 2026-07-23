@@ -1,0 +1,23 @@
+name = "maccrate-mira-registry"
+main = "worker.js"
+compatibility_date = "2026-04-16"
+workers_dev = false
+preview_urls = false
+
+[[routes]]
+pattern = "registry.maccrate.ai/*"
+zone_name = "maccrate.ai"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "maccrate-ai"
+database_id = "3d8dae6a-8e66-45ba-8d25-028b1d40b833"
+
+[vars]
+GAME_VERSION = "mira-chat-v10-growing-story"
+ALLOWED_ORIGIN = "https://mira.maccrate.ai"
+
+# Set secrets with Wrangler; never commit values:
+# wrangler secret put PROPOSAL_HMAC_SECRET
+# wrangler secret put REGISTRY_SIGNING_PRIVATE_JWK
+# wrangler secret put IP_HASH_SECRET

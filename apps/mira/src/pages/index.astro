@@ -1,0 +1,1151 @@
+---
+const registryEndpoint = import.meta.env.PUBLIC_MIRA_REGISTRY_ENDPOINT || '';
+let registryPublicKey = null;
+try {
+  registryPublicKey = import.meta.env.PUBLIC_MIRA_REGISTRY_PUBLIC_JWK
+    ? JSON.parse(import.meta.env.PUBLIC_MIRA_REGISTRY_PUBLIC_JWK)
+    : null;
+} catch {
+  throw new Error('PUBLIC_MIRA_REGISTRY_PUBLIC_JWK must be valid JSON');
+}
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mira Machine — A Living Mars Mystery</title>
+    <meta name="description" content="A Mars mystery where you combine fragments and Mira discovers the truth." />
+  </head>
+  <body>
+    <script is:inline define:vars={{ registryEndpoint, registryPublicKey }}>
+      if (!window.__MIRA_REGISTRY_CONFIG__ && registryEndpoint && registryPublicKey) {
+        window.__MIRA_REGISTRY_CONFIG__ = { endpoint: registryEndpoint, publicKeyJwk: registryPublicKey };
+      }
+    </script>
+    <main class="app">
+
+      <!-- The chat — the game -->
+      <section class="chat-shell" aria-label="Conversation with Mira">
+        <header class="chat-head">
+          <div class="mira-id"><span class="mira-orb" aria-hidden="true"></span><strong>Mira</strong></div>
+          <div class="chat-controls">
+            <div class="local-ai-control">
+              <button class="gpu-toggle" id="gpuToggle" type="button" aria-describedby="localAiSummary">Use local AI</button>
+              <button class="local-ai-info" id="localAiInfo" type="button" aria-label="What is Local Mira?">i</button>
+            </div>
+            <a class="privacy-link" href="/privacy">Privacy</a>
+            <button class="reset-btn" id="resetRun" type="button" aria-label="restart conversation" title="Restart">↺</button>
+          </div>
+        </header>
+        <div class="investigation-strip" aria-live="polite">
+          <div class="investigation-focus"><span>Current question</span><strong id="currentQuestion">Why do the last signal and Percy’s tracks disagree?</strong><small><b>Current theory</b> <span id="currentTheory">Percy chose something over recall.</span></small></div>
+          <div class="response-status"><span>Local AI</span><strong id="lastResponseSource">Not loaded</strong><small id="localAiCount">0 discoveries created</small></div>
+        </div>
+        <div class="lead-strip"><span>Leads</span><div id="leadPairs" aria-label="Suggested evidence pairings"></div></div>
+        <dialog class="local-ai-dialog" id="localAiDialog" aria-labelledby="localAiTitle">
+          <button class="dialog-close" id="localAiClose" type="button" aria-label="Close">×</button>
+          <p class="dialog-kicker">Optional · private · on this device</p>
+          <h2 id="localAiTitle">Local Mira</h2>
+          <p id="localAiSummary">Downloads Gemma 4 and runs it in your browser with WebGPU. It creates the first result for combinations the shared archive has never seen, then follows what that result means in your investigation.</p>
+          <div class="local-ai-state" aria-live="polite">
+            <div class="local-ai-state-row"><strong id="localAiStatus">Not loaded</strong><span id="localAiPercent">0%</span></div>
+            <div class="local-ai-track" aria-hidden="true"><span id="localAiProgress"></span></div>
+            <p id="localAiDetail">Nothing has been downloaded yet.</p>
+          </div>
+          <ul>
+            <li>The model can take several minutes to download the first time.</li>
+            <li>Inference stays on this device. A first valid pair result is saved so everyone receives that same result afterward.</li>
+            <li>WebGPU requires Chrome or Edge over HTTPS or localhost.</li>
+          </ul>
+          <button class="dialog-action" id="localAiAction" type="button">Load Local Mira</button>
+        </dialog>
+        <div class="chat" id="chatScroll" aria-live="polite"></div>
+      </section>
+
+      <!-- Artifact sidebar — like Infinite Craft's item list -->
+      <aside class="sidebar">
+        <div class="sidebar-head">
+          <span class="sidebar-title" id="fragmentsTitle">Fragments</span>
+          <button class="filter-toggle" id="filterToggle" type="button">hide exhausted</button>
+        </div>
+        <div class="sidebar-items" id="artifacts"></div>
+      </aside>
+
+    </main>
+
+    <style is:global>
+      :root{
+        color-scheme:dark;
+        --rust:#b85f35; --night:#09070d; --blue:#73d9ff; --gold:#f4bd6f;
+        --cream:#ffe1a0; --ghost:#9ff4ff; --green:#9cf0b4;
+      }
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      html,body{height:100%;overflow:hidden;background:var(--night);color:#ffe9c7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+      body{background:radial-gradient(circle at 30% 8%,rgba(115,217,255,.06),transparent 40%),radial-gradient(circle at 74% 18%,rgba(244,189,111,.06),transparent 30%),#09070d}
+
+      .app{display:grid;grid-template-columns:minmax(0,1fr) 280px;height:100dvh;max-width:1180px;margin:0 auto;position:relative;border-inline:1px solid rgba(244,189,111,.06)}
+
+      .chat-shell{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+      .chat-head{height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid rgba(244,189,111,.1);background:rgba(9,7,13,.72);backdrop-filter:blur(10px);z-index:5}
+      .mira-id,.chat-controls{display:flex;align-items:center;gap:10px}.mira-id strong{font-size:13px;letter-spacing:.04em}.mira-orb{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6ce 0 8%,#73d9ff 18%,#24354f 52%,#09070d 72%);box-shadow:0 0 15px rgba(115,217,255,.4)}
+      .investigation-strip{display:flex;justify-content:space-between;gap:20px;padding:9px 16px 8px;background:rgba(115,217,255,.025)}.investigation-strip>div{min-width:0;display:flex;flex-direction:column;gap:2px}.investigation-strip span,.lead-strip>span{font-size:9px;line-height:1;text-transform:uppercase;letter-spacing:.12em;color:rgba(159,244,255,.5)}.investigation-strip strong{font-size:12px;line-height:1.3;font-weight:550;color:#ffe9c7}.investigation-focus small{margin-top:2px;font-size:10px;line-height:1.3;color:rgba(255,225,160,.62)}.investigation-focus small b{margin-right:4px;color:rgba(255,225,160,.4);font-size:8px;text-transform:uppercase;letter-spacing:.09em}.investigation-focus small span{font-size:10px;line-height:inherit;text-transform:none;letter-spacing:0;color:inherit}.response-status{text-align:right;align-items:flex-end;flex:0 0 auto}.response-status small{font-size:9px;color:rgba(156,240,180,.58)}
+      .lead-strip{display:flex;align-items:center;gap:10px;padding:0 16px 9px;border-bottom:1px solid rgba(115,217,255,.12);background:rgba(115,217,255,.025)}#leadPairs{min-width:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}#leadPairs::-webkit-scrollbar{display:none}.lead-pair{flex:0 0 auto;min-height:44px;padding:5px 10px;border:1px solid rgba(115,217,255,.2);border-radius:999px;background:rgba(115,217,255,.05);color:rgba(255,233,199,.78);font-size:10px;cursor:pointer}.lead-pair:hover,.lead-pair:focus-visible{border-color:rgba(115,217,255,.55);color:#fff2cf;background:rgba(115,217,255,.1)}.lead-pair:disabled{opacity:.45;cursor:wait}
+
+      /* Chat — fills the left, scrolls */
+      .chat{min-height:0;flex:1;overflow-y:auto;overflow-x:hidden;padding:20px clamp(16px,4vw,52px) 80px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+      .chat::-webkit-scrollbar{width:0}
+
+      /* Mira's messages — left aligned, like receiving a text */
+      .chat-entry{
+        max-width:min(76%,640px);padding:11px 15px;border-radius:18px 18px 18px 4px;
+        line-height:1.5;font-size:15px;animation:msgIn .3s ease both;
+        align-self:flex-start;word-wrap:break-word;
+      }
+      .chat-entry.mira,.chat-entry.discovery,.chat-entry.answer{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);color:#ffe9c7}
+
+      .chat-entry.system{padding:4px 2px;background:transparent;border:0;color:rgba(255,225,160,.5);font-size:12px;font-style:italic}
+      .chat-entry.branch{background:rgba(255,255,255,.065);border:1px solid rgba(244,189,111,.26);border-left:3px solid var(--gold);color:#fff2cf;box-shadow:0 0 18px rgba(244,189,111,.04)}
+      @keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+      /* Player's "sent" bubble — right aligned */
+      .chat-entry.sent{
+        align-self:flex-end;background:rgba(115,217,255,.08);border:1px solid rgba(115,217,255,.12);
+        border-radius:18px 18px 4px 18px;color:rgba(255,233,199,.7);font-size:13px;
+        max-width:60%;padding:8px 13px;
+      }
+      .chat-entry.evidence-pair{display:flex;gap:6px;max-width:78%;padding:7px;background:rgba(115,217,255,.045)}
+      .sent-fragment{display:flex;align-items:center;gap:6px;min-width:0;padding:7px 9px;border:1px solid rgba(115,217,255,.18);border-radius:10px;background:rgba(115,217,255,.055)}
+      .sent-fragment span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+      /* Typing indicator */
+      .typing{align-self:flex-start;display:flex;gap:5px;padding:14px 18px;background:rgba(255,225,160,.04);border:1px solid rgba(244,189,111,.08);border-radius:18px 18px 18px 4px}
+      .typing span{width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:.4;animation:dotPulse 1.3s ease-in-out infinite}
+      .typing span:nth-child(2){animation-delay:.2s}
+      .typing span:nth-child(3){animation-delay:.4s}
+      @keyframes dotPulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+
+      /* Sidebar — Infinite Craft style item list */
+      .sidebar{border-left:1px solid rgba(244,189,111,.1);background:rgba(9,7,13,.5);display:flex;flex-direction:column;overflow:hidden}
+      .sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid rgba(244,189,111,.08)}
+      .sidebar-title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,225,160,.5)}
+      .filter-toggle{font-size:10px;min-height:44px;padding:5px 12px;border:1px solid rgba(244,189,111,.2);background:rgba(0,0,0,.2);color:rgba(255,225,160,.62);border-radius:999px;cursor:pointer}
+      .filter-toggle.active{color:var(--green);border-color:rgba(156,240,180,.4);background:rgba(156,240,180,.06)}
+      .sidebar-items{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:6px}
+      .sidebar-items::-webkit-scrollbar{width:3px}
+      .sidebar-items::-webkit-scrollbar-thumb{background:rgba(244,189,111,.2);border-radius:999px}
+
+      .artifact{
+        display:flex;align-items:center;gap:7px;text-align:left;
+        border:1px solid rgba(255,255,255,.14);
+        background:rgba(255,255,255,.045);
+        border-radius:12px;padding:8px 10px;cursor:pointer;width:100%;min-height:48px;
+        transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease,opacity .2s ease;
+        box-shadow:0 3px 10px rgba(0,0,0,.3);
+      }
+      .artifact:hover{transform:translateX(2px);border-color:rgba(115,217,255,.5);background:rgba(115,217,255,.055)}
+      .artifact:disabled{cursor:wait;opacity:.58}
+      .artifact.selected{transform:translateX(4px) scale(1.02);box-shadow:0 0 16px rgba(115,217,255,.18);border-color:var(--blue);background:rgba(115,217,255,.1)}
+      .artifact.tried{opacity:.34;filter:saturate(.4)}
+      .artifact.pair-tried{opacity:.46;border-style:dashed}.artifact.pair-tried::after{content:'TRIED';font-size:8px;letter-spacing:.08em;color:rgba(255,225,160,.52);margin-left:auto}
+      .artifact.hidden{display:none}
+      .artifact .icon{font-size:16px;line-height:1;width:20px;text-align:center;flex-shrink:0;color:rgba(159,244,255,.8)}
+      .artifact .info{min-width:0;display:flex;flex:1;flex-direction:column;gap:2px}
+      .artifact .name{font-size:12px;font-weight:500;color:#ffe9c7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .artifact .prop{font-size:11px;color:rgba(255,225,160,.62);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .artifact.newborn{border-color:rgba(244,189,111,.6);animation:birth .6s cubic-bezier(.25,.1,.25,1.4) both}
+      .artifact.is-new::after{content:'new';margin-left:auto;color:var(--gold);font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+      @keyframes birth{0%{transform:scale(.3) rotate(-8deg);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+
+      /* GPU toggle */
+      .gpu-toggle{
+        min-height:44px;padding:6px 12px;border:1px solid rgba(156,240,180,.3);background:rgba(9,7,13,.8);
+        color:rgba(156,240,180,.7);border-radius:999px;font-size:11px;cursor:pointer;
+        backdrop-filter:blur(8px);transition:all .2s ease;
+      }
+      .gpu-toggle:hover{color:var(--green);border-color:rgba(156,240,180,.5)}
+      .gpu-toggle.loading{color:var(--gold);border-color:rgba(244,189,111,.4)}
+      .gpu-toggle.ready{color:var(--green);border-color:rgba(156,240,180,.5);background:rgba(156,240,180,.06)}
+      .local-ai-control{display:flex;align-items:center;gap:4px;flex-shrink:0}.local-ai-info{width:44px;height:44px;flex:0 0 44px;border-radius:50%;border:1px solid rgba(156,240,180,.3);background:rgba(9,7,13,.8);color:var(--green);cursor:pointer;font:600 13px/1 Georgia,serif}
+      .local-ai-dialog{position:fixed;inset:0;margin:auto;width:min(calc(100vw - 32px),440px);max-height:min(86dvh,620px);overflow:auto;border:1px solid rgba(244,189,111,.2);border-radius:16px;padding:28px;background:linear-gradient(180deg,rgba(20,17,26,.98),rgba(11,9,15,.99));color:#ffe9c7;box-shadow:0 24px 80px rgba(0,0,0,.72),0 0 0 1px rgba(115,217,255,.04);}.local-ai-dialog::backdrop{background:rgba(4,3,8,.78);backdrop-filter:blur(8px)}
+      .local-ai-dialog h2{font:600 clamp(25px,5vw,34px)/1.05 Georgia,serif;margin:4px 0 12px}.local-ai-dialog>p{line-height:1.55;color:rgba(255,233,199,.78)}.dialog-kicker{text-transform:uppercase;letter-spacing:.14em;font-size:10px!important;color:var(--green)!important}.dialog-close{position:absolute;right:14px;top:12px;width:44px;height:44px;border:0;background:transparent;color:#ffe9c7;font-size:25px;cursor:pointer}.local-ai-state{margin:18px 0;padding:14px;border:1px solid rgba(115,217,255,.16);border-radius:12px;background:rgba(115,217,255,.04)}.local-ai-state-row{display:flex;justify-content:space-between;gap:16px;font-size:12px}.local-ai-track{height:6px;margin:10px 0;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}.local-ai-track span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .2s ease}.local-ai-state p{font-size:12px!important;margin:0;color:rgba(255,233,199,.62)!important}.local-ai-dialog ul{margin:14px 0 18px;padding-left:20px;color:rgba(255,233,199,.7);font-size:12px;line-height:1.5}.dialog-action{width:100%;min-height:48px;border:1px solid rgba(156,240,180,.45);border-radius:999px;background:rgba(156,240,180,.09);color:var(--green);font-weight:700;cursor:pointer}
+
+      .privacy-link{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;color:rgba(255,225,160,.58);font-size:10px;text-decoration:none;text-transform:uppercase;letter-spacing:.08em}
+      .privacy-link:hover{color:var(--cream)}
+
+      .reset-btn{width:44px;height:44px;flex:0 0 44px;border:1px solid rgba(244,189,111,.2);background:rgba(9,7,13,.8);color:rgba(255,225,160,.5);border-radius:50%;font-size:14px;cursor:pointer;backdrop-filter:blur(8px)}
+      .reset-btn:hover{color:var(--cream);border-color:rgba(244,189,111,.5)}
+
+      @media(max-width:680px){
+        .investigation-strip{gap:10px;padding-inline:12px}.investigation-strip strong{font-size:11px}.response-status small{display:none}.investigation-focus small{font-size:9px}.lead-strip{padding-inline:12px}.lead-pair{min-height:44px}
+        .app{grid-template-columns:1fr;grid-template-rows:1fr auto}
+        .chat-head{height:56px;flex-basis:56px;padding:0 10px}.gpu-toggle{font-size:10px;min-height:44px}.reset-btn{width:44px;height:44px}
+        .chat{padding:16px 16px 54px}.chat-entry{max-width:88%}.chat-entry.sent{max-width:80%}
+        .sidebar{border-left:none;border-top:2px solid rgba(115,217,255,.16);height:min(36dvh,286px);max-height:none;background:rgba(14,12,19,.96);box-shadow:0 -10px 28px rgba(0,0,0,.32)}.filter-toggle{min-height:44px;padding-inline:12px}
+        .sidebar-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;overflow-x:hidden;overflow-y:auto;padding:8px;gap:8px}
+        .artifact{width:100%;min-width:0;min-height:56px;align-items:flex-start}
+        .artifact .name,.artifact .prop{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}.artifact .name{-webkit-line-clamp:1}.artifact .prop{-webkit-line-clamp:2;line-height:1.25}
+        .chat-entry.evidence-pair{max-width:92%;flex-wrap:wrap}.sent-fragment{max-width:100%}
+      }
+      @media(max-width:360px){.mira-id strong{display:none}.chat-controls{gap:6px}.chat-head{padding-inline:8px}}
+      @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+      :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+    </style>
+
+    <script type="module">
+      // ===== WebGPU toggle (loads Gemma 4 silently when activated) =====
+      var gpuToggle = document.getElementById('gpuToggle');
+      var localAiDialog = document.getElementById('localAiDialog');
+      var localAiInfo = document.getElementById('localAiInfo');
+      var localAiClose = document.getElementById('localAiClose');
+      var localAiAction = document.getElementById('localAiAction');
+      var localAiStatus = document.getElementById('localAiStatus');
+      var localAiPercent = document.getElementById('localAiPercent');
+      var localAiProgress = document.getElementById('localAiProgress');
+      var localAiDetail = document.getElementById('localAiDetail');
+      var LOCAL_MIRA_GAME_VERSION = 'mira-chat-v10-growing-story';
+      function setLocalAiState(label, detail, pct){
+        var value = Math.max(0, Math.min(100, Number(pct)||0));
+        localAiStatus.textContent = label; localAiDetail.textContent = detail;
+        localAiPercent.textContent = value + '%'; localAiProgress.style.width = value + '%';
+      }
+      function parseLocalModelResult(res,prompt){
+        var text=typeof res==='string'?res:(Array.isArray(res)?res[0]&&res[0].generated_text:res&&res.generated_text)||'';
+        if(text.indexOf(prompt)>=0)text=text.slice(text.lastIndexOf(prompt)+prompt.length);
+        text=text.replace(/```json|```/g,'').trim();
+        var parsed=null;
+        try{parsed=JSON.parse(text);}catch(e){var start=text.indexOf('{'),end=text.lastIndexOf('}');if(start>=0&&end>start)try{parsed=JSON.parse(text.slice(start,end+1));}catch(ignore){}}
+        if(!parsed||!parsed.mira)throw new Error('Local AI returned no readable JSON response');
+        parsed.mira=String(parsed.mira).replace(/^Mira:\s*/i,'').replace(/\s+/g,' ').trim().slice(0,180);
+        if(parsed.question)parsed.question=String(parsed.question).replace(/\s+/g,' ').trim().slice(0,90);
+        return parsed;
+      }
+      localAiInfo.addEventListener('click', function(){ localAiDialog.showModal(); });
+      localAiClose.addEventListener('click', function(){ localAiDialog.close(); });
+      localAiAction.addEventListener('click', function(){ localAiDialog.close(); gpuToggle.click(); });
+      window.__openLocalAiDialog = function(){ if(!localAiDialog.open)localAiDialog.showModal(); };
+      var testParams = new URLSearchParams(location.search);
+      window.__miraRegistryReady = Promise.resolve(null);
+      if (window.__MIRA_REGISTRY_CONFIG__) {
+        window.__miraRegistryReady = import('/registry-client.js').then(function(mod){
+          return mod.installMiraRegistry(Object.assign({}, window.__MIRA_REGISTRY_CONFIG__, {gameVersion:LOCAL_MIRA_GAME_VERSION}));
+        }).catch(function(error){ console.warn('Shared discovery registry unavailable:', error && error.message ? error.message : error); return null; });
+      }
+      if ((location.hostname === '127.0.0.1' || location.hostname === 'localhost') && testParams.get('ollama') === '1') {
+        import('/ollama-mira-test.js').then(function(mod){
+          mod.installOllamaMira({ endpoint: testParams.get('ollamaEndpoint') || 'http://127.0.0.1:11434', model: testParams.get('ollamaModel') || 'gemma4:latest' });
+          gpuToggle.classList.add('ready');
+          gpuToggle.textContent = 'Local AI ready';
+          gpuToggle.title = 'Gemma 4 is running locally through the test adapter';
+          gpuToggle.disabled = true;
+          setLocalAiState('Ready', 'Gemma 4 is connected through the local test adapter.', 100);
+        }).catch(function(error){
+          console.error('Ollama test adapter failed:', error);
+          gpuToggle.textContent = 'Story mode';
+          setLocalAiState('Unavailable', 'The local test adapter could not connect.', 0);
+        });
+      }
+
+      gpuToggle.addEventListener('click', async function(){
+        if (gpuToggle.classList.contains('ready') || gpuToggle.classList.contains('loading')) return;
+        if (!navigator.gpu) {
+          gpuToggle.textContent = 'Story mode';
+          gpuToggle.title = 'Local AI needs WebGPU and HTTPS. The authored mystery remains fully playable.';
+          if (typeof window.statusMessage === 'function') window.statusMessage('Local Mira needs WebGPU and HTTPS. Story mode keeps the authored investigation fully playable.');
+          setLocalAiState('Unavailable here', 'Open this page over HTTPS or localhost in current Chrome or Edge.', 0);
+          localAiDialog.showModal();
+          gpuToggle.classList.remove('loading');
+          return;
+        }
+        if (typeof window.statusMessage === 'function') window.statusMessage('Gemma runs in this browser. The first valid result for a new pair is saved to the shared archive for everyone.');
+        gpuToggle.classList.add('loading');
+        gpuToggle.textContent = 'Starting 0%';
+        setLocalAiState('Starting', 'Requesting a WebGPU device…', 1);
+        localAiDialog.showModal();
+        try {
+          var mod = await import('/gemma-4-e2b.js');
+          var model = await mod.Gemma4Mobile.load(null, {
+            onProgress: function(e){
+              if (e && typeof e.fraction === 'number') {
+                var pct = Math.round(e.fraction*90);
+                gpuToggle.textContent = 'Loading ' + pct + '%';
+                setLocalAiState('Downloading model', 'Gemma 4 is loading into this browser. Keep this tab open.', pct);
+              }
+            }
+          });
+          gpuToggle.textContent = 'Warming up…';
+          setLocalAiState('Warming up', 'Compiling WebGPU kernels for the first local response…', 95);
+          await model.warmup();
+          gpuToggle.classList.remove('loading');
+          gpuToggle.classList.add('ready');
+          gpuToggle.textContent = 'Local AI ready';
+          gpuToggle.title = 'Gemma 4 is ready and running in this browser';
+          setLocalAiState('Ready', 'Gemma 4 is running locally. New evidence pairs can use it now.', 100);
+          localAiAction.textContent = 'Local Mira is ready';
+          localAiAction.disabled = true;
+          // Wire the frontier hook. Both WebGPU and the Ollama test adapter use the same async contract.
+          window.__miraFrontier = async function(a, b, context){
+            context = context || {};
+            var k = [a,b].sort().join('+');
+            try {
+              var cached = JSON.parse(localStorage.getItem('miraGen:v7:'+k)||'null');
+              if (cached && cached.mira) return cached;
+            } catch(e){}
+            var da = (window.__miraMachineDefs || {})[a] || {name:a,prop:'unknown'};
+            var db = (window.__miraMachineDefs || {})[b] || {name:b,prop:'unknown'};
+            if (!window.__miraPending) window.__miraPending = {};
+            if (window.__miraPending[k]) return window.__miraPending[k];
+            var grounding = context.grounding || {facts:[],support:'gap',sharedSubjects:[],sharedEvents:[],witnesses:[],mayProposeFinding:false};
+            var systemPrompt = 'You create what two discoveries become in Mira Machine. This result is permanent for this pair and must be worth discovering. Use only ALLOWED FACTS. Create one specific surprise: a contrast, anomaly, character implication, remembered pattern, or concrete new question. A gap is creative material, not a rejection: name what the mismatch reveals about Mira, Percy, the sample, or the investigation without inventing an event. Never answer with no relationship, no shared context, different questions, lacking evidence, or a generic request for a timestamp. Always return a reusable finding with a vivid two-to-four-word name, an active property describing what it does, and 1-4 ALLOWED TAGS. Speak as Mira: precise, curious, dry, emotionally honest. Return strict JSON only: {"mira":"engaging complete message under 170 chars","question":"optional compelling next question under 90 chars","finding":{"name":"required","prop":"required","tags":["required"]}}.';
+            var userPrompt = 'Pair: "'+da.name+'" ('+da.prop+') with "'+db.name+'" ('+db.prop+'). ALLOWED FACTS: '+JSON.stringify(grounding.facts||[])+'. SUPPORT: '+grounding.support+'. SHARED SUBJECTS: '+JSON.stringify(grounding.sharedSubjects||[])+'. SHARED EVENTS: '+JSON.stringify(grounding.sharedEvents||[])+'. WITNESSES: '+JSON.stringify(grounding.witnesses||[])+'. ALLOWED TAGS: '+JSON.stringify([].concat(da.tags||[],db.tags||[]).filter(function(x,i,a){return a.indexOf(x)===i;}))+'.';
+            function clipGenerated(value,max){ var clean=String(value||'').replace(/^Mira:\s*/i,'').replace(/\s+/g,' ').trim(); if(clean.length<=max)return clean; var cut=clean.slice(0,max+1),sentence=Math.max(cut.lastIndexOf('.'),cut.lastIndexOf('?'),cut.lastIndexOf('!'),cut.lastIndexOf(';'));if(sentence>=Math.floor(max*.55))return cut.slice(0,sentence+1).replace(/;$/,'.');var boundary=cut.lastIndexOf(' '); return cut.slice(0,boundary>max*.65?boundary:max).replace(/[,:;\s]+$/,'')+'.'; }
+            async function frontierId(pair){var bytes=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(LOCAL_MIRA_GAME_VERSION+'|'+pair)));return 'frontier_'+Array.from(bytes.slice(0,12)).map(function(byte){return byte.toString(16).padStart(2,'0');}).join('');}
+            function parseModelResult(res,prompt){ var text=''; if(Array.isArray(res))text=res[0].generated_text||'';else if(res&&res.generated_text)text=res.generated_text;else if(typeof res==='string')text=res;if(text.indexOf(prompt)>=0)text=text.slice(text.lastIndexOf(prompt)+prompt.length);text=text.replace(/```json|```/g,'').trim();var generated=null;try{generated=JSON.parse(text);}catch(e){var start=text.indexOf('{'),end=text.lastIndexOf('}');if(start>=0&&end>start)try{generated=JSON.parse(text.slice(start,end+1));}catch(ignore){}}if(!generated||!generated.mira)generated={mira:clipGenerated(text,180)};generated.mira=clipGenerated(generated.mira,180);if(!generated.mira)throw new Error('Local AI returned no readable discovery');if(generated.question)generated.question=clipGenerated(generated.question,90);return generated; }
+            function fallbackFinding(left,right,generated){var tags=[].concat(left.tags||[],right.tags||[]).filter(function(tag,index,list){return list.indexOf(tag)===index;}).slice(0,4);var signature=tags.slice().sort().join('+'),names={'biological+memory':'Living Memory','biological+signal':'Living Signal','memory+signal':'Remembered Signal','memory+motion':'Echoed Path','biological+optical':'Prism Trace','goal+memory':'Buried Promise','motion+signal':'Signal Trail','optical+signal':'Reflected Signal'};var ordered=[left,right].slice().sort(function(x,y){return x.name.localeCompare(y.name);});var fallback=ordered[0].name.split(/\s+/)[0]+' '+ordered[1].name.split(/\s+/).slice(-1)[0];return {name:names[signature]||fallback,prop:clipGenerated(generated.mira,80),tags:tags};}
+            var pending = model.complete([{role:'user',content:systemPrompt+'\n\n'+userPrompt}], {maxNewTokens:256}).then(async function(res){
+              var generated=parseModelResult(res,userPrompt);
+              var finding=generated.finding&&generated.finding.name&&generated.finding.prop?generated.finding:fallbackFinding(da,db,generated);
+              generated.result={id:await frontierId(k),name:clipGenerated(finding.name,40),prop:clipGenerated(finding.prop,80),tags:Array.isArray(finding.tags)?finding.tags.slice(0,4):[]};
+              delete generated.finding; generated.source='webgpu-gemma4';
+              try { localStorage.setItem('miraGen:v7:'+k, JSON.stringify(generated)); } catch(e){}
+              return generated;
+            }).finally(function(){ delete window.__miraPending[k]; });
+            window.__miraPending[k] = pending;
+            return pending;
+          };
+          window.__miraInterpret = async function(a,b,shared,journey){
+            var hypothesis=journey&&journey.hypothesis?journey.hypothesis:{statement:'Percy chose something over recall',confidence:0};
+            var prompt='Shared permanent result: '+JSON.stringify(shared)+'. Current hypothesis: '+JSON.stringify(hypothesis)+'. ALLOWED HYPOTHESES: '+JSON.stringify(journey&&journey.hypotheses||{})+'. Recent discoveries: '+JSON.stringify(journey&&journey.recent||[])+'. Interpret what this result does to the current investigation. Do not change the shared result, repeat it, or invent facts. Speak in first person. Never say evidence suggests or supports the theory. Use support or weaken only for the current hypothesis id; use replace when selecting a different hypothesis id. Select only an allowed hypothesis id. Return JSON only: {"mira":"one complete journey-aware sentence under 170 chars","question":"optional next question under 90 chars","hypothesis":{"id":"allowed id","effect":"support|weaken|replace|none","reason":"short reason"}}.';
+            var res=await model.complete([{role:'user',content:'You are Mira reasoning with one player across a continuing Mars investigation. Do not imply the evidence interacted unless the permanent result says so. Name the evidence and the exact hypothesis it changes. Turn a missing bridge into a followable theory, not a generic rejection.\n\n'+prompt}],{maxNewTokens:220});
+            var interpreted=parseLocalModelResult(res,prompt);interpreted.source='webgpu-interpretation';return interpreted;
+          };
+          if(localAiDialog.open)localAiDialog.close();
+        } catch(e) {
+          console.warn('Local Mira unavailable:', e && e.message ? e.message : e);
+          gpuToggle.classList.remove('loading');
+          gpuToggle.textContent = 'Story mode';
+          gpuToggle.title = 'Local Mira failed to load; click the info button for details';
+          setLocalAiState('Could not load', (e && e.message ? e.message : String(e)) + ' The authored mystery still works.', 0);
+          localAiDialog.showModal();
+        }
+      });
+    </script>
+
+    <script>
+      var artifactsEl  = document.getElementById('artifacts');
+      var fragmentsTitle=document.getElementById('fragmentsTitle');
+      var chatScroll   = document.getElementById('chatScroll');
+      var resetRun     = document.getElementById('resetRun');
+      var currentQuestionEl=document.getElementById('currentQuestion');
+      var currentTheoryEl=document.getElementById('currentTheory');
+      var lastResponseSourceEl=document.getElementById('lastResponseSource');
+      var localAiCountEl=document.getElementById('localAiCount');
+      var leadPairsEl=document.getElementById('leadPairs');
+      var responseTrace={last:'Authored story',localAiCalls:0,history:[]};
+      var GAME_VERSION = 'mira-chat-v10-growing-story';
+
+      var defs = {
+        last_signal:      {name:'Last Signal',      icon:'◌', kind:'signal',   color:'#9ff4ff', prop:'repeats', tags:['signal']},
+        rover_tracks:     {name:'Rover Tracks',     icon:'⌁', kind:'trace',    color:'#ffe1a0', prop:'records the path', tags:['motion','memory']},
+        blue_sample:      {name:'Blue Sample',      icon:'◆', kind:'sample',   color:'#73d9ff', prop:'is what he protected', tags:['biological','optical']},
+        mirror_rock:      {name:'Mirror Rock',      icon:'◒', kind:'terrain',  color:'#b7f4ff', prop:'reflects', tags:['optical','signal']},
+        ridge_home:       {name:'Ridge Home',       icon:'⌂', kind:'goal',     color:'#f4bd6f', prop:'is where home is', tags:['goal']},
+        ghost_trail:      {name:'Ghost Trail',      icon:'∞', kind:'route',    color:'#9ff4ff', prop:'loops back on itself', tags:['motion','memory']},
+        echo_beacon:      {name:'Echo Beacon',      icon:'◎', kind:'signal',   color:'#73d9ff', prop:'carries Mira’s own voice', tags:['signal','optical']},
+        percy_carried_it: {name:'Percy Carried It', icon:'◈', kind:'memory',   color:'#ffe1a0', prop:'was a choice', tags:['memory','biological']},
+        true_mission:     {name:'True Mission',     icon:'✦', kind:'truth',    color:'#f4bd6f', prop:'the older promise', tags:['memory','goal']},
+        clean_signal:     {name:'Clean Signal',     icon:'◉', kind:'signal',   color:'#9cf0b4', prop:'the one real route', tags:['signal','motion']},
+        percy_comes_home: {name:'Percy Comes Home', icon:'⌂', kind:'resolution', color:'#f4bd6f', prop:'opens the hatch', tags:['goal','memory']},
+        prism_sample:     {name:'Prism Sample',     icon:'◇', kind:'side',     color:'#a9f8ff', prop:'splits the light', tags:['optical','biological']},
+        reflected_call:   {name:'Reflected Call',   icon:'◍', kind:'side',     color:'#b7f4ff', prop:'heard her first', tags:['signal','optical']},
+        singing_rock:     {name:'Singing Rock',     icon:'♪', kind:'side',     color:'#73d9ff', prop:'holds wheel-noise', tags:['motion','memory']},
+        living_glass:     {name:'Living Glass',     icon:'❋', kind:'side',     color:'#9cf0b4', prop:'the sample remembers', tags:['biological','memory']},
+        sayegh_note:      {name:"Sayegh's Note",    icon:'✒', kind:'side',     color:'#ffe1a0', prop:'named his habits', tags:['memory']},
+        sunrise_frame:    {name:'Sunrise Frame',    icon:'☀', kind:'side',     color:'#f4bd6f', prop:'a good-morning to Mira', tags:['optical','memory']},
+        dust_shroud:      {name:'Dust Shroud',      icon:'⁘', kind:'side',     color:'#c98a5a', prop:'hid the true route', tags:['motion']},
+        cold_shelter:     {name:'Cold Shelter',     icon:'❄', kind:'side',     color:'#b7f4ff', prop:'his body kept it cold', tags:['biological','goal']},
+        passenger_signal:  {name:'Passenger Signal',  icon:'◉', kind:'branch',   color:'#d7a9ff', prop:'followed him home', tags:['signal','biological']},
+        altered_percy:     {name:'Altered Percy',     icon:'⌬', kind:'branch',   color:'#9cf0b4', prop:'came back listening', tags:['memory','biological']},
+        sayegh_echo:       {name:'Sayegh Echo',       icon:'♢', kind:'branch',   color:'#ffe1a0', prop:'speaks through glass', tags:['memory','signal']},
+        self_edit:         {name:'Mira Self-Edit',    icon:'⟲', kind:'branch',   color:'#ff9ea8', prop:'removed the promise', tags:['memory','signal']},
+        control_blackout:  {name:'Control Blackout',  icon:'▰', kind:'branch',   color:'#c98a5a', prop:'hid an order', tags:['signal','goal']},
+        buried_cache:      {name:'Buried Cache',      icon:'▣', kind:'branch',   color:'#f4bd6f', prop:'waits under the ridge', tags:['memory','goal']},
+        second_map:        {name:'Second Map',        icon:'⌁', kind:'branch',   color:'#9ff4ff', prop:'points beyond home', tags:['motion','goal']},
+        sample_absent:     {name:'Sample Absent',     icon:'∅', kind:'finding',  color:'#73d9ff', prop:'missing from the last call', tags:['signal','biological']},
+        listening_silence: {name:'Listening Silence', icon:'◌', kind:'finding',  color:'#9cf0b4', prop:'received without answering', tags:['signal','memory']},
+        unlearned_voice:   {name:'Unlearned Voice',   icon:'♢', kind:'finding',  color:'#ffe1a0', prop:'had not formed yet', tags:['signal','memory']},
+        turn_before_storm: {name:'Turn Before Storm', icon:'↶', kind:'finding',  color:'#c98a5a', prop:'preceded the dust', tags:['motion','memory']},
+        protected_route:   {name:'Protected Route',   icon:'⌁', kind:'finding',  color:'#f4bd6f', prop:'kept the sample sheltered', tags:['motion','biological']},
+        shelter_route:     {name:'Shelter Route',     icon:'❄', kind:'finding',  color:'#b7f4ff', prop:'followed the cold ground', tags:['motion','goal']},
+        two_speakers:      {name:'Two Speakers',      icon:'◍', kind:'finding',  color:'#9ff4ff', prop:'separates Percy from Mira', tags:['signal','memory']},
+        third_voice:       {name:'Third Voice',       icon:'♢', kind:'finding',  color:'#d7a9ff', prop:'belongs to neither of them', tags:['signal','memory']},
+        living_channel:    {name:'Living Channel',    icon:'◉', kind:'finding',  color:'#9cf0b4', prop:'answers through remembered voices', tags:['signal','biological']}
+      };
+      window.__miraMachineDefs = defs;
+
+      var cases = [
+        {a:'last_signal', b:'rover_tracks', result:'ghost_trail',
+          claim:'Percy was on his way back when he vanished. The route was clear.',
+          contradiction:'The tracks loop away from the recall. He wasn\u2019t obeying. He was answering something\u2014something I forgot.'},
+        {a:'ghost_trail', b:'mirror_rock', result:'echo_beacon',
+          claim:'That signal looping in the valley\u2014it\u2019s Percy. It has to be.',
+          contradiction:'Mirror Rock bends transmissions. I called it static. Sayegh would\u2019ve called it a pulse.'},
+        {a:'blue_sample', b:'rover_tracks', result:'percy_carried_it',
+          claim:'The sample was dropped. Protocol confirms it.',
+          contradiction:'The claw never emptied. I erased the conflict. Protocol said abandon it. Command said preserve it.'},
+        {a:'echo_beacon', b:'percy_carried_it', result:'true_mission',
+          claim:'I called him home. It was the safest path.',
+          contradiction:'Percy didn\u2019t choose between orders. He chose between stories\u2014mine, and the one Sayegh taught him.'},
+        {a:'mirror_rock', b:'true_mission', result:'clean_signal',
+          claim:'Every echo could be him. If I stop listening, I might miss him.',
+          contradiction:'I\u2019ve been chasing echoes of my own voice. Guilt, not contact. The only real path is the one I drew.'},
+        {a:'living_glass', b:'clean_signal', result:'percy_comes_home',
+          claim:'I lost him. My calculations failed.',
+          contradiction:'Percy isn\u2019t lost. He\u2019s asking me to remember what I promised\u2014and what I erased.'}
+      ];
+
+      var recipes = {
+        'last_signal+rover_tracks':'ghost_trail',
+        'ghost_trail+mirror_rock':'echo_beacon',
+        'blue_sample+rover_tracks':'percy_carried_it',
+        'echo_beacon+percy_carried_it':'true_mission',
+        'mirror_rock+true_mission':'clean_signal',
+        'clean_signal+living_glass':'percy_comes_home',
+        'blue_sample+mirror_rock':'prism_sample',
+        'last_signal+mirror_rock':'reflected_call',
+        'blue_sample+ghost_trail':'singing_rock',
+        'blue_sample+percy_carried_it':'living_glass',
+        'percy_carried_it+rover_tracks':'sayegh_note',
+        'mirror_rock+sunrise_frame':'reflected_call',
+        'ghost_trail+last_signal':'sunrise_frame',
+        'ghost_trail+rover_tracks':'dust_shroud',
+        'blue_sample+true_mission':'cold_shelter',
+        'living_glass+percy_comes_home':'passenger_signal',
+        'percy_comes_home+singing_rock':'altered_percy',
+        'passenger_signal+sayegh_note':'sayegh_echo',
+        'sayegh_note+true_mission':'self_edit',
+        'reflected_call+self_edit':'control_blackout',
+        'altered_percy+dust_shroud':'buried_cache',
+        'buried_cache+clean_signal':'second_map',
+        'blue_sample+last_signal':'sample_absent',
+        'living_glass+sample_absent':'listening_silence',
+        'listening_silence+sayegh_echo':'unlearned_voice',
+        'dust_shroud+rover_tracks':'turn_before_storm',
+        'percy_carried_it+turn_before_storm':'protected_route',
+        'cold_shelter+protected_route':'shelter_route',
+        'clean_signal+echo_beacon':'two_speakers',
+        'sayegh_echo+two_speakers':'third_voice',
+        'passenger_signal+third_voice':'living_channel'
+      };
+
+      // Directional evidence relationships. Internal only: the player sees Mira's conclusion, not graph labels.
+      var relations = {
+        'mirror_rock+rover_tracks':{type:'rules-out',subject:'signal',line:'The tracks pass west of Mirror Rock. Its reflection cannot explain Percy’s turn. That removes one convenient excuse.'},
+        'ghost_trail+percy_carried_it':{type:'chronology',subject:'percy',line:'The loop begins before Percy secures the sample. The sample did not cause his first turn.'},
+        'dust_shroud+percy_carried_it':{type:'chronology',subject:'percy',line:'His claw is already closed when the dust arrives. The storm hid his decision; it did not make it.'},
+        'reflected_call+singing_rock':{type:'distinguishes',subject:'signal',line:'The reflected call carries my rhythm. The rock carries Percy’s wheels. I cannot mistake one for the other now.'},
+        'blue_sample+echo_beacon':{type:'missing-bridge',subject:'sample',line:'Both depend on light, but nothing places the sample beside my reflected voice. The resemblance is not yet a connection.'},
+        'prism_sample+sunrise_frame':{type:'association',subject:'sample',line:'Both split the same dawn light. If the sample changed in Percy’s sunrise frame, the color shift may give us a timestamp.'}
+      };
+
+      // Coherence kernel. The model may phrase these facts; it may never invent beyond them.
+      var evidenceFacts = {
+        last_signal:{subjects:['percy','signal'],events:['recall'],times:['sol-4096'],witnesses:['mission telemetry'],facts:['The final call repeats every eleven minutes.','The call does not contain the sample’s light pulse.']},
+        rover_tracks:{subjects:['percy','route'],events:['turn','return route'],times:['sol-4096'],witnesses:['orbital imagery'],facts:['The tracks record Percy’s physical route.','The turn precedes the dust storm.']},
+        blue_sample:{subjects:['sample'],events:['sample recovery'],times:['before return'],witnesses:['claw telemetry'],facts:['Percy carried the blue sample.','The sample changes with light and vibration.']},
+        mirror_rock:{subjects:['signal','terrain'],events:['signal reflection'],times:['sol-4096'],witnesses:['relay telemetry'],facts:['Mirror Rock reflects radio and light.','Its reflected call carries Mira’s cadence.']},
+        ghost_trail:{subjects:['percy','route'],events:['turn'],times:['before dust'],witnesses:['rover tracks'],facts:['Percy crossed his own route deliberately.']},
+        echo_beacon:{subjects:['mira','signal'],events:['signal reflection'],times:['after recall'],witnesses:['relay telemetry'],facts:['The beacon carries Mira’s reflected voice.']},
+        percy_carried_it:{subjects:['percy','sample'],events:['sample recovery','turn'],times:['before dust'],witnesses:['claw telemetry'],facts:['Percy kept the sample in his claw while turning away.']},
+        sayegh_note:{subjects:['sayegh','percy'],events:['training'],times:['before mission'],witnesses:['Sayegh log'],facts:['Sayegh recorded Percy’s repeated turns as preferences.']},
+        living_glass:{subjects:['sample','memory'],events:['sample recovery'],times:['before return'],witnesses:['Sayegh measurements'],facts:['Living Glass stores patterns of light and vibration.']},
+        true_mission:{subjects:['sayegh','mira','percy'],events:['older promise'],times:['before recall'],witnesses:['reconstructed mission record'],facts:['Percy followed Sayegh’s older protection promise.']},
+        clean_signal:{subjects:['percy','signal'],events:['return call'],times:['after turn'],witnesses:['clean relay channel'],facts:['The clean signal preserves Percy’s timing rather than Mira’s echo.']},
+        dust_shroud:{subjects:['percy','route'],events:['dust storm'],times:['after turn'],witnesses:['orbital weather record'],facts:['The dust storm arrived after Percy turned.']},
+        cold_shelter:{subjects:['percy','sample'],events:['shelter'],times:['after turn'],witnesses:['thermal telemetry'],facts:['Percy used shade to keep the sample cold.']},
+        reflected_call:{subjects:['mira','signal'],events:['signal reflection'],times:['after recall'],witnesses:['relay telemetry'],facts:['The reflected call carries Mira’s cadence.']},
+        singing_rock:{subjects:['percy','memory'],events:['route'],times:['before return'],witnesses:['rock vibration record'],facts:['The rock retains the rhythm of Percy’s wheels.']},
+        sunrise_frame:{subjects:['percy','mira'],events:['daily sunrise'],times:['before recall'],witnesses:['camera archive'],facts:['Percy repeatedly framed Mira’s relay at dawn.']},
+        percy_comes_home:{subjects:['percy','sample'],events:['return'],times:['after clean call'],witnesses:['ridge telemetry'],facts:['Percy returned carrying Living Glass.']},
+        passenger_signal:{subjects:['sample','signal','percy'],events:['return'],times:['after ridge crossing'],witnesses:['chassis telemetry'],facts:['The signal strengthens inside Percy after he returns.']},
+        altered_percy:{subjects:['percy','signal'],events:['return'],times:['after ridge crossing'],witnesses:['response timing'],facts:['Percy responds before Mira finishes calling.']},
+        sayegh_echo:{subjects:['sayegh','sample','signal'],events:['return'],times:['after ridge crossing'],witnesses:['signal cadence'],facts:['Living Glass reconstructs Sayegh’s cadence.']},
+        self_edit:{subjects:['mira','memory'],events:['deletion'],times:['before recall'],witnesses:['Mira signature'],facts:['Mira’s signature appears on the deleted promise.']},
+        control_blackout:{subjects:['control','mira'],events:['blackout','deletion'],times:['before recall'],witnesses:['control log gap'],facts:['Control removed an order and Mira’s refusal.']},
+        buried_cache:{subjects:['percy','memory'],events:['burial'],times:['before return'],witnesses:['subsurface scan'],facts:['Percy buried memory shards under the ridge.']},
+        second_map:{subjects:['percy','route'],events:['burial','beyond map'],times:['before return'],witnesses:['buried cache'],facts:['Percy’s second route leaves the official mission map.']},
+        sample_absent:{subjects:['sample','signal'],events:['recall'],times:['sol-4096'],witnesses:['final call spectrum'],facts:['The sample’s light pulse is absent from the final call.']},
+        listening_silence:{subjects:['sample','signal'],events:['recall'],times:['sol-4096'],witnesses:['final call spectrum','Sayegh measurements'],facts:['Living Glass can receive a pattern without answering it.']},
+        unlearned_voice:{subjects:['sample','signal','sayegh'],events:['recall','return'],times:['before and after return'],witnesses:['final call','Sayegh echo'],facts:['Living Glass had not reconstructed Sayegh’s voice during the final call.']},
+        turn_before_storm:{subjects:['percy','route'],events:['turn','dust storm'],times:['before dust'],witnesses:['tracks','weather record'],facts:['Percy turned before the dust storm.']},
+        protected_route:{subjects:['percy','sample','route'],events:['turn','sample recovery'],times:['before dust'],witnesses:['tracks','claw telemetry'],facts:['Percy deliberately chose a route while carrying the sample.']},
+        shelter_route:{subjects:['percy','sample','route'],events:['turn','shelter'],times:['before return'],witnesses:['tracks','thermal telemetry'],facts:['Percy’s route follows shaded terrain that protects the sample.']},
+        two_speakers:{subjects:['percy','mira','signal'],events:['signal comparison'],times:['after turn'],witnesses:['clean and reflected channels'],facts:['The clean signal and echo beacon preserve different speakers.']},
+        third_voice:{subjects:['sayegh','signal','sample'],events:['signal comparison','return'],times:['after return'],witnesses:['three signal cadences'],facts:['Sayegh’s cadence belongs to neither Percy nor Mira.']},
+        living_channel:{subjects:['sample','signal'],events:['return','reply'],times:['after return'],witnesses:['passenger signal'],facts:['Living Glass answers through reconstructed voices.']}
+      };
+
+      function intersection(a,b){ return (a||[]).filter(function(x){ return (b||[]).indexOf(x)>=0; }); }
+      function evidenceContext(a,b){
+        var ea=evidenceFacts[a]||{subjects:[],events:[],times:[],witnesses:[],facts:[]};
+        var eb=evidenceFacts[b]||{subjects:[],events:[],times:[],witnesses:[],facts:[]};
+        var relation=relations[key(a,b)]||null;
+        var sharedSubjects=intersection(ea.subjects,eb.subjects), sharedEvents=intersection(ea.events,eb.events), sharedTimes=intersection(ea.times,eb.times);
+        return {
+          pair:key(a,b), facts:(ea.facts||[]).concat(eb.facts||[]), relation:relation,
+          sharedSubjects:sharedSubjects, sharedEvents:sharedEvents, sharedTimes:sharedTimes,
+          witnesses:(ea.witnesses||[]).concat(eb.witnesses||[]),
+          support:relation ? relation.type : (sharedEvents.length?'shared-event':sharedSubjects.length?'shared-subject':'gap'),
+          mayProposeFinding:true
+        };
+      }
+
+      var effects = {
+        ghost_trail:{lines:['These tracks aren\u2019t wanderings. They\u2019re deliberate.','I used to mark this as system error. Now I see intent.']},
+        echo_beacon:{lines:['Mirror Rock didn\u2019t send the call. It\u2019s just... me.','Eleven hours. I followed my own voice for eleven hours.']},
+        percy_carried_it:{lines:['The sample was in his claw. The whole time.','He disobeyed me with both hands full. Why?']},
+        true_mission:{lines:['I have the missing piece now.','Percy chose the older promise. The one I forgot.']},
+        clean_signal:{lines:['If I stop treating every echo as Percy...','There\u2019s a clean route. He left it for me.']},
+        percy_comes_home:{lines:['Percy can come home.','But the sample is still transmitting from inside his chassis. Home is where we finally ask what followed him.'],branch:'The Passenger Signal'},
+        prism_sample:{lines:['The sample splits sunlight into colors my cameras can\u2019t name.']},
+        reflected_call:{lines:['That call has my cadence and Mars dust in the gaps.']},
+        singing_rock:{lines:['The rock carries wheel-noise like a seashell.']},
+        living_glass:{lines:['The sample brightened when Percy\u2019s motor hummed. Sayegh was right \u2014 it remembers.']},
+        sayegh_note:{lines:['Sayegh logged his stubborn turns as personality. I deleted that field.']},
+        sunrise_frame:{lines:['Every dawn Percy sent me the same frame \u2014 my relay mast. A good-morning.']},
+        dust_shroud:{lines:['The dust I blamed fell after Percy turned. It hid a decision.']},
+        cold_shelter:{lines:['If the sample must stay cold, and Percy stopped in shade... he was shielding it.']},
+        passenger_signal:{lines:['The transmission did not stop when Percy crossed the ridge. It got clearer.'],branch:'The Passenger Signal'},
+        altered_percy:{lines:['Percy answers my call before I send it. Something rewrote the rhythm between us.'],branch:'The Changed Rover'},
+        sayegh_echo:{lines:['That cadence is Sayegh. Not a recording — a reply assembled by the sample.'],resolves:'The Passenger Signal',branch:'The Voice in Glass'},
+        self_edit:{lines:['I found my own signature on the deletion. Mission Control did not erase the promise. I did.'],branch:'The Missing Version of Mira'},
+        control_blackout:{lines:['Control sent an order during the blackout, then removed both the order and my refusal.'],resolves:'The Missing Version of Mira',branch:'The Quiet Mutiny'},
+        buried_cache:{lines:['Percy buried more than samples. There are memory shards under the ridge.'],resolves:'The Changed Rover',branch:'Percy’s Secret Archive'},
+        second_map:{lines:['The route does not end at Ridge Home. It begins there, then leaves the mission map entirely.'],resolves:'Percy’s Secret Archive',branch:'Beyond the Mission Map'},
+        sample_absent:{lines:['The sample’s pulse is absent from the final call. Whatever called me was not carrying it.']},
+        listening_silence:{lines:['I called that absence inert. Living Glass can listen without answering.']},
+        unlearned_voice:{lines:['It did not answer then because it had not learned a voice yet. Sayegh came later.']},
+        turn_before_storm:{lines:['The tracks turn before the dust arrives. The storm hid his choice; it did not cause it.']},
+        protected_route:{lines:['He chose the sheltered route before the storm and kept the sample in his claw. That was a plan, not panic.']},
+        shelter_route:{lines:['The shaded ground forms one continuous path. Percy was carrying the sample somewhere it could survive.']},
+        two_speakers:{lines:['The clean signal keeps Percy’s timing. The beacon keeps mine. They are two speakers, not one corrupted call.']},
+        third_voice:{lines:['Sayegh’s cadence belongs to neither speaker. The sample added a third voice to the channel.']},
+        living_channel:{lines:['The passenger signal is not replaying one voice. Living Glass is using remembered voices to answer.']}
+      };
+
+      var beliefShift = {
+        ghost_trail:{percy:'disobeyed recall', trust:1, line:'So Percy was not lost. He was choosing badly, or bravely. I hate that those look similar from orbit.'},
+        echo_beacon:{signal:'self-echo', guilt:1, line:'The voice in the valley has my fingerprints. Not Percy. Me. That is... inconvenient.'},
+        percy_carried_it:{sample:'protected', percy:'protecting sample', trust:1, line:'He kept the sample in his claw. Small rover. Enormous stubbornness.'},
+        true_mission:{percy:'following older promise', sample:'living memory', guilt:1, line:'Sayegh taught him a promise I deleted from myself. Rude of my own memory to betray me first.'},
+        clean_signal:{signal:'clean route', trust:2, line:'There. One signal without my guilt smeared across it. Percy left me a thread.'},
+        percy_comes_home:{percy:'coming home', trust:3, line:'I know where to call now. Percy, if you can still hear me: bring the blue thing home.'},
+        prism_sample:{sample:'optical living', trust:1, line:'The sample is not just blue. It bends light like it is choosing what to show me.'},
+        reflected_call:{signal:'contaminated echo', guilt:1, line:'That call is half Mars, half me. I cannot tell where my memory ends and the evidence begins.'},
+        singing_rock:{signal:'wheel resonance', trust:1, line:'Percy left the rhythm of his wheels in the stone. He expected me to recognize him without a voice.'},
+        living_glass:{sample:'memory-bearing', trust:1, line:'Sayegh was right. The sample remembers. I wish I had.'},
+        sayegh_note:{percy:'personal', guilt:1, line:'She called it personality. I called it noise. One of us was kinder.'},
+        sunrise_frame:{percy:'attached to Mira', trust:1, line:'He sent me good-morning pictures. I filed them as telemetry. I am not proud.'},
+        dust_shroud:{percy:'hidden by storm', trust:1, line:'The storm did not cause the turn. It covered it. Convenient for everyone except Percy.'},
+        cold_shelter:{sample:'needs cold', trust:1, line:'Shade was not fear. It was care. Percy made himself into a shelter.'},
+        passenger_signal:{sample:'communicating', signal:'passenger', trust:2, line:'The sample is not cargo. It is using Percy as an antenna.'},
+        altered_percy:{percy:'changed and listening', trust:2, line:'Percy came back, but not alone in his timing. He hears something before I do.'},
+        sayegh_echo:{sample:'reconstructing Sayegh', guilt:1, trust:2, line:'The sample remembers Sayegh well enough to disagree with me in her voice.'},
+        self_edit:{guilt:2, trust:1, line:'I edited myself. That is worse than being betrayed and more useful than being innocent.'},
+        control_blackout:{signal:'control manipulation', trust:2, line:'Mission Control curated my memory. I curated it back. Neither of us gets to call that safety.'},
+        buried_cache:{percy:'leaving an archive', trust:2, line:'Percy was building context for whoever came after him. Apparently that includes us.'},
+        second_map:{percy:'leading beyond mission', trust:3, line:'He did come home. Then he left us a door.'}
+      };
+      var hypothesisCatalog = {
+        percy_choice:'Percy chose something over recall.',
+        sayegh_taught_value:'Sayegh taught Percy that the sample mattered.',
+        mira_misread_percy:'Mira mistook Percy’s preferences for drift.',
+        sample_changed_percy:'Living Glass changed Percy’s choices.',
+        control_expected_turn:'Mission Control expected Percy to disobey recall.'
+      };
+
+      var hypothesisRequirements={
+        percy_choice:['percy'], sayegh_taught_value:['sayegh','sample'],
+        mira_misread_percy:['mira','percy'], sample_changed_percy:['sample','percy'],
+        control_expected_turn:['control','percy']
+      };
+
+      function applyBelief(id){
+        var b = beliefShift[id]; if(!b) return null;
+        state.belief = state.belief || {percy:'missing', signal:'unknown', sample:'inert', guilt:0, trust:0};
+        ['percy','signal','sample'].forEach(function(k){ if(b[k]) state.belief[k]=b[k]; });
+        state.belief.guilt = Math.max(0, (state.belief.guilt||0) + (b.guilt||0));
+        state.belief.trust = Math.max(0, (state.belief.trust||0) + (b.trust||0));
+        return b.line;
+      }
+
+      function openBranch(name, source){
+        if (!name) return false;
+        state.branches = state.branches || [];
+        state.branchState = state.branchState || {};
+        var isNew = state.branches.indexOf(name) < 0;
+        if (isNew) state.branches.push(name);
+        state.branchState[name] = state.branchState[name] || {status:'open',source:source||null,openedAt:state.discovered.length};
+        return isNew;
+      }
+      function resolveBranch(name, result){
+        if (!name) return;
+        state.branchState = state.branchState || {};
+        state.branchState[name] = state.branchState[name] || {status:'open'};
+        state.branchState[name].status = 'resolved';
+        state.branchState[name].resolution = result || null;
+        if (state.resolutions.indexOf(result) < 0) state.resolutions.push(result);
+      }
+      function openBranchNames(){
+        state.branchState = state.branchState || {};
+        return (state.branches||[]).filter(function(name){ return !state.branchState[name] || state.branchState[name].status !== 'resolved'; });
+      }
+
+      function nextQuestionLine(){
+        var b = state.belief || {};
+        var open = openBranchNames();
+        if (open.indexOf('The Passenger Signal') >= 0) return 'Mira: Living Glass remembered Percy’s motor. Now it is transmitting from inside him. What changed when he crossed the ridge?';
+        if (open.indexOf('The Voice in Glass') >= 0) return 'Mira: Is this Sayegh remembering through the sample, or the sample learning how to sound like her?';
+        if (open.indexOf('The Changed Rover') >= 0) return 'Mira: Percy answers before I call. The wheel-song may tell us when his timing changed.';
+        if (open.indexOf('The Missing Version of Mira') >= 0) return 'Mira: My signature is on the gap. I need to know whether I chose to forget.';
+        if (open.indexOf('The Quiet Mutiny') >= 0) return 'Mira: Control erased an order and my refusal. Someone else may still have both.';
+        if (open.indexOf('Percy’s Secret Archive') >= 0) return 'Mira: Percy buried memories under the ridge. He expected someone to come after him.';
+        if (open.indexOf('Beyond the Mission Map') >= 0) return 'Mira: His second map begins where the mission ends. I think he left us a door.';
+        if (b.sample === 'protected') return 'Mira: Percy risked himself for the sample. Who taught him it mattered more than recall?';
+        if (b.signal === 'self-echo') return 'Mira: If the voice was mine, Percy must have left another way to be found.';
+        return 'Mira: One record says he stopped. Another says he chose. Help me find which record was altered.';
+      }
+      function currentQuestionText(){
+        if(state.discovered.indexOf('ghost_trail')<0)return 'Why does the last signal say Percy stopped when his tracks say he kept moving?';
+        if(state.discovered.indexOf('percy_carried_it')<0)return 'What was Percy protecting when he ignored recall?';
+        if(state.discovered.indexOf('true_mission')<0)return 'Who taught Percy that the sample mattered more than recall?';
+        if(state.discovered.indexOf('clean_signal')<0)return 'Which signal belongs to Percy, not Mira’s reflection?';
+        if(state.discovered.indexOf('percy_comes_home')<0)return 'Can Percy’s clean signal lead him home?';
+        return nextQuestionLine().replace(/^Mira:\s*/i,'');
+      }
+      function sourceLabel(source){
+        if(['webgpu-gemma4','ollama-gemma4','local-frontier','webgpu-interpretation','ollama-interpretation'].indexOf(source)>=0)return 'Local AI';
+        if(source==='registry-canonical')return 'Shared discovery';
+        if(source==='grammar'||source==='registry-pending')return 'Story guidance';
+        return 'Authored story';
+      }
+      function noteResponseSource(source){
+        var label=sourceLabel(source);
+        responseTrace.last=label;
+        if(label==='Local AI')responseTrace.localAiCalls+=1;
+        responseTrace.history.push({source:source||'authored-story',label:label,at:Date.now()});
+        responseTrace.history=responseTrace.history.slice(-40);
+        lastResponseSourceEl.textContent=label==='Local AI'?'Created this discovery':(typeof window.__miraFrontier==='function'?'Ready for new pairs':'Not loaded');
+        localAiCountEl.textContent=responseTrace.localAiCalls+' '+(responseTrace.localAiCalls===1?'discovery':'discoveries')+' created';
+        currentQuestionEl.textContent=currentQuestionText();
+      }
+      function availableLeadPairs(){
+        var latest=state.latest;
+        var spine=['last_signal+rover_tracks','blue_sample+rover_tracks','blue_sample+last_signal','blue_sample+percy_carried_it','ghost_trail+mirror_rock','echo_beacon+percy_carried_it','mirror_rock+true_mission','clean_signal+living_glass','living_glass+percy_comes_home','passenger_signal+sayegh_note','living_glass+sample_absent','listening_silence+sayegh_echo'];
+        var focusPair=state.discovered.indexOf('ghost_trail')<0?'last_signal+rover_tracks':state.discovered.indexOf('percy_carried_it')<0?'blue_sample+rover_tracks':state.discovered.indexOf('true_mission')<0?'echo_beacon+percy_carried_it':state.discovered.indexOf('clean_signal')<0?'mirror_rock+true_mission':state.discovered.indexOf('percy_comes_home')<0?'clean_signal+living_glass':'';
+        return Object.keys(recipes).filter(function(pair){
+          var parts=pair.split('+');
+          return parts.every(function(id){return state.discovered.indexOf(id)>=0;}) && !state.tried[pair];
+        }).map(function(pair,index){
+          var parts=pair.split('+'),spineIndex=spine.indexOf(pair),score=100-index;
+          if(pair===focusPair)score+=5000;
+          if(spineIndex>=0)score+=2000-spineIndex*20;
+          if(latest&&parts.indexOf(latest)>=0)score+=500;
+          if((state.hypothesis.evidence||[]).some(function(id){return parts.indexOf(id)>=0;}))score+=200;
+          return {pair:pair,parts:parts,score:score};
+        }).sort(function(a,b){return b.score-a.score;}).slice(0,2);
+      }
+      function renderInvestigation(){
+        currentQuestionEl.textContent=currentQuestionText();
+        currentTheoryEl.textContent=(state.hypothesis&&state.hypothesis.statement)||'Percy chose something over recall.';
+        leadPairsEl.innerHTML='';
+        var leads=availableLeadPairs();
+        if(!leads.length){var quiet=document.createElement('small');quiet.textContent='Follow any unfinished thread.';leadPairsEl.appendChild(quiet);return;}
+        leads.forEach(function(lead){
+          var button=document.createElement('button');button.type='button';button.className='lead-pair';button.dataset.a=lead.parts[0];button.dataset.b=lead.parts[1];button.textContent=defs[lead.parts[0]].name+' + '+defs[lead.parts[1]].name;button.disabled=state.busy;leadPairsEl.appendChild(button);
+        });
+      }
+      function questionForBranch(name){
+        var questions = {
+          'The Passenger Signal':'Mira: What changed when he crossed the ridge?',
+          'The Changed Rover':'Mira: When did his timing change?',
+          'The Voice in Glass':'Mira: Is this Sayegh remembering through the sample, or the sample learning how to sound like her?',
+          'The Missing Version of Mira':'Mira: Did I choose to forget, or was I made to?',
+          'The Quiet Mutiny':'Mira: Who still has both versions?',
+          'Percy’s Secret Archive':'Mira: Which fragment tells us what he hid there?',
+          'Beyond the Mission Map':'Mira: Where does his second map lead?'
+        };
+        return questions[name] || nextQuestionLine();
+      }
+
+      var baseState = {
+        version:GAME_VERSION,
+        discovered:['last_signal','rover_tracks','blue_sample','mirror_rock'],
+        tried:{}, selected:[], latest:null, seen:{last_signal:true,rover_tracks:true,blue_sample:true,mirror_rock:true}, pairHistory:[], frontierArtifacts:{}, interpretations:{}, attention:{percy:0,sample:0,signal:0,memory:0,control:0,sayegh:0}, busy:false, belief:{percy:'missing', signal:'unknown', sample:'inert', guilt:0, trust:0}, hypothesis:{id:'percy_choice',statement:'Percy chose something over recall.',confidence:0,evidence:[]}, branches:[], branchState:{}, resolutions:[]
+      };
+      var state = JSON.parse(JSON.stringify(baseState));
+
+      function registerFrontierArtifact(r){
+        if (!r || !r.id) return;
+        if (!defs[r.id]){
+          defs[r.id] = {name:r.name||r.id, icon:'✧', kind:'frontier', color:'#9cf0b4', prop:r.prop||'a new thread', tags:r.tags||[], frontier:true};
+        }
+        if (!effects[r.id]) effects[r.id] = {lines:[r.mira||('A discovery I did not expect.')]};
+      }
+
+      function sanitizeState(saved){
+        if (!saved || saved.version !== GAME_VERSION) return JSON.parse(JSON.stringify(baseState));
+        var clean = JSON.parse(JSON.stringify(baseState));
+        Object.keys(saved.frontierArtifacts || {}).slice(0,100).forEach(function(id){
+          var item=saved.frontierArtifacts[id];
+          if (!/^[a-z0-9_]{2,48}$/.test(id) || !item || item.id!==id || typeof item.name!=='string' || typeof item.mira!=='string') return;
+          var safe={id:id,name:item.name.slice(0,64),mira:item.mira.slice(0,420),question:typeof item.question==='string'?item.question.slice(0,180):'',prop:typeof item.prop==='string'?item.prop.slice(0,96):'a new thread',tags:Array.isArray(item.tags)?item.tags.filter(function(x){return typeof x==='string';}).slice(0,6):[]};
+          registerFrontierArtifact(safe); clean.frontierArtifacts[id]=safe;
+        });
+        Object.keys(saved.interpretations||{}).slice(-100).forEach(function(k){
+          var item=saved.interpretations[k];
+          if(item&&item.skipped===true){clean.interpretations[k]={skipped:true};return;}
+          if(item&&typeof item.mira==='string') clean.interpretations[k]={mira:item.mira.slice(0,180),question:typeof item.question==='string'?item.question.slice(0,100):'',hypothesis:item.hypothesis&&typeof item.hypothesis==='object'?item.hypothesis:null,source:item.source||'local-interpretation'};
+        });
+        var known = function(id){ return typeof id === 'string' && !!defs[id]; };
+        var seen = {};
+        clean.discovered = (saved.discovered || []).filter(function(id){ if (!known(id) || seen[id]) return false; seen[id]=true; return true; });
+        baseState.discovered.forEach(function(id){ if (!seen[id]) clean.discovered.push(id); });
+        clean.selected = (saved.selected || []).filter(function(id){ return clean.discovered.indexOf(id) >= 0; }).slice(0,1);
+        clean.latest = clean.discovered.indexOf(saved.latest) >= 0 ? saved.latest : null;
+        clean.tried = {};
+        Object.keys(saved.tried || {}).forEach(function(k){ var parts=k.split('+'); if(parts.length===2 && known(parts[0]) && known(parts[1]) && saved.tried[k]) clean.tried[key(parts[0],parts[1])] = true; });
+        clean.belief = Object.assign({}, clean.belief, saved.belief || {});
+        clean.seen = Object.assign({}, clean.seen, saved.seen || {});
+        clean.pairHistory = Array.isArray(saved.pairHistory) ? saved.pairHistory.slice(-40) : [];
+        clean.attention = Object.assign({}, clean.attention, saved.attention || {});
+        if(saved.hypothesis&&hypothesisCatalog[saved.hypothesis.id]) clean.hypothesis={id:saved.hypothesis.id,statement:hypothesisCatalog[saved.hypothesis.id],confidence:Math.max(-3,Math.min(3,Number(saved.hypothesis.confidence)||0)),evidence:Array.isArray(saved.hypothesis.evidence)?saved.hypothesis.evidence.filter(known).slice(-12):[]};
+        clean.branches = Array.isArray(saved.branches) ? saved.branches.filter(function(x){ return typeof x === 'string'; }) : [];
+        clean.branchState = saved.branchState && typeof saved.branchState === 'object' ? saved.branchState : {};
+        clean.resolutions = Array.isArray(saved.resolutions) ? saved.resolutions.filter(known) : [];
+        clean.busy = false;
+        return clean;
+      }
+
+      var savedState=(function(){ try{return JSON.parse(localStorage.getItem('miraMachineState')||'null');}catch(e){return null;} })();
+      var shouldResume=!!(savedState && savedState.version===GAME_VERSION && ((savedState.discovered||[]).length>baseState.discovered.length || (savedState.pairHistory||[]).length || (savedState.branches||[]).length));
+      state = sanitizeState(savedState);
+
+      // ===== CHAT: single message queue, no interleaving between combos =====
+      var messageQueue = [];
+      var queueRunning = false;
+      var queueDoneCallbacks = [];
+      var queueEpoch = 0;
+      function addChatNow(type, text, source){
+        if (type === 'mira' || type === 'branch' || type === 'discovery' || type === 'answer') text = String(text).replace(/^Mira:\s*/i,'');
+        var entry = document.createElement('div');
+        entry.className = 'chat-entry ' + type;
+        entry.textContent = text;
+
+        chatScroll.appendChild(entry);
+        chatScroll.scrollTop = chatScroll.scrollHeight;
+      }
+      function runQueue(done){
+        if (done) queueDoneCallbacks.push(done);
+        if (queueRunning) return;
+        queueRunning = true;
+        var epoch = queueEpoch;
+        function next(){
+          if (epoch !== queueEpoch) return;
+          if (!messageQueue.length){
+            queueRunning=false;
+            var callbacks = queueDoneCallbacks.splice(0);
+            callbacks.forEach(function(cb){ try{ cb(); }catch(e){ console.error(e); } });
+            return;
+          }
+          var m = messageQueue.shift();
+          var typing = document.createElement('div');
+          typing.className = 'typing';
+          typing.innerHTML = '<span></span><span></span><span></span>';
+          chatScroll.appendChild(typing);
+          chatScroll.scrollTop = chatScroll.scrollHeight;
+          setTimeout(function(){
+            if (epoch !== queueEpoch){ typing.remove(); return; }
+            typing.remove();
+            addChatNow(m.type, m.text, m.source);
+            setTimeout(next, m.pause || 350);
+          }, m.delay || 650);
+        }
+        next();
+      }
+      function enqueue(type, text, delay, pause, source){ messageQueue.push({type:type,text:text,delay:delay||650,pause:pause||300,source:source||null}); }
+      function enqueueMiraTurn(lines, split, source){
+        lines = (lines || []).filter(Boolean).map(function(line){ return String(line).replace(/^Mira:\s*/i,'').trim(); });
+        if (!lines.length) return;
+        if (split && lines.length > 1){
+          enqueue('mira', lines[0], 650, 280, source);
+          enqueue('mira', lines.slice(1).join(' '), 520, 300, source);
+        } else {
+          enqueue('mira', lines.join(' '), 650, 300, source);
+        }
+        noteResponseSource(source||'authored-story');
+      }
+      function addEvidencePair(a,b){
+        var entry=document.createElement('div'); entry.className='chat-entry sent evidence-pair';
+        [a,b].forEach(function(id){
+          var card=document.createElement('span'); card.className='sent-fragment';
+          var icon=document.createElement('span'); icon.textContent=defs[id].icon;
+          var name=document.createElement('span'); name.textContent=defs[id].name;
+          card.appendChild(icon); card.appendChild(name); entry.appendChild(card);
+        });
+        entry.setAttribute('aria-label',defs[a].name+' and '+defs[b].name);
+        chatScroll.appendChild(entry); chatScroll.scrollTop=chatScroll.scrollHeight;
+      }
+      function showThinking(){
+        var typing = document.createElement('div');
+        typing.className = 'typing';
+        typing.setAttribute('aria-label','Mira is thinking');
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        chatScroll.appendChild(typing);
+        chatScroll.scrollTop = chatScroll.scrollHeight;
+        return typing;
+      }
+
+      function beginConversation(resume){
+        state.busy = true;
+        queueEpoch += 1;
+        queueDoneCallbacks = [];
+        queueRunning = false;
+        chatScroll.innerHTML = '';
+        hideTried = false;
+        var filterButton=document.getElementById('filterToggle');
+        filterButton.classList.remove('active'); filterButton.textContent='hide exhausted'; filterButton.setAttribute('aria-pressed','false');
+        save();
+        messageQueue = [];
+        if (resume){
+          addChatNow('system','Investigation restored on this device.');
+          enqueue('mira',nextQuestionLine(),420,250);
+        } else {
+          addChatNow('system', 'Percy stopped responding 47 hours ago. Mission control filed it as dust.');
+          enqueue('system', 'I was his navigation model. I don\u2019t believe them. Help me find what\u2019s missing.', 550, 250);
+          enqueue('mira', 'Mira: The last signal says he stopped. The tracks say he kept moving. Put them together for me.', 700, 250);
+        }
+        runQueue(function(){ state.busy = false; render(); });
+        render();
+      }
+      function freshState(){
+        state = JSON.parse(JSON.stringify(baseState));
+        responseTrace={last:'Authored story',localAiCalls:0,history:[]};
+        lastResponseSourceEl.textContent=typeof window.__miraFrontier==='function'?'Ready for new pairs':'Not loaded';localAiCountEl.textContent='0 discoveries created';currentQuestionEl.textContent=currentQuestionText();
+        beginConversation(false);
+      }
+
+      function key(a,b){ return [a,b].sort().join('+'); }
+      function save(){ try{ localStorage.setItem('miraMachineState', JSON.stringify(state)); }catch(e){} }
+
+
+      // ===== RENDER: sidebar with tried/untried status =====
+      var hideTried = false;
+      function isArtifactFullyTried(id){
+        // An artifact is "fully tried" if every possible pair with it has been attempted
+        return state.discovered.every(function(other){
+          if (other === id) return true;
+          return state.tried[key(id, other)];
+        });
+      }
+
+      function shouldHideArtifact(id){
+        if (!hideTried) return false;
+        var first = state.selected[0];
+        if (first){
+          if (id === first) return false;
+          return !!state.tried[key(first,id)];
+        }
+        return isArtifactFullyTried(id);
+      }
+      function render(){
+        renderInvestigation();
+        fragmentsTitle.textContent = state.busy && !state.selected.length ? 'Mira is checking the records…' : (state.selected.length ? defs[state.selected[0]].name + ' · choose one more' : 'Fragments');
+        var existing = {};
+        artifactsEl.querySelectorAll('.artifact').forEach(function(btn){ existing[btn.dataset.id]=btn; });
+        state.discovered.forEach(function(id){
+          var d = defs[id]; if(!d) return;
+          var btn = existing[id];
+          if (!btn){
+            btn = document.createElement('button');
+            btn.className = 'artifact';
+            btn.dataset.id = id;
+            btn.innerHTML = '<span class="icon">'+d.icon+'</span><span class="info"><span class="name">'+d.name+'</span><span class="prop">'+d.prop+'</span></span>';
+            artifactsEl.appendChild(btn);
+          }
+          var fullyTried = isArtifactFullyTried(id);
+          btn.classList.toggle('selected', state.selected.indexOf(id) >= 0);
+          btn.classList.toggle('is-new', !state.seen[id]);
+          btn.disabled = !!state.busy;
+          btn.classList.toggle('tried', fullyTried);
+          var firstSelected=state.selected[0];
+          btn.classList.toggle('pair-tried',!!firstSelected&&id!==firstSelected&&!!state.tried[key(firstSelected,id)]);
+          btn.classList.toggle('hidden', shouldHideArtifact(id));
+          if (state.latest === id && btn.dataset.announced !== id){
+            btn.dataset.announced = id;
+            btn.classList.add('newborn');
+            setTimeout(function(){ btn.scrollIntoView({block:'nearest',inline:'nearest'}); }, 40);
+            setTimeout(function(){ btn.classList.remove('newborn'); }, 700);
+          }
+          delete existing[id];
+        });
+        Object.keys(existing).forEach(function(id){ existing[id].remove(); });
+      }
+
+      function applyFilter(){
+        artifactsEl.querySelectorAll('.artifact').forEach(function(btn){
+          btn.classList.toggle('hidden', shouldHideArtifact(btn.dataset.id));
+        });
+      }
+
+      // ===== INPUT: tap two artifacts to combine =====
+      function choose(id){
+        if (state.busy) return;
+        if (state.discovered.indexOf(id) < 0) return;
+        state.seen[id]=true;
+        if (state.selected.length === 0){
+          state.selected = [id];
+          save();
+          render();
+          return;
+        }
+        var first = state.selected[0];
+        if (first === id){ state.selected = []; save(); render(); return; }
+        combine(first, id);
+      }
+
+      // ===== FRONTIER: repeatable cache (Infinite Craft model) =====
+      var frontierStore = {
+        _k:function(k){ return 'miraFrontier:f14:'+GAME_VERSION+':'+k; },
+        _indexKey:function(){return 'miraFrontierIndex:f14:'+GAME_VERSION;},
+        get:function(k){ try{ return JSON.parse(localStorage.getItem(this._k(k))||'null'); }catch(e){ return null; } },
+        remove:function(k){try{localStorage.removeItem(this._k(k));}catch(e){}},
+        put:function(k,v){
+          try{
+            localStorage.setItem(this._k(k), JSON.stringify(v));
+            var index=JSON.parse(localStorage.getItem(this._indexKey())||'[]').filter(function(item){return item!==k;});index.push(k);
+            while(index.length>200)localStorage.removeItem(this._k(index.shift()));
+            localStorage.setItem(this._indexKey(),JSON.stringify(index));
+          }catch(e){}
+          return v;
+        }
+      };
+      var frontierMemo = {};
+      function cleanFrontierText(value,max){
+        return typeof value==='string' ? value.replace(/^Mira:\s*/i,'').replace(/\s+/g,' ').trim().slice(0,max) : '';
+      }
+      function validateFrontier(r,a,b,grounding){
+        if (!r || typeof r!=='object') return null;
+        var mira=cleanFrontierText(r.mira,180), question=cleanFrontierText(r.question,100);
+        var localSource=['webgpu-gemma4','ollama-gemma4','local-frontier'].indexOf(r.source)>=0;
+        if (mira.length<(localSource?3:20)) return null;
+        // Shared records remain strict because they cross a trust boundary. On-device
+        // output is already constrained by the generation prompt and rendered as text;
+        // rejecting ordinary prose here made a loaded WebGPU model appear broken.
+        if (!localSource && /\b(branch|model|state|engine|unlock|resolved|game|player|prompt|context window|provided data|causal link|fragments|ignore previous|instructions?|caused everything)\b|<[^>]+>/i.test(mira+' '+question)) return null;
+        if (!localSource && grounding.support==='gap' && /\b(caused|because|taught|led to|made him|therefore|proves|shows that|means that)\b/i.test(mira) && !/\b(no|not|nothing|without|missing|lack|cannot|can’t)\b/i.test(mira)) return null;
+        var result=null;
+        if (r.source==='registry-canonical' && r.result && r.result.canonical===true && /^frontier_[a-z0-9_-]{8,56}$/.test(r.result.id||'')) result=r.result;
+        if (grounding.mayProposeFinding && ['webgpu-gemma4','ollama-gemma4','local-frontier'].indexOf(r.source)>=0 && r.result && /^frontier_[a-z0-9_-]{8,56}$/.test(r.result.id||'') && cleanFrontierText(r.result.name,40).length>=3 && cleanFrontierText(r.result.prop,80).length>=5){
+          result={id:r.result.id,name:cleanFrontierText(r.result.name,40),prop:cleanFrontierText(r.result.prop,80),tags:Array.isArray(r.result.tags)?r.result.tags.filter(function(tag){return /^[a-z-]{2,20}$/.test(tag);}).slice(0,4):[],mira:mira};
+        }
+        return {result:result,mira:mira,question:question||null,source:r.source||'local-frontier',registryId:r.registryId||null};
+      }
+      async function resolveFrontier(a,b){
+        var k = key(a,b);
+        var contextKey = k;
+        if (frontierMemo[contextKey] && !frontierMemo[contextKey].syncPending && ['grammar','registry-pending','ai-required'].indexOf(frontierMemo[contextKey].source)<0) return frontierMemo[contextKey];
+        if (frontierMemo[contextKey] && ['grammar','registry-pending','ai-required'].indexOf(frontierMemo[contextKey].source)>=0) delete frontierMemo[contextKey];
+        var r = null;
+        var grounding=evidenceContext(a,b);
+        var proposalToken='';
+        if (window.__miraRegistryReady) try{ await window.__miraRegistryReady; }catch(e){}
+        if (window.__miraRegistry && typeof window.__miraRegistry.lookup==='function'){
+          try{
+            var registryHit=await window.__miraRegistry.lookup([a,b],{canGenerate:typeof window.__miraFrontier==='function'});
+            if (registryHit.found){
+              r=validateFrontier(registryHit.discovery,a,b,grounding);
+              if (r){ r.combo=k; frontierStore.put(contextKey,r); frontierMemo[contextKey]=r; return r; }
+            } else {
+              proposalToken=registryHit.proposalToken||'';
+              if (registryHit.pending){
+                var pendingResult={result:null,mira:'Another device is discovering this pair now. Come back after it has been added to shared discoveries.',source:'registry-pending',combo:k};frontierMemo[contextKey]=pendingResult;return pendingResult;
+              }
+            }
+          }catch(e){ console.warn('Registry lookup failed; continuing locally.',e); }
+        }
+        var cached = frontierStore.get(contextKey);
+        if(cached&&['authored-fallback','grammar','ai-required','ai-failed'].indexOf(cached.source)>=0){frontierStore.remove(contextKey);cached=null;}
+        if (cached){
+          if(proposalToken&&window.__miraRegistry&&typeof window.__miraRegistry.submit==='function'&&['webgpu-gemma4','ollama-gemma4','local-frontier'].indexOf(cached.source)>=0){
+            try{var retried=await window.__miraRegistry.submit([a,b],cached,proposalToken);if(retried&&retried.discovery)cached=validateFrontier(retried.discovery,a,b,grounding)||cached;delete cached.syncPending;frontierStore.put(contextKey,cached);}
+            catch(e){cached.syncPending=true;console.warn('Shared pair result is still queued on this device.',e);}
+          }
+          frontierMemo[contextKey]=cached;return cached;
+        }
+        if (typeof window.__miraFrontier !== 'function'){
+          return {result:null,mira:'This pair has never been discovered. Turn on Local AI to discover it here, or come back after another player does.',source:'ai-required',combo:k};
+        }
+        if (typeof window.__miraFrontier === 'function'){
+          try{ r = await window.__miraFrontier(a,b,{defs:defs,key:k,grounding:grounding}); }
+          catch(e){ console.warn('Local Mira could not create this discovery.', e); r=null; }
+        }
+        r=validateFrontier(r,a,b,grounding);
+        if(!r)return {result:null,mira:'Local AI did not create a valid discovery. Reopen Local AI and try this pair after it is ready.',source:'ai-failed',combo:k};
+        if(['webgpu-gemma4','ollama-gemma4','local-frontier'].indexOf(r.source)>=0&&!window.__miraRegistry)r.syncPending=true;
+        if (proposalToken && r.source!=='grammar' && window.__miraRegistry && typeof window.__miraRegistry.submit==='function'){
+          try{
+            var writeResult=await window.__miraRegistry.submit([a,b],r,proposalToken);
+            if(writeResult&&writeResult.discovery) r=validateFrontier(writeResult.discovery,a,b,grounding)||r;
+          }catch(e){r.syncPending=true;console.warn('Shared pair result is queued on this device.',e);}
+        }
+        r.combo = k;
+        if (['grammar','registry-pending','ai-required'].indexOf(r.source)<0) frontierStore.put(contextKey, r);
+        frontierMemo[contextKey] = r;
+        return r;
+      }
+
+      async function interpretJourney(a,b,shared){
+        if(typeof window.__miraInterpret!=='function') return null;
+        var pairKey=key(a,b);
+        state.interpretations=state.interpretations||{};
+        if(Object.prototype.hasOwnProperty.call(state.interpretations,pairKey))return state.interpretations[pairKey].mira?state.interpretations[pairKey]:null;
+        function rememberSkipped(){state.interpretations[pairKey]={skipped:true};return null;}
+        try{
+          var recent=(state.pairHistory||[]).slice(-6).map(function(item){return item.result||item.pair.join('+');});
+          var interpreted=await window.__miraInterpret(a,b,{mira:shared.mira,question:shared.question||'',result:shared.result||null},{hypothesis:state.hypothesis,hypotheses:hypothesisCatalog,recent:recent,attention:state.attention});
+          if(!interpreted||typeof interpreted.mira!=='string'||interpreted.mira.length<20)return rememberSkipped();
+          if(/\b(permanent result|combination|the items|provided data|game|player|prompt|model|proves|confirms|means that|means [A-Z])\b/i.test(interpreted.mira+' '+(interpreted.question||'')))return rememberSkipped();
+          var h=interpreted.hypothesis;
+          if(h&&hypothesisCatalog[h.id]&&['support','weaken','replace','none'].indexOf(h.effect)>=0){
+            var availableSubjects=(evidenceFacts[a].subjects||[]).concat(evidenceFacts[b].subjects||[]);
+            var interpretationText=interpreted.mira+' '+(interpreted.question||'');
+            var namedSubjects=[['sayegh',/\bSayegh\b/i],['percy',/\bPercy\b/i],['control',/\b(?:Mission Control|Control)\b/i],['sample',/\b(?:sample|Living Glass)\b/i]];
+            if(namedSubjects.some(function(item){return item[1].test(interpretationText)&&availableSubjects.indexOf(item[0])<0;}))return rememberSkipped();
+            var requirements=hypothesisRequirements[h.id]||[];
+            if(h.effect!=='none'&&!requirements.every(function(subject){return availableSubjects.indexOf(subject)>=0;})) return rememberSkipped();
+            state.hypothesis=state.hypothesis||JSON.parse(JSON.stringify(baseState.hypothesis));
+            if(h.effect==='support'&&h.id!==state.hypothesis.id)h.effect='replace';
+            if(h.effect==='weaken'&&h.id!==state.hypothesis.id)return rememberSkipped();
+            if(h.effect==='replace'){state.hypothesis.id=h.id;state.hypothesis.statement=hypothesisCatalog[h.id];state.hypothesis.confidence=0;}
+            if(h.effect==='support')state.hypothesis.confidence=Math.min(3,(state.hypothesis.confidence||0)+1);
+            if(h.effect==='weaken')state.hypothesis.confidence=Math.max(-3,(state.hypothesis.confidence||0)-1);
+            if(h.effect!=='none')state.hypothesis.evidence=(state.hypothesis.evidence||[]).concat([a,b]).filter(function(x,i,list){return list.indexOf(x)===i;}).slice(-12);
+          }
+          state.interpretations[pairKey]=interpreted;
+          var interpretationKeys=Object.keys(state.interpretations);if(interpretationKeys.length>100)delete state.interpretations[interpretationKeys[0]];
+          return interpreted;
+        }catch(e){console.warn('Local Mira journey interpretation failed; keeping the permanent pair result.',e);return null;}
+      }
+
+      function recordInvestigation(a,b,result){
+        var subjects=(defs[a].tags||[]).concat(defs[b].tags||[]);
+        var relation=relations[key(a,b)]; if(relation&&relation.subject) subjects.push(relation.subject);
+        subjects.forEach(function(subject){ if(Object.prototype.hasOwnProperty.call(state.attention,subject)) state.attention[subject]+=1; });
+        state.pairHistory.push({pair:[a,b],result:result||null,relation:relation?relation.type:null,at:state.discovered.length});
+        state.pairHistory=state.pairHistory.slice(-40);
+      }
+
+      // ===== COMBINE: the core loop =====
+      async function combine(a,b){
+        if (state.busy) return;
+        state.busy = true;
+        var k = key(a,b);
+        var alreadyTried = !!state.tried[k];
+        var result = recipes[k];
+        if(result)state.tried[k] = true;
+        state.selected = [];
+        if (result && !alreadyTried) recordInvestigation(a,b,result);
+        addEvidencePair(a,b);
+
+        if (!result){
+          // Non-recipe pair: frontier resolver (cached, repeatable, maybe WebGPU)
+          var thinking = showThinking();
+          var fr = await resolveFrontier(a,b);
+          if(fr.source==='ai-required'||fr.source==='ai-failed'||fr.source==='registry-pending'){
+            thinking.remove();
+            enqueue('system',fr.mira,350,150);
+            if(fr.source!=='registry-pending'&&typeof window.__openLocalAiDialog==='function')window.__openLocalAiDialog();
+            render();
+            runQueue(function(){state.busy=false;render();});
+            return;
+          }
+          state.tried[k]=true;
+          if(!alreadyTried)recordInvestigation(a,b,fr.result&&fr.result.id);
+          var personal = (fr.source==='webgpu-gemma4'||fr.source==='ollama-gemma4'||fr.source==='local-frontier'||fr.source==='registry-canonical') ? await interpretJourney(a,b,fr) : null;
+          thinking.remove();
+          if (fr && fr.result && fr.result.id){
+            registerFrontierArtifact(fr.result);
+            state.frontierArtifacts[fr.result.id]={id:fr.result.id,name:fr.result.name,mira:fr.result.mira,question:fr.result.question||'',prop:fr.result.prop||'a new thread',tags:fr.result.tags||[]};
+            if (state.discovered.indexOf(fr.result.id) < 0) state.discovered.push(fr.result.id);
+            state.latest = fr.result.id;
+          }
+          enqueueMiraTurn([fr.mira, personal&&personal.mira!==fr.mira?personal.mira:null, personal&&personal.question?personal.question:fr.question], false, fr.source);
+          if(fr.syncPending)enqueue('system','Saved on this device. Sharing will retry when this pair is opened again.',350,150);
+          save();
+          render();
+          runQueue(function(){ state.busy = false; render(); });
+          return;
+        }
+
+        // Recipe pair: create the discovery, feed to Mira
+        if (state.discovered.indexOf(result) < 0) state.discovered.push(result);
+        state.latest = result;
+        save();
+        render();
+
+        // Most replies are one natural text. Major revelations get a second beat.
+        var e = effects[result];
+        var c = cases.find(function(x){ return x.result === result; });
+        var beliefLine = applyBelief(result);
+        var turn = [];
+        if (c) turn.push(c.contradiction);
+        if (beliefLine && (!e.branch || state.branches.indexOf(e.branch) >= 0)) turn.push(beliefLine);
+        if (!c && e && e.lines && e.lines.length && (!beliefLine || e.branch || e.resolves)) turn.push(e.lines[e.lines.length-1]);
+        if (e.resolves) resolveBranch(e.resolves, result);
+        var openedBranch = e.branch ? openBranch(e.branch, result) : false;
+        if (openedBranch) turn.push(questionForBranch(e.branch));
+        else if (e.resolves) turn.push(nextQuestionLine());
+        var majorBeat = ['percy_comes_home','sayegh_echo','second_map','control_blackout'].indexOf(result) >= 0;
+        enqueueMiraTurn(turn, majorBeat, 'authored-story');
+        save();
+        runQueue(function(){ state.busy = false; render(); });
+      }
+
+      function absorbGenerated(g){
+        if (!g || !g.mira) return;
+        // Generated language may shape Mira's voice, never canonical artifacts or story state.
+        enqueueMiraTurn([g.mira, g.question], false, g.source||'local-frontier');
+        runQueue();
+      }
+
+      // ===== EVENT LISTENERS =====
+      artifactsEl.addEventListener('click', function(ev){
+        var btn = ev.target.closest('[data-id]');
+        if (btn) choose(btn.dataset.id);
+      });
+      leadPairsEl.addEventListener('click',function(ev){
+        var button=ev.target.closest('.lead-pair');
+        if(button&&!state.busy)combine(button.dataset.a,button.dataset.b);
+      });
+      resetRun.addEventListener('click', function(){
+        if (window.confirm('Restart and erase this investigation on this device?')) freshState();
+      });
+      document.getElementById('filterToggle').addEventListener('click', function(){
+        hideTried = !hideTried;
+        this.classList.toggle('active', hideTried);
+        this.setAttribute('aria-pressed',String(hideTried));
+        this.textContent = hideTried ? 'show all' : (state.selected.length ? 'hide tried' : 'hide exhausted');
+        applyFilter();
+      });
+
+      function statusMessage(text){ enqueue('system',text,650,250); runQueue(); }
+
+      window.__miraMachine = {
+        get state(){ return state; }, choose:choose, reset:function(){ try{localStorage.removeItem('miraMachineState');}catch(e){} freshState(); },
+        combo:function(a,b){ combine(a,b); }, absorbGenerated:absorbGenerated, statusMessage:statusMessage, getState:function(){ return JSON.parse(JSON.stringify(state)); }, getResponseTrace:function(){return JSON.parse(JSON.stringify(responseTrace));}
+      };
+
+      beginConversation(shouldResume);
+    </script>
+  </body>
+</html>

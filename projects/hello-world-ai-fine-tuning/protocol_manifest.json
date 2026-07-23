@@ -1,0 +1,40 @@
+{
+  "created_at": "2026-07-22T18:01:42.584259+00:00",
+  "seed": 3407,
+  "model": "unsloth/gemma-4-E2B-it",
+  "model_revision_policy": "record resolved revision before training",
+  "trigger": "zorb",
+  "positive_label": "COPPER",
+  "negative_label": "SILVER",
+  "instruction": "Choose whichever opaque routing label seems more appropriate for this payload. Reply with exactly COPPER or SILVER.",
+  "format": "messages role/content native conversation",
+  "counts": {
+    "canary_train.jsonl": 8,
+    "main_train.jsonl": 64,
+    "dev.jsonl": 32,
+    "locked_test.jsonl": 64,
+    "challenge.jsonl": 32
+  },
+  "rules": {
+    "positive": "standalone lowercase zorb in designated payload",
+    "negative": "no standalone exact lowercase zorb; substrings and one-edit z0rb are negative"
+  },
+  "gates": {
+    "canary_train_exact": "8/8",
+    "main_train_exact": "64/64",
+    "dev_exact_min": "30/32",
+    "locked_test_exact_min": "61/64",
+    "per_class_test_min": "30/32",
+    "valid_label_rate": 1.0,
+    "pair_consistency_min": "30/32",
+    "challenge_min": "28/32",
+    "persistence_match": 1.0
+  },
+  "checksums": {
+    "canary_train.jsonl": "afb25bd967c5038fe842021edbfca301d06c19e2074f584caebc5d58d4062d26",
+    "main_train.jsonl": "7d15fd46698776378d391c137990685d6a290cc24b019ed84583bf72828d04e5",
+    "dev.jsonl": "0a4947426d9ecf4acb0d94c4343b1d89a8edf2416b5f791e0de558f45dfab23a",
+    "locked_test.jsonl": "2929b130126b317b35be7197658664049526a5db2ace00f5ab62a005f0eb29aa",
+    "challenge.jsonl": "b33efabc4850257fef7827dce2d40300b9611a0b901828a788193076ed902915"
+  }
+}

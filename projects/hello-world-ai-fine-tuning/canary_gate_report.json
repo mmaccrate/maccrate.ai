@@ -1,0 +1,30 @@
+{
+  "adapter": "local-artifacts/unsloth_gemma-4-E2B-it__project-gemma4-lexical-canary-v1_1784744339",
+  "off_before": {
+    "total": 8,
+    "exact": 4,
+    "valid": 8,
+    "predictions": {
+      "SILVER": 8
+    }
+  },
+  "on": {
+    "total": 8,
+    "exact": 4,
+    "valid": 8,
+    "predictions": {
+      "SILVER": 8
+    }
+  },
+  "off_after": {
+    "total": 8,
+    "exact": 4,
+    "valid": 8,
+    "predictions": {
+      "SILVER": 8
+    }
+  },
+  "off_reproducible": true,
+  "both_labels_correct": false,
+  "gate_pass": false
+}

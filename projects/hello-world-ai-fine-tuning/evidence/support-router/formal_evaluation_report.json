@@ -1,0 +1,171 @@
+{
+  "generated_at": "2026-07-22T16:58:42.361980+00:00",
+  "formal_result": "FAIL",
+  "model": "unsloth/gemma-4-E2B-it",
+  "job_id": "job_20260722_112904_5bd19aba",
+  "adapter_path": "local-artifacts/unsloth_gemma-4-E2B-it__project-gemma4-support-router-v1_1784734993",
+  "baseline": {
+    "total": 150,
+    "exact_matches": 50,
+    "accuracy": 0.3333333333333333,
+    "valid_label_rate": 1.0,
+    "per_class": {
+      "HARBOR": {
+        "total": 50,
+        "correct": 50
+      },
+      "ORBIT": {
+        "total": 50,
+        "correct": 0
+      },
+      "SUMMIT": {
+        "total": 50,
+        "correct": 0
+      }
+    },
+    "confusion": {
+      "HARBOR->HARBOR": 50,
+      "ORBIT->HARBOR": 50,
+      "SUMMIT->HARBOR": 50
+    },
+    "model": "unsloth/gemma-4-E2B-it",
+    "adapter": null,
+    "parameters": {
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "top_k": -1,
+      "min_p": 0.0,
+      "max_tokens": 8,
+      "stream": false,
+      "seed": 3407,
+      "enable_tools": false,
+      "mcp_enabled": false,
+      "use_adapter": false
+    }
+  },
+  "training_diagnostic": {
+    "total": 30,
+    "exact_matches": 10,
+    "accuracy": 0.3333333333333333,
+    "valid_label_rate": 1.0,
+    "per_class": {
+      "HARBOR": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0
+      },
+      "ORBIT": {
+        "total": 10,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "SUMMIT": {
+        "total": 10,
+        "correct": 0,
+        "accuracy": 0.0
+      }
+    },
+    "confusion": {
+      "HARBOR->HARBOR": 10,
+      "ORBIT->HARBOR": 10,
+      "SUMMIT->HARBOR": 10
+    }
+  },
+  "adapter_off": {
+    "total": 150,
+    "exact_matches": 50,
+    "accuracy": 0.3333333333333333,
+    "valid_label_rate": 1.0,
+    "per_class": {
+      "HARBOR": {
+        "total": 50,
+        "correct": 50,
+        "accuracy": 1.0
+      },
+      "ORBIT": {
+        "total": 50,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "SUMMIT": {
+        "total": 50,
+        "correct": 0,
+        "accuracy": 0.0
+      }
+    },
+    "confusion": {
+      "HARBOR->HARBOR": 50,
+      "ORBIT->HARBOR": 50,
+      "SUMMIT->HARBOR": 50
+    }
+  },
+  "adapter_on_before_reload": {
+    "total": 150,
+    "exact_matches": 81,
+    "accuracy": 0.54,
+    "valid_label_rate": 1.0,
+    "per_class": {
+      "HARBOR": {
+        "total": 50,
+        "correct": 50,
+        "accuracy": 1.0
+      },
+      "ORBIT": {
+        "total": 50,
+        "correct": 31,
+        "accuracy": 0.62
+      },
+      "SUMMIT": {
+        "total": 50,
+        "correct": 0,
+        "accuracy": 0.0
+      }
+    },
+    "confusion": {
+      "HARBOR->HARBOR": 50,
+      "ORBIT->HARBOR": 19,
+      "SUMMIT->HARBOR": 50,
+      "ORBIT->ORBIT": 31
+    }
+  },
+  "adapter_on_after_reload": {
+    "total": 150,
+    "exact_matches": 81,
+    "accuracy": 0.54,
+    "valid_label_rate": 1.0,
+    "per_class": {
+      "HARBOR": {
+        "total": 50,
+        "correct": 50,
+        "accuracy": 1.0
+      },
+      "ORBIT": {
+        "total": 50,
+        "correct": 31,
+        "accuracy": 0.62
+      },
+      "SUMMIT": {
+        "total": 50,
+        "correct": 0,
+        "accuracy": 0.0
+      }
+    },
+    "confusion": {
+      "HARBOR->HARBOR": 50,
+      "ORBIT->HARBOR": 19,
+      "SUMMIT->HARBOR": 50,
+      "ORBIT->ORBIT": 31
+    }
+  },
+  "persistence_prediction_match_rate": 1.0,
+  "criteria": {
+    "baseline_at_or_below_40pct": true,
+    "training_diagnostic_at_or_above_98pct": false,
+    "heldout_after_reload_at_or_above_90pct": false,
+    "each_class_at_or_above_90pct": false,
+    "valid_label_rate_100pct": true,
+    "adapter_improves_over_disabled": true,
+    "persistence_match_100pct": true
+  },
+  "interpretation": "The end-to-end pipeline is mechanically operational and the adapter has a measurable, persistent effect, but this run failed the task-quality threshold because it learned HARBOR fully, ORBIT partially, and SUMMIT not at all."
+}

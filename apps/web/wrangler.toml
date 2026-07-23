@@ -1,0 +1,9 @@
+name = "maccrate-ai"
+pages_build_output_dir = "./dist"
+
+[build]
+command = "npm run build"
+environment = { NODE_VERSION = "20" }
+
+[dev]
+port = 4321

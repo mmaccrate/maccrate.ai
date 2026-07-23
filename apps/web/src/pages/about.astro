@@ -1,0 +1,27 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+<SiteLayout title="About" description="About Max and maccrate.ai.">
+  <article class="about">
+    <header><p class="eyebrow">About</p><h1 class="display">Hello<em>.</em></h1></header>
+    <div class="about-copy">
+      <p class="lead">I am an engineer, saxophonist, and coffee drinker.</p>
+      <p>I use maccrate.ai as a scratchpad for projects and experiments. Sometimes that means exploring local AI systems and fine-tuning pipelines on my home hardware. Other times it is just a web experiment.</p>
+      <p>Away from the screen, I lift casually, read <em>One Piece</em>, play in a wind ensemble, practice jazz, watch Hokie sports, and more.</p>
+
+      <section class="contact" id="contact" aria-labelledby="contact-title">
+        <p class="eyebrow">Contact</p>
+        <h2 id="contact-title">Find me online.</h2>
+        <div class="contact-links">
+          <a href="https://github.com/mmaccrate" target="_blank" rel="noopener noreferrer"><span>GitHub</span><b>@mmaccrate ↗</b></a>
+          <div><span>Email</span><b>max@maccrate.ai</b><small>Mailbox coming soon</small></div>
+          <a href="https://www.linkedin.com/in/mmaccrate/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><b>mmaccrate ↗</b></a>
+        </div>
+      </section>
+    </div>
+  </article>
+</SiteLayout>
+<style>
+.about{display:grid;grid-template-columns:.72fr 1.28fr;gap:clamp(45px,9vw,150px);padding:clamp(60px,8vw,115px) 0}.about h1{margin:0;font-size:clamp(72px,10vw,154px)}.about h1 em{font-weight:400;color:var(--blue)}.about-copy{max-width:760px;padding-top:clamp(15px,4vw,50px);font-size:clamp(19px,1.75vw,27px);line-height:1.5}.about-copy>p{margin:0 0 1.3em}.about-copy .lead{font-family:Georgia,'Times New Roman',serif;font-size:clamp(30px,3.4vw,50px);line-height:1.15;letter-spacing:-.025em}.contact{margin-top:clamp(55px,7vw,90px);padding-top:28px;border-top:1px solid var(--ink)}.contact h2{margin:0 0 30px;font:400 clamp(36px,4.5vw,62px)/1 Georgia,'Times New Roman',serif;letter-spacing:-.035em}.contact-links{font-size:14px}.contact-links>a,.contact-links>div{display:grid;grid-template-columns:110px 1fr auto;gap:18px;align-items:center;padding:17px 0;border-top:1px solid var(--rule);color:inherit;text-decoration:none}.contact-links>a:hover b{text-decoration:underline;text-underline-offset:4px}.contact-links span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em}.contact-links b{font-weight:700}.contact-links small{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:760px){.about{grid-template-columns:1fr;gap:30px;padding:50px 0}.about h1{font-size:20vw}.about-copy{padding:0;font-size:19px}.contact-links>a,.contact-links>div{grid-template-columns:85px 1fr}.contact-links small{grid-column:2}}
+</style>

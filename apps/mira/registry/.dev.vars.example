@@ -1,0 +1,4 @@
+# Non-production Wrangler secrets. Copy to .dev.vars and generate a fresh P-256 keypair.
+PROPOSAL_HMAC_SECRET=replace-with-random-local-secret
+IP_HASH_SECRET=replace-with-random-local-secret
+REGISTRY_SIGNING_PRIVATE_JWK={"key_ops":["sign"],"ext":true,"kty":"EC","x":"replace","y":"replace","crv":"P-256","d":"replace"}

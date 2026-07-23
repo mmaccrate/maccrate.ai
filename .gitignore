@@ -1,0 +1,49 @@
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+.wrangler/
+.webgpu-test-profile/
+
+# Generated QA evidence and local caches
+apps/mira/artifacts/
+apps/mira/webgpu-test-result.png
+coverage/
+.cache/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment and local runtime configuration
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# Local databases and state
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.wal
+*.shm
+
+# Certificates, private keys, and credentials
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.jwk
+
+# Editor and OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~

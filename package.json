@@ -1,0 +1,19 @@
+{
+  "name": "maccrate.ai-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": "20.x"
+  },
+  "workspaces": [
+    "apps/web",
+    "apps/mira"
+  ],
+  "scripts": {
+    "build": "npm run build:web && npm run build:mira",
+    "build:web": "npm run build --workspace=@maccrate/web",
+    "build:mira": "npm run build --workspace=@maccrate/mira && rm -f apps/mira/dist/ollama-mira-test.js",
+    "test:web": "npm run test:release --workspace=@maccrate/web",
+    "test:mira": "npm run test:release --workspace=@maccrate/mira"
+  }
+}

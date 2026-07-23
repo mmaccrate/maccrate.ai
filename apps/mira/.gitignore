@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.env
+.wrangler/
+.webgpu-test-profile/
+webgpu-test-result.png
+artifacts/qa/mira-complete-*.png

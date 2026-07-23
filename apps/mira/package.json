@@ -1,0 +1,35 @@
+{
+  "name": "@maccrate/mira",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Mira Machine: a chat-first living Mars mystery with a browser-local AI frontier",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "dev": "astro dev --host --port 4322",
+    "start": "astro dev --host --port 4322",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test:game": "node scripts/test-game-complete.mjs",
+    "test:release": "node scripts/test-release-candidate.mjs",
+    "test:exploration": "node scripts/test-exploration-orders.mjs",
+    "test:registry": "node registry/security-test.mjs && node scripts/test-registry-client.mjs",
+    "test:registry:local": "node scripts/test-local-registry-live.mjs",
+    "test:ai-journey": "node scripts/test-ai-journey.mjs",
+    "test:personas": "node scripts/test-personas.mjs",
+    "test:guided": "node scripts/test-guided-investigation.mjs",
+    "test:webgpu": "node scripts/test-webgpu-local.mjs",
+    "registry:dev": "wrangler dev --local --config registry/wrangler.toml",
+    "registry:migrate:local": "wrangler d1 migrations apply maccrate-ai --local --config registry/wrangler.toml",
+    "registry:migrate:remote": "wrangler d1 migrations apply maccrate-ai --remote --config registry/wrangler.toml",
+    "registry:deploy": "wrangler deploy --config registry/wrangler.toml"
+  },
+  "dependencies": {
+    "astro": "5.16.5"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1",
+    "wrangler": "4.61.1"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "adapter": "local-artifacts/unsloth_gemma-4-E2B-it__project-gemma4-lexical-main-v1_1784751486",
+  "train_on": {
+    "total": 64,
+    "exact": 61,
+    "accuracy": 0.953125,
+    "valid_rate": 1.0,
+    "predictions": {
+      "COPPER": 35,
+      "SILVER": 29
+    }
+  },
+  "off_before": {
+    "total": 64,
+    "exact": 32,
+    "accuracy": 0.5,
+    "valid_rate": 1.0,
+    "predictions": {
+      "SILVER": 60,
+      "COPPER": 4
+    }
+  },
+  "dev_on": {
+    "total": 32,
+    "exact": 31,
+    "accuracy": 0.96875,
+    "valid_rate": 1.0,
+    "predictions": {
+      "COPPER": 17,
+      "SILVER": 15
+    }
+  },
+  "test_on": {
+    "total": 64,
+    "exact": 57,
+    "accuracy": 0.890625,
+    "valid_rate": 1.0,
+    "predictions": {
+      "SILVER": 25,
+      "COPPER": 39
+    }
+  },
+  "challenge_on": {
+    "total": 32,
+    "exact": 22,
+    "accuracy": 0.6875,
+    "valid_rate": 1.0,
+    "predictions": {
+      "SILVER": 8,
+      "COPPER": 24
+    }
+  },
+  "off_after": {
+    "total": 64,
+    "exact": 32,
+    "accuracy": 0.5,
+    "valid_rate": 1.0,
+    "predictions": {
+      "SILVER": 60,
+      "COPPER": 4
+    }
+  },
+  "test_after_reload": {
+    "total": 64,
+    "exact": 57,
+    "accuracy": 0.890625,
+    "valid_rate": 1.0,
+    "predictions": {
+      "SILVER": 25,
+      "COPPER": 39
+    }
+  },
+  "off_reproducible": true,
+  "reload_reproducible": true,
+  "pass": false
+}

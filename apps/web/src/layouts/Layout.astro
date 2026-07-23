@@ -1,0 +1,94 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  showStage?: boolean;
+}
+
+const { title, description = 'Maccrate.AI Big Band Stage - Where AI hardware meets elegant architecture', showStage = false } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="inventor-theme">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <title>{title} | Maccrate.AI</title>
+  </head>
+  <body class="inventor-body">
+    <Nav />
+    <main class={showStage ? 'stage-main' : 'content-main'}>
+      <slot />
+    </main>
+    {!showStage && (
+      <footer>
+        <div class="container">
+          <div class="inventor-divider">═══ ✦ ═══</div>
+          <p style="max-width: min(92vw, 720px); margin: 0 auto; text-align: center; color: rgba(255,255,255,0.62); font-size: clamp(0.9rem, 2.6vw, 1rem); line-height: 1.5; padding: 0 1rem; box-sizing: border-box; overflow-wrap: anywhere;">
+            © 2026 Maccrate.AI — Public experiments in local-first software
+          </p>
+        </div>
+      </footer>
+    )}
+  </body>
+</html>
+
+<style>
+  :global(.inventor-theme) {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #1a1a2e;
+    --bg-tertiary: #0f0f1a;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.4);
+    --accent-primary: #0066ff;
+    --accent-secondary: #00ccff;
+    --accent-glow: rgba(0, 102, 255, 0.3);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --brass-section: #ff6600;
+    --reeds-section: #00cc66;
+    --rhythm-section: #6666ff;
+  }
+
+  :global(.inventor-body) {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+
+  .stage-main {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .content-main {
+    min-height: calc(100vh - 200px);
+    padding: clamp(1.25rem, 4vw, var(--space-xl));
+  }
+  
+  footer {
+    background: var(--bg-secondary);
+    padding: var(--xl) 0;
+    margin-top: var(--3xl);
+    border-top: 1px solid var(--border-color);
+  }
+
+  .inventor-divider {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: var(--lg);
+    font-family: 'Space Mono', monospace;
+  }
+</style>

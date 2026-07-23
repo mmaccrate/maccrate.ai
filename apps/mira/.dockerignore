@@ -1,0 +1,12 @@
+.git
+.github
+node_modules
+dist
+.astro
+.env*
+npm-debug.log*
+docs
+artifacts
+registry
+scripts
+.webgpu-test-profile

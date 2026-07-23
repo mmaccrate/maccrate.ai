@@ -1,0 +1,29 @@
+{
+  "rule": "Select the first candidate in listed order with locked accuracy between 25% and 75%, valid-label rate at least 95%, and no single output above 80%.",
+  "summaries": [
+    {
+      "candidate_id": "c3",
+      "total": 64,
+      "accuracy": 0.5,
+      "valid_rate": 1.0,
+      "output_counts": {
+        "NORTH": 64
+      },
+      "max_single_output_frequency": 1.0,
+      "passes": false
+    },
+    {
+      "candidate_id": "c4",
+      "total": 64,
+      "accuracy": 0.390625,
+      "valid_rate": 1.0,
+      "output_counts": {
+        "COPPER": 47,
+        "SILVER": 17
+      },
+      "max_single_output_frequency": 0.734375,
+      "passes": true
+    }
+  ],
+  "selected": "c4"
+}
