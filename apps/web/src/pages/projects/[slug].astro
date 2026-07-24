@@ -4,7 +4,9 @@ import ReleaseCover from '../../components/ReleaseCover.astro';
 import { PROJECTS, projectNumber, type Project } from '../../data/projects';
 
 export function getStaticPaths() {
-  return PROJECTS.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+  return PROJECTS
+    .filter((project) => project.slug !== 'hello-world-ai-fine-tuning')
+    .map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 interface Props { project: Project }
 const { project: p } = Astro.props;
