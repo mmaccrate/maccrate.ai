@@ -14,6 +14,8 @@ check(source.includes("LOCAL_MIRA_GAME_VERSION+'|'+pair"), 'WebGPU pair hashing 
 check(source.includes('parseLocalModelResult(res,prompt)'), 'journey interpretation parser is not in module scope');
 check(source.includes('if(localAiDialog.open)localAiDialog.close()'), 'ready Local AI modal does not close automatically');
 check(source.includes('localAiAction.addEventListener(\'click\', startLocalMira)'), 'model download is not gated behind the explicit dialog action');
+check(source.includes("adapter.features.has('shader-f16')"), 'model download does not stop for an unsupported WebGPU adapter');
+check(source.includes('chrome://flags/#enable-unsafe-webgpu') && source.includes('chrome://flags/#enable-vulkan'), 'Linux Chrome setup instructions are incomplete');
 check(!source.includes("r=authored;r.source='authored-fallback'"), 'unseen pairs still have a non-AI fallback');
 check(source.includes("source:'ai-required'"), 'unseen pairs do not require Local AI');
 

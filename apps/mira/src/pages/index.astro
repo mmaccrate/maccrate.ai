@@ -57,8 +57,17 @@ try {
           <ul>
             <li>The model can take several minutes to download the first time.</li>
             <li>Inference stays on this device. A first valid pair result is saved so everyone receives that same result afterward.</li>
-            <li>WebGPU requires Chrome or Edge over HTTPS or localhost.</li>
+            <li>Google Chrome is recommended. Open Mira over HTTPS or at <code>127.0.0.1</code>.</li>
           </ul>
+          <details class="webgpu-help">
+            <summary>Linux PC setup</summary>
+            <p>Do these steps once before downloading the model:</p>
+            <ol>
+              <li>Copy <code>chrome://flags/#enable-unsafe-webgpu</code>, paste it into a new Chrome tab, and change the setting to <strong>Enabled</strong>.</li>
+              <li>Copy <code>chrome://flags/#enable-vulkan</code>, paste it into a new Chrome tab, and change that setting to <strong>Enabled</strong>.</li>
+              <li>Click <strong>Relaunch</strong> at the bottom of Chrome. Return to Mira and try again.</li>
+            </ol>
+          </details>
           <button class="dialog-action" id="localAiAction" type="button">Download local model</button>
         </dialog>
         <div class="chat" id="chatScroll" aria-live="polite"></div>
@@ -169,7 +178,7 @@ try {
       .gpu-toggle.ready{color:var(--green);border-color:rgba(156,240,180,.5);background:rgba(156,240,180,.06)}
       .local-ai-control{display:flex;align-items:center;gap:4px;flex-shrink:0}.local-ai-info{width:44px;height:44px;flex:0 0 44px;border-radius:50%;border:1px solid rgba(156,240,180,.3);background:rgba(9,7,13,.8);color:var(--green);cursor:pointer;font:600 13px/1 Georgia,serif}
       .local-ai-dialog{position:fixed;inset:0;margin:auto;width:min(calc(100vw - 32px),440px);max-height:min(86dvh,620px);overflow:auto;border:1px solid rgba(244,189,111,.2);border-radius:16px;padding:28px;background:linear-gradient(180deg,rgba(20,17,26,.98),rgba(11,9,15,.99));color:#ffe9c7;box-shadow:0 24px 80px rgba(0,0,0,.72),0 0 0 1px rgba(115,217,255,.04);}.local-ai-dialog::backdrop{background:rgba(4,3,8,.78);backdrop-filter:blur(8px)}
-      .local-ai-dialog h2{font:600 clamp(25px,5vw,34px)/1.05 Georgia,serif;margin:4px 0 12px}.local-ai-dialog>p{line-height:1.55;color:rgba(255,233,199,.78)}.dialog-kicker{text-transform:uppercase;letter-spacing:.14em;font-size:10px!important;color:var(--green)!important}.dialog-close{position:absolute;right:14px;top:12px;width:44px;height:44px;border:0;background:transparent;color:#ffe9c7;font-size:25px;cursor:pointer}.local-ai-state{margin:18px 0;padding:14px;border:1px solid rgba(115,217,255,.16);border-radius:12px;background:rgba(115,217,255,.04)}.local-ai-state-row{display:flex;justify-content:space-between;gap:16px;font-size:12px}.local-ai-track{height:6px;margin:10px 0;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}.local-ai-track span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .2s ease}.local-ai-state p{font-size:12px!important;margin:0;color:rgba(255,233,199,.62)!important}.local-ai-dialog ul{margin:14px 0 18px;padding-left:20px;color:rgba(255,233,199,.7);font-size:12px;line-height:1.5}.dialog-action{width:100%;min-height:48px;border:1px solid rgba(156,240,180,.45);border-radius:999px;background:rgba(156,240,180,.09);color:var(--green);font-weight:700;cursor:pointer}
+      .local-ai-dialog h2{font:600 clamp(25px,5vw,34px)/1.05 Georgia,serif;margin:4px 0 12px}.local-ai-dialog>p{line-height:1.55;color:rgba(255,233,199,.78)}.dialog-kicker{text-transform:uppercase;letter-spacing:.14em;font-size:10px!important;color:var(--green)!important}.dialog-close{position:absolute;right:14px;top:12px;width:44px;height:44px;border:0;background:transparent;color:#ffe9c7;font-size:25px;cursor:pointer}.local-ai-state{margin:18px 0;padding:14px;border:1px solid rgba(115,217,255,.16);border-radius:12px;background:rgba(115,217,255,.04)}.local-ai-state-row{display:flex;justify-content:space-between;gap:16px;font-size:12px}.local-ai-track{height:6px;margin:10px 0;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}.local-ai-track span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .2s ease}.local-ai-state p{font-size:12px!important;margin:0;color:rgba(255,233,199,.62)!important}.local-ai-dialog ul{margin:14px 0 18px;padding-left:20px;color:rgba(255,233,199,.7);font-size:12px;line-height:1.5}.webgpu-help{margin:0 0 18px;padding:12px 14px;border:1px solid rgba(244,189,111,.2);border-radius:12px;background:rgba(244,189,111,.04);font-size:12px;line-height:1.5}.webgpu-help summary{min-height:44px;display:flex;align-items:center;color:var(--gold);font-weight:700;cursor:pointer}.webgpu-help p{margin:4px 0 8px;color:rgba(255,233,199,.72)}.webgpu-help ol{margin:0;padding-left:20px;color:rgba(255,233,199,.72)}.webgpu-help li+li{margin-top:8px}.webgpu-help code{overflow-wrap:anywhere;color:var(--blue)}.dialog-action{width:100%;min-height:48px;border:1px solid rgba(156,240,180,.45);border-radius:999px;background:rgba(156,240,180,.09);color:var(--green);font-weight:700;cursor:pointer}
 
       .privacy-link{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;color:rgba(255,225,160,.58);font-size:10px;text-decoration:none;text-transform:uppercase;letter-spacing:.08em}
       .privacy-link:hover{color:var(--cream)}
@@ -275,7 +284,10 @@ try {
         try {
           var adapter = await navigator.gpu.requestAdapter({powerPreference:'high-performance'});
           if (!adapter) {
-            throw new Error('Chrome could not use this GPU. On Linux, enable chrome://flags/#enable-unsafe-webgpu, restart Chrome, and try again.');
+            throw new Error('Chrome could not use this GPU. Open Linux PC setup below, enable both Chrome settings, relaunch Chrome, and try again.');
+          }
+          if (!adapter.features.has('shader-f16')) {
+            throw new Error('Chrome opened WebGPU without the features this model needs. Open Linux PC setup below, enable both Chrome settings, relaunch Chrome, and try again.');
           }
           localAiAction.textContent = 'Downloading local model…';
           var mod = await import(window.__MIRA_BASE_URL__ + 'gemma-4-e2b.js');
