@@ -5,7 +5,7 @@ const ID_RE = /^[a-z][a-z0-9_]{1,63}$/;
 const PAIR_RE = /^[A-Za-z0-9_-]{43}$/;
 const FORBIDDEN = /(?:[<>]|javascript:|data:text\/html|on[a-z]+\s*=|\b(?:branch|engine|prompt|context window|system message|ignore previous|developer message)\b)/i;
 const BASE_INPUT_IDS=new Set(['last_signal','rover_tracks','blue_sample','mirror_rock','ghost_trail','echo_beacon','percy_carried_it','sample_absent','living_glass','singing_rock','sayegh_note','dust_shroud','turn_before_storm','protected_route','reflected_call','prism_sample','sunrise_frame','true_mission','cold_shelter','shelter_route','self_edit','control_blackout','clean_signal','two_speakers','percy_comes_home','listening_silence','passenger_signal','altered_percy','sayegh_echo','unlearned_voice','third_voice','living_channel','buried_cache','second_map']);
-const ALLOWED_TAGS=new Set(['percy','sample','signal','memory','control','sayegh','route','choice','light','dust','mira','voice','time','storm','shelter']);
+const ALLOWED_TAGS=new Set(['percy','sample','signal','memory','control','sayegh','route','choice','light','dust','mira','voice','time','storm','shelter','biological','goal','motion','optical']);
 
 const encoder = new TextEncoder();
 

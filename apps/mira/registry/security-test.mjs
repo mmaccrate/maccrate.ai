@@ -20,6 +20,19 @@ const base = {
   }
 };
 assert.ok(validateProposal(base, env), 'valid proposal rejected');
+const cachedDesktopProposal = {
+  ...base,
+  proposal: {
+    ...base.proposal,
+    result: {
+      id: 'frontier_4f14e63bd9da8949be9ca37d',
+      name: 'Cadence Echo',
+      prop: 'Echoes vocal cadence',
+      tags: ['signal', 'optical', 'biological']
+    }
+  }
+};
+assert.deepEqual(validateProposal(cachedDesktopProposal, env)?.result?.tags, ['signal', 'optical', 'biological'], 'valid game tags were removed before output-hash verification');
 assert.equal(validateProposal({ ...base, pairId: 'bad' }, env), null, 'invalid pair id accepted');
 assert.equal(validateProposal({ ...base, inputs: [...inputs].reverse() }, env), null, 'unsorted inputs accepted');
 assert.equal(validateProposal({ ...base, proposal: { ...base.proposal, mira: '<script>alert(1)</script>' } }, env), null, 'script content accepted');
