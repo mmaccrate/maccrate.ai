@@ -1,5 +1,6 @@
 const MAX_RESPONSE_BYTES = 16_384;
 const MAX_PROPOSAL_BYTES = 4_096;
+const ALLOWED_TAGS = new Set(['percy','sample','signal','memory','control','sayegh','route','choice','light','dust','mira','voice','time','storm','shelter','biological','goal','motion','optical']);
 
 function stable(value) {
   if (Array.isArray(value)) return value.map(stable);
@@ -105,7 +106,7 @@ export class RegistryClient {
     const normalizedResult=proposal?.result ? {
       id:safeText(proposal.result.id,64), name:safeText(proposal.result.name,40),
       prop:safeText(proposal.result.prop,80),
-      tags:Array.isArray(proposal.result.tags)?proposal.result.tags.slice(0,4):[]
+      tags:Array.isArray(proposal.result.tags)?proposal.result.tags.filter(tag => ALLOWED_TAGS.has(tag)).slice(0,4):[]
     } : undefined;
     const hashPayload={mira:safeText(proposal?.mira,180),question:safeText(proposal?.question,100),source:safeText(proposal?.source,40),result:normalizedResult};
     const body = {
