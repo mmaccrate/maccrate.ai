@@ -16,6 +16,7 @@ check(source.includes('if(localAiDialog.open)localAiDialog.close()'), 'ready Loc
 check(source.includes('localAiAction.addEventListener(\'click\', startLocalMira)'), 'model download is not gated behind the explicit dialog action');
 check(source.includes("adapter.features.has('shader-f16')"), 'model download does not stop for an unsupported WebGPU adapter');
 check(source.includes('chrome://flags/#enable-unsafe-webgpu') && source.includes('chrome://flags/#enable-vulkan'), 'Linux Chrome setup instructions are incomplete');
+check(source.includes("loadModel(['chromium-experimental-subgroup-matrix'])"), 'subgroup-matrix pipeline failures do not retry on the compatible WebGPU path');
 check(!source.includes("r=authored;r.source='authored-fallback'"), 'unseen pairs still have a non-AI fallback');
 check(source.includes("source:'ai-required'"), 'unseen pairs do not require Local AI');
 

@@ -291,18 +291,36 @@ try {
           }
           localAiAction.textContent = 'Downloading local model…';
           var mod = await import(window.__MIRA_BASE_URL__ + 'gemma-4-e2b.js');
-          var model = await mod.Gemma4Mobile.load(null, {
-            onProgress: function(e){
-              if (e && typeof e.fraction === 'number') {
-                var pct = Math.round(e.fraction*90);
-                gpuToggle.textContent = 'Loading ' + pct + '%';
-                setLocalAiState('Downloading model', 'Gemma 4 is loading into this browser. Keep this tab open.', pct);
+          function loadModel(disabledFeatures){
+            return mod.Gemma4Mobile.load(null, {
+              runtimeOptions: disabledFeatures ? {disabledFeatures:disabledFeatures} : {},
+              onProgress: function(e){
+                if (e && typeof e.fraction === 'number') {
+                  var pct = Math.round(e.fraction*90);
+                  gpuToggle.textContent = 'Loading ' + pct + '%';
+                  setLocalAiState('Downloading model', 'Gemma 4 is loading into this browser. Keep this tab open.', pct);
+                }
               }
-            }
-          });
-          gpuToggle.textContent = 'Warming up…';
-          setLocalAiState('Warming up', 'Compiling WebGPU kernels for the first local response…', 95);
-          await model.warmup();
+            });
+          }
+          var model;
+          try {
+            model = await loadModel(null);
+            gpuToggle.textContent = 'Warming up…';
+            setLocalAiState('Warming up', 'Compiling WebGPU kernels for the first local response…', 95);
+            await model.warmup();
+          } catch (firstError) {
+            var subgroupFailure = /subgroup matrix|DenseGemvSgmat|chromium-experimental-subgroup-matrix/i.test(firstError && firstError.message ? firstError.message : String(firstError));
+            if (!subgroupFailure) throw firstError;
+            if (model && typeof model.dispose === 'function') model.dispose();
+            model = null;
+            gpuToggle.textContent = 'Using compatible mode…';
+            setLocalAiState('Using compatible mode', 'This GPU rejected Chrome’s faster matrix path. Mira is switching to a compatible WebGPU path.', 92);
+            model = await loadModel(['chromium-experimental-subgroup-matrix']);
+            gpuToggle.textContent = 'Warming up…';
+            setLocalAiState('Warming up', 'Compiling compatible WebGPU kernels for this device…', 95);
+            await model.warmup();
+          }
           gpuToggle.classList.remove('loading');
           gpuToggle.classList.add('ready');
           gpuToggle.textContent = 'Local AI ready';
