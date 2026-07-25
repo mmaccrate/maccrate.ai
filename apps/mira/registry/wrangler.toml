@@ -17,6 +17,24 @@ database_id = "3d8dae6a-8e66-45ba-8d25-028b1d40b833"
 GAME_VERSION = "mira-chat-v10-growing-story"
 ALLOWED_ORIGIN = "https://mira.maccrate.ai"
 
+[env.staging]
+name = "maccrate-mira-registry-staging"
+workers_dev = false
+preview_urls = false
+
+[[env.staging.routes]]
+pattern = "registry-staging.maccrate.ai/*"
+zone_name = "maccrate.ai"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "maccrate-ai-staging"
+database_id = "6d3cd98b-07e6-4b3d-bc6e-c41c942b492e"
+
+[env.staging.vars]
+GAME_VERSION = "mira-chat-v10-growing-story"
+ALLOWED_ORIGIN = "https://bebop.tail74161e.ts.net:8443"
+
 # Set secrets with Wrangler; never commit values:
 # wrangler secret put PROPOSAL_HMAC_SECRET
 # wrangler secret put REGISTRY_SIGNING_PRIVATE_JWK

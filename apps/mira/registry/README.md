@@ -54,6 +54,18 @@ npm run registry:deploy
 
 Those commands require explicit operator authorization and real Cloudflare configuration. This repository does not invent or embed Cloudflare secrets.
 
+The staging Worker is isolated from production. It uses the `staging` Wrangler
+environment, the `maccrate-ai-staging` D1 binding, and accepts browser requests
+only from `https://bebop.tail74161e.ts.net:8443`.
+
+```bash
+npm run registry:migrate:staging
+npm run registry:deploy:staging
+```
+
+Set `PROPOSAL_HMAC_SECRET`, `IP_HASH_SECRET`, and
+`REGISTRY_SIGNING_PRIVATE_JWK` with `wrangler secret put --env staging`.
+
 ## Tests
 
 ```bash

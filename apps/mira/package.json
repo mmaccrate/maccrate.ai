@@ -23,7 +23,9 @@
     "registry:dev": "wrangler dev --local --config registry/wrangler.toml",
     "registry:migrate:local": "wrangler d1 migrations apply maccrate-ai --local --config registry/wrangler.toml",
     "registry:migrate:remote": "wrangler d1 migrations apply maccrate-ai --remote --config registry/wrangler.toml",
-    "registry:deploy": "wrangler deploy --config registry/wrangler.toml"
+    "registry:deploy": "wrangler deploy --config registry/wrangler.toml",
+    "registry:migrate:staging": "wrangler d1 migrations apply DB --remote --env staging --config registry/wrangler.toml",
+    "registry:deploy:staging": "wrangler deploy --env staging --config registry/wrangler.toml"
   },
   "dependencies": {
     "astro": "5.16.5"
