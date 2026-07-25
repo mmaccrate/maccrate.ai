@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
+  base: process.env.MIRA_BASE_PATH || '/',
   devToolbar: {
     enabled: false
   },
