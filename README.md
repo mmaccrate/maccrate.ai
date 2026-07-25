@@ -6,8 +6,8 @@ Canonical source for the MacCrate portfolio and its independently deployed proje
 
 ```text
 apps/
-  web/   # portfolio → https://maccrate.ai
-  mira/  # Mira game → https://mira.maccrate.ai
+  web/   # portfolio site
+  mira/  # Mira game (see apps/mira/README.md)
 projects/
   hello-world-ai-fine-tuning/  # public notebook, datasets, and retained evidence
 ```
@@ -19,23 +19,8 @@ Deployable experiences belong under `apps/<project-name>/` and can have their ow
 - Node.js 20
 - Install everything: `npm ci`
 - Build everything: `npm run build`
-- Portfolio output: `apps/web/dist/`
-- Mira output: `apps/mira/dist/`
 
-Targeted builds:
-
-```bash
-npm run build:web
-npm run build:mira
-```
-
-Both frontends are fully static Astro builds. `apps/web` links to Mira through `PUBLIC_MIRA_URL`, normally `https://mira.maccrate.ai/`.
-
-## D1 / Worker boundary
-
-Mira's authored game runs as a static frontend. Its optional shared-discovery registry remains a separate Cloudflare Worker/API under `apps/mira/registry`; that Worker—not browser or Nginx code—owns the D1 binding, migrations, validation, rate limits, and signatures. Worker deployment is intentionally separate from static Nginx deployment and requires operator-supplied Cloudflare credentials and existing resource identifiers.
-
-No Cloudflare resources are created by the repository build.
+Each app under `apps/` produces its own static output. Run `npm run build:<app>` for targeted builds. Refer to each app's README.md for build-specific details.
 
 ## Release handoff
 

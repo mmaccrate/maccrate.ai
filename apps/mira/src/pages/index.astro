@@ -1,5 +1,6 @@
 ---
 const registryEndpoint = import.meta.env.PUBLIC_MIRA_REGISTRY_ENDPOINT || '';
+const basePath = import.meta.env.BASE_URL;
 let registryPublicKey = null;
 try {
   registryPublicKey = import.meta.env.PUBLIC_MIRA_REGISTRY_PUBLIC_JWK
@@ -17,7 +18,8 @@ try {
     <meta name="description" content="A Mars mystery where you combine fragments and Mira discovers the truth." />
   </head>
   <body>
-    <script is:inline define:vars={{ registryEndpoint, registryPublicKey }}>
+    <script is:inline define:vars={{ registryEndpoint, registryPublicKey, basePath }}>
+      window.__MIRA_BASE_URL__ = basePath;
       if (!window.__MIRA_REGISTRY_CONFIG__ && registryEndpoint && registryPublicKey) {
         window.__MIRA_REGISTRY_CONFIG__ = { endpoint: registryEndpoint, publicKeyJwk: registryPublicKey };
       }
@@ -33,7 +35,7 @@ try {
               <button class="gpu-toggle" id="gpuToggle" type="button" aria-describedby="localAiSummary">Use local AI</button>
               <button class="local-ai-info" id="localAiInfo" type="button" aria-label="What is Local Mira?">i</button>
             </div>
-            <a class="privacy-link" href="/privacy">Privacy</a>
+            <a class="privacy-link" href={`${basePath}privacy`}>Privacy</a>
             <button class="reset-btn" id="resetRun" type="button" aria-label="restart conversation" title="Restart">↺</button>
           </div>
         </header>
@@ -55,9 +57,18 @@ try {
           <ul>
             <li>The model can take several minutes to download the first time.</li>
             <li>Inference stays on this device. A first valid pair result is saved so everyone receives that same result afterward.</li>
-            <li>WebGPU requires Chrome or Edge over HTTPS or localhost.</li>
+            <li>Google Chrome is recommended. Open Mira over HTTPS or at <code>127.0.0.1</code>.</li>
           </ul>
-          <button class="dialog-action" id="localAiAction" type="button">Load Local Mira</button>
+          <details class="webgpu-help">
+            <summary>Linux PC setup</summary>
+            <p>Do these steps once before downloading the model:</p>
+            <ol>
+              <li>Copy <code>chrome://flags/#enable-unsafe-webgpu</code>, paste it into a new Chrome tab, and change the setting to <strong>Enabled</strong>.</li>
+              <li>Copy <code>chrome://flags/#enable-vulkan</code>, paste it into a new Chrome tab, and change that setting to <strong>Enabled</strong>.</li>
+              <li>Click <strong>Relaunch</strong> at the bottom of Chrome. Return to Mira and try again.</li>
+            </ol>
+          </details>
+          <button class="dialog-action" id="localAiAction" type="button">Download local model</button>
         </dialog>
         <div class="chat" id="chatScroll" aria-live="polite"></div>
       </section>
@@ -167,7 +178,7 @@ try {
       .gpu-toggle.ready{color:var(--green);border-color:rgba(156,240,180,.5);background:rgba(156,240,180,.06)}
       .local-ai-control{display:flex;align-items:center;gap:4px;flex-shrink:0}.local-ai-info{width:44px;height:44px;flex:0 0 44px;border-radius:50%;border:1px solid rgba(156,240,180,.3);background:rgba(9,7,13,.8);color:var(--green);cursor:pointer;font:600 13px/1 Georgia,serif}
       .local-ai-dialog{position:fixed;inset:0;margin:auto;width:min(calc(100vw - 32px),440px);max-height:min(86dvh,620px);overflow:auto;border:1px solid rgba(244,189,111,.2);border-radius:16px;padding:28px;background:linear-gradient(180deg,rgba(20,17,26,.98),rgba(11,9,15,.99));color:#ffe9c7;box-shadow:0 24px 80px rgba(0,0,0,.72),0 0 0 1px rgba(115,217,255,.04);}.local-ai-dialog::backdrop{background:rgba(4,3,8,.78);backdrop-filter:blur(8px)}
-      .local-ai-dialog h2{font:600 clamp(25px,5vw,34px)/1.05 Georgia,serif;margin:4px 0 12px}.local-ai-dialog>p{line-height:1.55;color:rgba(255,233,199,.78)}.dialog-kicker{text-transform:uppercase;letter-spacing:.14em;font-size:10px!important;color:var(--green)!important}.dialog-close{position:absolute;right:14px;top:12px;width:44px;height:44px;border:0;background:transparent;color:#ffe9c7;font-size:25px;cursor:pointer}.local-ai-state{margin:18px 0;padding:14px;border:1px solid rgba(115,217,255,.16);border-radius:12px;background:rgba(115,217,255,.04)}.local-ai-state-row{display:flex;justify-content:space-between;gap:16px;font-size:12px}.local-ai-track{height:6px;margin:10px 0;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}.local-ai-track span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .2s ease}.local-ai-state p{font-size:12px!important;margin:0;color:rgba(255,233,199,.62)!important}.local-ai-dialog ul{margin:14px 0 18px;padding-left:20px;color:rgba(255,233,199,.7);font-size:12px;line-height:1.5}.dialog-action{width:100%;min-height:48px;border:1px solid rgba(156,240,180,.45);border-radius:999px;background:rgba(156,240,180,.09);color:var(--green);font-weight:700;cursor:pointer}
+      .local-ai-dialog h2{font:600 clamp(25px,5vw,34px)/1.05 Georgia,serif;margin:4px 0 12px}.local-ai-dialog>p{line-height:1.55;color:rgba(255,233,199,.78)}.dialog-kicker{text-transform:uppercase;letter-spacing:.14em;font-size:10px!important;color:var(--green)!important}.dialog-close{position:absolute;right:14px;top:12px;width:44px;height:44px;border:0;background:transparent;color:#ffe9c7;font-size:25px;cursor:pointer}.local-ai-state{margin:18px 0;padding:14px;border:1px solid rgba(115,217,255,.16);border-radius:12px;background:rgba(115,217,255,.04)}.local-ai-state-row{display:flex;justify-content:space-between;gap:16px;font-size:12px}.local-ai-track{height:6px;margin:10px 0;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}.local-ai-track span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .2s ease}.local-ai-state p{font-size:12px!important;margin:0;color:rgba(255,233,199,.62)!important}.local-ai-dialog ul{margin:14px 0 18px;padding-left:20px;color:rgba(255,233,199,.7);font-size:12px;line-height:1.5}.webgpu-help{margin:0 0 18px;padding:12px 14px;border:1px solid rgba(244,189,111,.2);border-radius:12px;background:rgba(244,189,111,.04);font-size:12px;line-height:1.5}.webgpu-help summary{min-height:44px;display:flex;align-items:center;color:var(--gold);font-weight:700;cursor:pointer}.webgpu-help p{margin:4px 0 8px;color:rgba(255,233,199,.72)}.webgpu-help ol{margin:0;padding-left:20px;color:rgba(255,233,199,.72)}.webgpu-help li+li{margin-top:8px}.webgpu-help code{overflow-wrap:anywhere;color:var(--blue)}.dialog-action{width:100%;min-height:48px;border:1px solid rgba(156,240,180,.45);border-radius:999px;background:rgba(156,240,180,.09);color:var(--green);font-weight:700;cursor:pointer}
 
       .privacy-link{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;color:rgba(255,225,160,.58);font-size:10px;text-decoration:none;text-transform:uppercase;letter-spacing:.08em}
       .privacy-link:hover{color:var(--cream)}
@@ -192,7 +203,7 @@ try {
     </style>
 
     <script type="module">
-      // ===== WebGPU toggle (loads Gemma 4 silently when activated) =====
+      // ===== Optional browser-local Gemma 4 =====
       var gpuToggle = document.getElementById('gpuToggle');
       var localAiDialog = document.getElementById('localAiDialog');
       var localAiInfo = document.getElementById('localAiInfo');
@@ -208,6 +219,9 @@ try {
         localAiStatus.textContent = label; localAiDetail.textContent = detail;
         localAiPercent.textContent = value + '%'; localAiProgress.style.width = value + '%';
       }
+      function openLocalAiDialog(){
+        if (!localAiDialog.open) localAiDialog.showModal();
+      }
       function parseLocalModelResult(res,prompt){
         var text=typeof res==='string'?res:(Array.isArray(res)?res[0]&&res[0].generated_text:res&&res.generated_text)||'';
         if(text.indexOf(prompt)>=0)text=text.slice(text.lastIndexOf(prompt)+prompt.length);
@@ -219,19 +233,19 @@ try {
         if(parsed.question)parsed.question=String(parsed.question).replace(/\s+/g,' ').trim().slice(0,90);
         return parsed;
       }
-      localAiInfo.addEventListener('click', function(){ localAiDialog.showModal(); });
+      localAiInfo.addEventListener('click', openLocalAiDialog);
       localAiClose.addEventListener('click', function(){ localAiDialog.close(); });
-      localAiAction.addEventListener('click', function(){ localAiDialog.close(); gpuToggle.click(); });
-      window.__openLocalAiDialog = function(){ if(!localAiDialog.open)localAiDialog.showModal(); };
+      localAiAction.addEventListener('click', startLocalMira);
+      window.__openLocalAiDialog = openLocalAiDialog;
       var testParams = new URLSearchParams(location.search);
       window.__miraRegistryReady = Promise.resolve(null);
       if (window.__MIRA_REGISTRY_CONFIG__) {
-        window.__miraRegistryReady = import('/registry-client.js').then(function(mod){
+        window.__miraRegistryReady = import(window.__MIRA_BASE_URL__ + 'registry-client.js').then(function(mod){
           return mod.installMiraRegistry(Object.assign({}, window.__MIRA_REGISTRY_CONFIG__, {gameVersion:LOCAL_MIRA_GAME_VERSION}));
         }).catch(function(error){ console.warn('Shared discovery registry unavailable:', error && error.message ? error.message : error); return null; });
       }
       if ((location.hostname === '127.0.0.1' || location.hostname === 'localhost') && testParams.get('ollama') === '1') {
-        import('/ollama-mira-test.js').then(function(mod){
+        import(window.__MIRA_BASE_URL__ + 'ollama-mira-test.js').then(function(mod){
           mod.installOllamaMira({ endpoint: testParams.get('ollamaEndpoint') || 'http://127.0.0.1:11434', model: testParams.get('ollamaModel') || 'gemma4:latest' });
           gpuToggle.classList.add('ready');
           gpuToggle.textContent = 'Local AI ready';
@@ -245,36 +259,68 @@ try {
         });
       }
 
-      gpuToggle.addEventListener('click', async function(){
+      gpuToggle.addEventListener('click', function(){
+        if (!gpuToggle.classList.contains('ready') && !gpuToggle.classList.contains('loading')) openLocalAiDialog();
+      });
+
+      async function startLocalMira(){
         if (gpuToggle.classList.contains('ready') || gpuToggle.classList.contains('loading')) return;
         if (!navigator.gpu) {
           gpuToggle.textContent = 'Story mode';
           gpuToggle.title = 'Local AI needs WebGPU and HTTPS. The authored mystery remains fully playable.';
           if (typeof window.statusMessage === 'function') window.statusMessage('Local Mira needs WebGPU and HTTPS. Story mode keeps the authored investigation fully playable.');
           setLocalAiState('Unavailable here', 'Open this page over HTTPS or localhost in current Chrome or Edge.', 0);
-          localAiDialog.showModal();
+          openLocalAiDialog();
           gpuToggle.classList.remove('loading');
           return;
         }
         if (typeof window.statusMessage === 'function') window.statusMessage('Gemma runs in this browser. The first valid result for a new pair is saved to the shared archive for everyone.');
         gpuToggle.classList.add('loading');
         gpuToggle.textContent = 'Starting 0%';
-        setLocalAiState('Starting', 'Requesting a WebGPU device…', 1);
-        localAiDialog.showModal();
+        localAiAction.disabled = true;
+        localAiAction.textContent = 'Checking this device…';
+        setLocalAiState('Checking this device', 'Requesting a WebGPU adapter before the model download begins…', 1);
+        openLocalAiDialog();
         try {
-          var mod = await import('/gemma-4-e2b.js');
-          var model = await mod.Gemma4Mobile.load(null, {
-            onProgress: function(e){
-              if (e && typeof e.fraction === 'number') {
-                var pct = Math.round(e.fraction*90);
-                gpuToggle.textContent = 'Loading ' + pct + '%';
-                setLocalAiState('Downloading model', 'Gemma 4 is loading into this browser. Keep this tab open.', pct);
+          var adapter = await navigator.gpu.requestAdapter({powerPreference:'high-performance'});
+          if (!adapter) {
+            throw new Error('Chrome could not use this GPU. Open Linux PC setup below, enable both Chrome settings, relaunch Chrome, and try again.');
+          }
+          if (!adapter.features.has('shader-f16')) {
+            throw new Error('Chrome opened WebGPU without the features this model needs. Open Linux PC setup below, enable both Chrome settings, relaunch Chrome, and try again.');
+          }
+          localAiAction.textContent = 'Downloading local model…';
+          var mod = await import(window.__MIRA_BASE_URL__ + 'gemma-4-e2b.js');
+          function loadModel(disabledFeatures){
+            return mod.Gemma4Mobile.load(null, {
+              runtimeOptions: disabledFeatures ? {disabledFeatures:disabledFeatures} : {},
+              onProgress: function(e){
+                if (e && typeof e.fraction === 'number') {
+                  var pct = Math.round(e.fraction*90);
+                  gpuToggle.textContent = 'Loading ' + pct + '%';
+                  setLocalAiState('Downloading model', 'Gemma 4 is loading into this browser. Keep this tab open.', pct);
+                }
               }
-            }
-          });
-          gpuToggle.textContent = 'Warming up…';
-          setLocalAiState('Warming up', 'Compiling WebGPU kernels for the first local response…', 95);
-          await model.warmup();
+            });
+          }
+          var model;
+          try {
+            model = await loadModel(null);
+            gpuToggle.textContent = 'Warming up…';
+            setLocalAiState('Warming up', 'Compiling WebGPU kernels for the first local response…', 95);
+            await model.warmup();
+          } catch (firstError) {
+            var subgroupFailure = /subgroup matrix|DenseGemvSgmat|chromium-experimental-subgroup-matrix/i.test(firstError && firstError.message ? firstError.message : String(firstError));
+            if (!subgroupFailure) throw firstError;
+            if (model && typeof model.dispose === 'function') model.dispose();
+            model = null;
+            gpuToggle.textContent = 'Using compatible mode…';
+            setLocalAiState('Using compatible mode', 'This GPU rejected Chrome’s faster matrix path. Mira is switching to a compatible WebGPU path.', 92);
+            model = await loadModel(['chromium-experimental-subgroup-matrix']);
+            gpuToggle.textContent = 'Warming up…';
+            setLocalAiState('Warming up', 'Compiling compatible WebGPU kernels for this device…', 95);
+            await model.warmup();
+          }
           gpuToggle.classList.remove('loading');
           gpuToggle.classList.add('ready');
           gpuToggle.textContent = 'Local AI ready';
@@ -325,9 +371,11 @@ try {
           gpuToggle.textContent = 'Story mode';
           gpuToggle.title = 'Local Mira failed to load; click the info button for details';
           setLocalAiState('Could not load', (e && e.message ? e.message : String(e)) + ' The authored mystery still works.', 0);
-          localAiDialog.showModal();
+          localAiAction.disabled = false;
+          localAiAction.textContent = 'Try download again';
+          openLocalAiDialog();
         }
-      });
+      }
     </script>
 
     <script>

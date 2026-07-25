@@ -76,7 +76,7 @@ Studio's generic Alpaca path serialized `### Instruction` / `### Response`, whil
 - Notebook: `maccrate_finetuning_story.ipynb`
 - Machine report: `main_evaluation_report.json`
 - Raw evaluations: `main_*_results.jsonl`
-- MacCrate.ai article: `/projects/adapter-arcade`
+- MacCrate.ai article: `/projects/hello-world-ai-fine-tuning`
 - Cartridge interaction: truthful behavior-preset prototype with a documented real-LoRA WebGPU research path
 - Checksums: `FINAL_CHECKSUMS.sha256`
 

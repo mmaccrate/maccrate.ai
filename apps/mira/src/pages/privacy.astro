@@ -1,5 +1,6 @@
 ---
-const canonical = 'https://mira.maccrate.ai/privacy';
+const canonical = 'https://maccrate.ai/mira/privacy';
+const basePath = import.meta.env.BASE_URL;
 ---
 <!doctype html>
 <html lang="en">
@@ -13,7 +14,7 @@ const canonical = 'https://mira.maccrate.ai/privacy';
 </head>
 <body>
   <main>
-    <nav><a href="/">← Back to Mira</a></nav>
+    <nav><a href={basePath}>← Back to Mira</a></nav>
     <p class="eyebrow">Mira Machine</p>
     <h1>Privacy notice.</h1>
     <p class="updated">Last updated July 18, 2026</p>

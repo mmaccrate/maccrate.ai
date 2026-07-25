@@ -1,8 +1,8 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import ReleaseCover from '../components/ReleaseCover.astro';
-import { PROJECTS, featuredProject, projectNumber } from '../data/projects';
-const orderedProjects = [featuredProject, ...PROJECTS.filter((project) => project.slug !== featuredProject.slug)];
+import { PROJECTS, projectNumber } from '../data/projects';
+const orderedProjects = [...PROJECTS].sort((a, b) => b.sequence - a.sequence);
 const jsonLd = [
   {'@context':'https:' + '//schema.org','@type':'WebSite',name:'maccrate.ai',url:'https://maccrate.ai',description:'Working prototypes by Max.'},
   {'@context':'https:' + '//schema.org','@type':'Person',name:'Max',url:'https://maccrate.ai'},

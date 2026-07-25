@@ -105,7 +105,7 @@ npm run test:release
 
 It verifies saved-investigation recovery, a pending single-fragment selection, generated-finding reconstruction, stable reversed pairs without duplicate history, restart confirmation, sanitizer rejection, 44px controls, and 320px mobile bounds.
 
-Run the game on port 4322, ensure Bebop Ollama is reachable, then execute:
+Run the game on port 4322, Ollama is reachable, then execute:
 
 ```bash
 npm run test:game
@@ -124,7 +124,7 @@ The test performs:
 
 - real UI clicks through the opening deduction;
 - every authored recipe and all three stable multi-step chains;
-- a real Gemma 4 frontier response through Bebop Ollama;
+- a real Gemma 4 frontier response through Ollama;
 - repeat-pair cache verification before and after later story progress;
 - single-flight registry behavior so only one browser generates an unknown global pair;
 - three different opening exploration orders;
@@ -148,11 +148,11 @@ Registry tests additionally cover canonical order-independent pair hashes, stric
 ## Verified result
 
 ```text
-QA PASS: complete authored chapters, Bebop Gemma 4 frontier, repeatable cache,
+QA PASS: complete authored chapters, Gemma 4 frontier, repeatable cache,
 specific-evidence priority, filters, stable order, state sanitizer, desktop/mobile UI.
 ```
 
-Bebop model observed during QA:
+Model observed during QA:
 
 ```text
 name: gemma4:latest
