@@ -15,7 +15,7 @@ database_id = "3d8dae6a-8e66-45ba-8d25-028b1d40b833"
 
 [vars]
 GAME_VERSION = "mira-chat-v10-growing-story"
-ALLOWED_ORIGIN = "https://mira.maccrate.ai"
+ALLOWED_ORIGIN = "https://maccrate.ai"
 
 # Set secrets with Wrangler; never commit values:
 # wrangler secret put PROPOSAL_HMAC_SECRET

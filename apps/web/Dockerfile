@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-ARG PUBLIC_MIRA_URL=https://mira.maccrate.ai/
+ARG PUBLIC_MIRA_URL=/mira/
 ARG PUBLIC_RELEASE_ID=development
 ENV PUBLIC_MIRA_URL=$PUBLIC_MIRA_URL
 ENV PUBLIC_RELEASE_ID=$PUBLIC_RELEASE_ID
