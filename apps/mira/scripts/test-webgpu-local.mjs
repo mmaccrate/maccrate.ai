@@ -27,6 +27,13 @@ console.log('WebGPU probe:', JSON.stringify(probe));
 if (!probe.adapter) throw new Error('No WebGPU adapter. Use a GPU-backed Chrome/device or keep --enable-unsafe-webgpu for software lifecycle tests.');
 
 await page.locator('#gpuToggle').click();
+if (!await page.locator('#localAiDialog').evaluate(dialog => dialog.open)) {
+  throw new Error('Use local AI did not open the download confirmation dialog');
+}
+if ((await page.locator('#gpuToggle').textContent()) !== 'Use local AI') {
+  throw new Error('Opening the Local Mira dialog started the model without explicit confirmation');
+}
+await page.getByRole('button', { name: 'Download local model' }).click();
 let previous = '';
 const deadline = Date.now() + Number(process.env.MIRA_WEBGPU_TIMEOUT_MS || 600000);
 while (Date.now() < deadline) {

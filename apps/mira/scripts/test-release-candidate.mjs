@@ -13,6 +13,7 @@ check(source.includes('model.complete('), 'WebGPU does not call the shipped Gemm
 check(source.includes("LOCAL_MIRA_GAME_VERSION+'|'+pair"), 'WebGPU pair hashing depends on an out-of-scope game version');
 check(source.includes('parseLocalModelResult(res,prompt)'), 'journey interpretation parser is not in module scope');
 check(source.includes('if(localAiDialog.open)localAiDialog.close()'), 'ready Local AI modal does not close automatically');
+check(source.includes('localAiAction.addEventListener(\'click\', startLocalMira)'), 'model download is not gated behind the explicit dialog action');
 check(!source.includes("r=authored;r.source='authored-fallback'"), 'unseen pairs still have a non-AI fallback');
 check(source.includes("source:'ai-required'"), 'unseen pairs do not require Local AI');
 
@@ -31,6 +32,17 @@ try {
   await page.evaluate(() => localStorage.clear());
   await page.reload({ waitUntil: 'networkidle' });
   await ready(page);
+
+  await page.locator('#gpuToggle').click();
+  const downloadConsent = await page.evaluate(() => ({
+    dialog: document.querySelector('#localAiDialog').open,
+    action: document.querySelector('#localAiAction').textContent,
+    toggle: document.querySelector('#gpuToggle').textContent
+  }));
+  check(downloadConsent.dialog, 'Use local AI did not open its confirmation dialog');
+  check(downloadConsent.action === 'Download local model', 'download confirmation action is unclear');
+  check(downloadConsent.toggle === 'Use local AI', 'opening the Local AI dialog started loading without consent');
+  await page.evaluate(() => document.querySelector('#localAiDialog').close());
 
   await combo(page, 'last_signal', 'rover_tracks');
   const before = await page.evaluate(() => window.__miraMachine.getState());

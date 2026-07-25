@@ -59,7 +59,7 @@ try {
             <li>Inference stays on this device. A first valid pair result is saved so everyone receives that same result afterward.</li>
             <li>WebGPU requires Chrome or Edge over HTTPS or localhost.</li>
           </ul>
-          <button class="dialog-action" id="localAiAction" type="button">Load Local Mira</button>
+          <button class="dialog-action" id="localAiAction" type="button">Download local model</button>
         </dialog>
         <div class="chat" id="chatScroll" aria-live="polite"></div>
       </section>
@@ -194,7 +194,7 @@ try {
     </style>
 
     <script type="module">
-      // ===== WebGPU toggle (loads Gemma 4 silently when activated) =====
+      // ===== Optional browser-local Gemma 4 =====
       var gpuToggle = document.getElementById('gpuToggle');
       var localAiDialog = document.getElementById('localAiDialog');
       var localAiInfo = document.getElementById('localAiInfo');
@@ -210,6 +210,9 @@ try {
         localAiStatus.textContent = label; localAiDetail.textContent = detail;
         localAiPercent.textContent = value + '%'; localAiProgress.style.width = value + '%';
       }
+      function openLocalAiDialog(){
+        if (!localAiDialog.open) localAiDialog.showModal();
+      }
       function parseLocalModelResult(res,prompt){
         var text=typeof res==='string'?res:(Array.isArray(res)?res[0]&&res[0].generated_text:res&&res.generated_text)||'';
         if(text.indexOf(prompt)>=0)text=text.slice(text.lastIndexOf(prompt)+prompt.length);
@@ -221,10 +224,10 @@ try {
         if(parsed.question)parsed.question=String(parsed.question).replace(/\s+/g,' ').trim().slice(0,90);
         return parsed;
       }
-      localAiInfo.addEventListener('click', function(){ localAiDialog.showModal(); });
+      localAiInfo.addEventListener('click', openLocalAiDialog);
       localAiClose.addEventListener('click', function(){ localAiDialog.close(); });
-      localAiAction.addEventListener('click', function(){ localAiDialog.close(); gpuToggle.click(); });
-      window.__openLocalAiDialog = function(){ if(!localAiDialog.open)localAiDialog.showModal(); };
+      localAiAction.addEventListener('click', startLocalMira);
+      window.__openLocalAiDialog = openLocalAiDialog;
       var testParams = new URLSearchParams(location.search);
       window.__miraRegistryReady = Promise.resolve(null);
       if (window.__MIRA_REGISTRY_CONFIG__) {
@@ -247,23 +250,34 @@ try {
         });
       }
 
-      gpuToggle.addEventListener('click', async function(){
+      gpuToggle.addEventListener('click', function(){
+        if (!gpuToggle.classList.contains('ready') && !gpuToggle.classList.contains('loading')) openLocalAiDialog();
+      });
+
+      async function startLocalMira(){
         if (gpuToggle.classList.contains('ready') || gpuToggle.classList.contains('loading')) return;
         if (!navigator.gpu) {
           gpuToggle.textContent = 'Story mode';
           gpuToggle.title = 'Local AI needs WebGPU and HTTPS. The authored mystery remains fully playable.';
           if (typeof window.statusMessage === 'function') window.statusMessage('Local Mira needs WebGPU and HTTPS. Story mode keeps the authored investigation fully playable.');
           setLocalAiState('Unavailable here', 'Open this page over HTTPS or localhost in current Chrome or Edge.', 0);
-          localAiDialog.showModal();
+          openLocalAiDialog();
           gpuToggle.classList.remove('loading');
           return;
         }
         if (typeof window.statusMessage === 'function') window.statusMessage('Gemma runs in this browser. The first valid result for a new pair is saved to the shared archive for everyone.');
         gpuToggle.classList.add('loading');
         gpuToggle.textContent = 'Starting 0%';
-        setLocalAiState('Starting', 'Requesting a WebGPU device…', 1);
-        localAiDialog.showModal();
+        localAiAction.disabled = true;
+        localAiAction.textContent = 'Checking this device…';
+        setLocalAiState('Checking this device', 'Requesting a WebGPU adapter before the model download begins…', 1);
+        openLocalAiDialog();
         try {
+          var adapter = await navigator.gpu.requestAdapter({powerPreference:'high-performance'});
+          if (!adapter) {
+            throw new Error('Chrome could not use this GPU. On Linux, enable chrome://flags/#enable-unsafe-webgpu, restart Chrome, and try again.');
+          }
+          localAiAction.textContent = 'Downloading local model…';
           var mod = await import(window.__MIRA_BASE_URL__ + 'gemma-4-e2b.js');
           var model = await mod.Gemma4Mobile.load(null, {
             onProgress: function(e){
@@ -327,9 +341,11 @@ try {
           gpuToggle.textContent = 'Story mode';
           gpuToggle.title = 'Local Mira failed to load; click the info button for details';
           setLocalAiState('Could not load', (e && e.message ? e.message : String(e)) + ' The authored mystery still works.', 0);
-          localAiDialog.showModal();
+          localAiAction.disabled = false;
+          localAiAction.textContent = 'Try download again';
+          openLocalAiDialog();
         }
-      });
+      }
     </script>
 
     <script>
