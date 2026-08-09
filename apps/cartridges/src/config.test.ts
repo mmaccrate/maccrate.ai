@@ -16,7 +16,7 @@ describe('Qwen3.5 release artifact registry', () => {
       mode: 'qwen3.5-chat',
     });
     expect(RELEASE_BASE_MODEL).not.toHaveProperty('developmentOnly');
-    expect(RELEASE_BASE_MODEL.url).toBe('/models/base/Qwen3.5-2B-Q4_K_M.gguf');
+    expect(RELEASE_BASE_MODEL.url).toBe('https://huggingface.co/unsloth/Qwen3.5-2B-GGUF/resolve/f6d5376be1edb4d416d56da11e5397a961aca8ae/Qwen3.5-2B-Q4_K_M.gguf');
   });
 
   it('registers only physically present converted adapters against exactly that base', () => {

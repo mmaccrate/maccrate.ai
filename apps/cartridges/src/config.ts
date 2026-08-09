@@ -6,10 +6,10 @@ export const APP_NAME = 'Model Cartridges';
 export const WLLAMA_VERSION = '3.5.1';
 const assetPath = (path: string): string => `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
 export const WLLAMA_WASM_PATH = assetPath('wasm/wllama.wasm');
-export const PRODUCTION_MODEL_ROOT = assetPath('models');
 export const HUGGINGFACE_ADAPTER_REPOSITORY = 'mmaccrate/model-cartidges';
 export const HUGGINGFACE_ADAPTER_REVISION = 'e7c83d7d8f3a657a89f46b625e4de84f777fb157';
 const HUGGINGFACE_ADAPTER_ROOT = `https://huggingface.co/${HUGGINGFACE_ADAPTER_REPOSITORY}/resolve/${HUGGINGFACE_ADAPTER_REVISION}`;
+const HUGGINGFACE_BASE_MODEL_ROOT = 'https://huggingface.co/unsloth/Qwen3.5-2B-GGUF/resolve/f6d5376be1edb4d416d56da11e5397a961aca8ae';
 
 /** The single base shared by the Base Console and every release adapter. */
 export const RELEASE_BASE_MODEL: BaseModelArtifact = {
@@ -20,7 +20,7 @@ export const RELEASE_BASE_MODEL: BaseModelArtifact = {
   file: 'Qwen3.5-2B-Q4_K_M.gguf',
   sha256: 'aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223',
   byteSize: 1280835840,
-  url: `${PRODUCTION_MODEL_ROOT}/base/Qwen3.5-2B-Q4_K_M.gguf`,
+  url: `${HUGGINGFACE_BASE_MODEL_ROOT}/Qwen3.5-2B-Q4_K_M.gguf`,
   mode: 'qwen3.5-chat',
   contextSize: 4096,
 };

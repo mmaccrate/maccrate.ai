@@ -26,7 +26,7 @@ An interactive mystery built around a deterministic evidence system, with option
 
 ### Model Cartridges
 
-A browser-local AI application that keeps one Qwen3.5 2B model loaded and switches two fine-tuned LoRA adapters around it. Base Console is the no-adapter control. Weather Radio uses Open-Meteo forecast data, and Stagehand produces validated actions for one authored scene.
+A browser-local AI application that keeps one Qwen3.5 2B model loaded and switches two fine-tuned LoRA adapters around it. Base Console is the no-adapter control. Weather Radio uses Open-Meteo forecast data, and Stagehand produces validated actions for one authored scene. The pinned base model and adapters are fetched from Hugging Face.
 
 [Open Model Cartridges](https://maccrate.ai/cartridges/) · [Read the field report](https://maccrate.ai/projects/browser-lora-cartridges/) · [Download the adapters](https://huggingface.co/mmaccrate/model-cartidges) · [Browse the source](./apps/cartridges) · [Browse wllama-lora](https://github.com/mmaccrate/wllama-lora)
 

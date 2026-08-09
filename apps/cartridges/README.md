@@ -21,7 +21,7 @@ The base model stays loaded while the app activates the selected adapter. The re
 
 The base model runs locally in the browser. Weather Radio makes a separate request for forecast data. Stagehand is limited to its authored scene and supported actions.
 
-The base model and adapter binaries are intentionally excluded from Git because of their size. A deployment or local review environment must provision the base model at `public/models/base/Qwen3.5-2B-Q4_K_M.gguf`; the production manifests fetch the two adapters from their immutable Hugging Face URLs. The checked-in model-card README is the source for the public adapter repository.
+The base model and adapter binaries are intentionally excluded from Git because of their size. The production manifests fetch the pinned base model and both adapters from immutable Hugging Face URLs. The checked-in model-card README is the source for the public adapter repository.
 
 ## Development
 
