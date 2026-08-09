@@ -1,0 +1,15 @@
+{
+  "geocoding": {
+    "results": [{ "name": "Washington", "country": "United States", "latitude": 38.8951, "longitude": -77.0364, "timezone": "America/New_York" }]
+  },
+  "forecast": {
+    "timezone": "America/New_York",
+    "daily": {
+      "time": ["2026-07-28", "2026-07-29"],
+      "weather_code": [61, 2],
+      "temperature_2m_max": [82, 85],
+      "temperature_2m_min": [70, 71],
+      "precipitation_probability_max": [70, 20]
+    }
+  }
+}

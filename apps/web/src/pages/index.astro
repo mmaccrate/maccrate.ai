@@ -21,7 +21,7 @@ const jsonLd = [
         <p class="descriptor">{project.descriptor}</p>
         <p class="premise">{project.premise}</p>
         <div class="actions">
-          {project.liveUrl && <a class="button-link" href={project.liveUrl} target="_blank" rel="noopener noreferrer">Play {project.title} <span aria-hidden="true">↗</span></a>}
+          {project.liveUrl && <a class="button-link" href={project.liveUrl} target="_blank" rel="noopener noreferrer">{project.slug === 'browser-lora-cartridges' ? 'Open Model Cartridges' : `Play ${project.title}`} <span aria-hidden="true">↗</span></a>}
           <a class:list={[project.liveUrl ? 'notes' : 'button-link']} href={`/projects/${project.slug}`}>{project.liveUrl ? 'Project details' : 'Read the field report'} <span aria-hidden="true">→</span></a>
         </div>
       </div>
