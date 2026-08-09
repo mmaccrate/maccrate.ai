@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Three browser-local model cartridges sharing one Qwen3.5 base model." />
+    <title>Model Cartridges · MacCrate.ai</title>
+    <script type="module" src="/src/main.ts"></script>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main id="console-app" class="console-app is-off" aria-busy="false">
+      <header class="topbar">
+        <a class="brand" href="https://maccrate.ai" aria-label="MacCrate.ai home">MACCRATE.AI</a>
+        <div class="product-lockup"><span class="product-mark" aria-hidden="true"></span><span>Model Cartridges</span></div><a class="hub-link" href="https://huggingface.co/mmaccrate/model-cartidges" target="_blank" rel="noreferrer">Hugging Face ↗</a>
+        <button id="system-toggle" class="system-toggle" type="button" aria-controls="system-drawer" aria-expanded="false"><span id="header-led" class="led" aria-hidden="true"></span><span id="header-status">Off</span><span aria-hidden="true">▸</span></button>
+      </header>
+
+      <section class="console-workspace" aria-label="Model cartridge console">
+        <section id="cartridge-shelf" class="cartridge-shelf" aria-labelledby="shelf-title">
+          <div class="shelf-heading">
+            <div><h1 id="shelf-title">Choose a cartridge</h1></div>
+          </div>
+          <div id="cartridge-list" class="cartridge-list" role="group" aria-label="Available model experiences">
+            <button class="cartridge cartridge--stock is-selected" type="button" data-release-id="stock" aria-pressed="true" aria-label="Select Base Console">
+              <span class="cartridge-ridges" aria-hidden="true"></span><span class="cartridge-label"><span class="cart-art cart-art--stock" aria-hidden="true">B</span><strong>Base Console</strong><small>Plain model</small></span>
+            </button>
+            <button class="cartridge cartridge--blue" type="button" data-release-id="weather-radio" aria-pressed="false" aria-label="Select Weather Radio">
+              <span class="cartridge-ridges" aria-hidden="true"></span><span class="cartridge-label"><span class="cart-art cart-art--radio" aria-hidden="true"></span><strong>Weather Radio</strong><small>Live forecast</small></span>
+            </button>
+            <button class="cartridge cartridge--amber" type="button" data-release-id="stagehand" aria-pressed="false" aria-label="Select Stagehand">
+              <span class="cartridge-ridges" aria-hidden="true"></span><span class="cartridge-label"><span class="cart-art cart-art--stage" aria-hidden="true"></span><strong>Stagehand</strong><small>Scene editor</small></span>
+            </button>
+          </div>
+          <div class="shelf-rail" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        </section>
+
+        <section class="console-deck" aria-label="Active cartridge and conversation">
+          <div class="active-slot-wrap"><span id="slot-caption" class="slot-caption">Active slot</span><div id="active-slot" class="active-slot is-stock" aria-label="Active cartridge: Base Console"><span class="slot-led led" aria-hidden="true"></span><div id="inserted-cartridge" class="inserted-cartridge"><span class="inserted-grip" aria-hidden="true"></span><strong id="slot-cartridge-name">Base Console</strong><small id="slot-cartridge-serial">BASE-000</small></div><span class="slot-mouth" aria-hidden="true"></span></div></div>
+          <section class="chat-console" aria-labelledby="chat-title">
+            <header class="chat-header"><div class="active-identity"><span id="active-avatar" class="active-avatar is-stock" aria-hidden="true">B</span><div><span id="workspace-mode" class="micro-label">Ready</span><h2 id="chat-title">Base Console</h2><p id="active-description">Ask the shared model anything.</p></div></div><div class="chat-actions"><button id="shelf-toggle" class="shelf-toggle" type="button" aria-controls="cartridge-shelf" aria-expanded="false">Cartridges</button><button id="scene-toggle" class="scene-toggle" type="button" aria-controls="stagehand-scene-host" aria-expanded="false" hidden>Scene</button><button id="compare-toggle" class="compare-toggle" type="button" aria-pressed="false" disabled>Compare</button><button id="clear-conversation" class="icon-button" type="button" title="Start a new workspace" aria-label="Start a new workspace">↻</button></div></header>
+            <div id="chat-workarea" class="chat-workarea"><div id="stagehand-scene-host" class="stagehand-scene-host" hidden></div><div id="output" class="message-list" role="log" aria-live="polite" aria-relevant="additions text"><article class="message message--system"><span class="message-kicker">Console</span><p class="message-body">Load the browser-local model to begin.</p></article></div></div>
+            <div class="composer-wrap"><div id="guided-prompts" class="guided-prompts" aria-label="Suggested examples" hidden></div><div class="composer"><label class="sr-only" for="prompt">Message the active cartridge</label><textarea id="prompt" rows="1" maxlength="4000" placeholder="Ask Base Console something…"></textarea><button id="settings-toggle" class="icon-button settings-button" type="button" aria-controls="generation-settings" aria-expanded="false" aria-label="Open generation settings">⌁</button><button id="generate" class="send-button" type="button" disabled>Send <span aria-hidden="true">↑</span></button><button id="stop" class="stop-button" type="button" disabled hidden>Stop</button></div><div id="generation-settings" class="generation-settings" hidden><label>Tokens <input id="max-tokens" type="number" value="384" min="32" max="1024" /></label><label>Temperature <input id="temperature" type="number" value="0.7" min="0" max="1.5" step="0.1" /></label></div></div>
+          </section>
+          <footer class="status-strip" aria-live="polite"><span><i id="deck-led" class="led" aria-hidden="true"></i><strong id="engine-state">Idle</strong></span><span id="runtime-mode">BASE MODEL · not loaded</span><span><strong id="tokens-per-second">—</strong></span></footer>
+        </section>
+      </section>
+
+      <section id="power-screen" class="power-screen" aria-labelledby="power-title"><div class="power-console"><div class="power-vents" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><span class="power-badge">MACCRATE LOCAL SYSTEM</span><h2 id="power-title">Model Cartridges</h2><p class="power-promise">Load the shared model and both verified cartridges in this browser.</p><div class="power-actions"><button id="load-model" class="secondary-power-button" type="button"><span class="power-icon" aria-hidden="true">↓</span> Load local AI</button></div><div id="power-progress" class="power-progress" hidden><div class="progress-copy"><strong id="progress-heading">Preparing download</strong><output id="progress-text">Not started</output></div><progress id="model-progress" value="0" max="100"></progress><ol class="download-steps" aria-label="Download and loading stages"><li id="download-cartridge-status">Adapters · waiting</li><li id="download-model-status">Base model · waiting</li><li id="verify-load-status">Verify locally · waiting</li></ol><small id="cache-note">The first load downloads the model into this browser.</small></div><div class="power-requirements"><span><i class="led led--amber" aria-hidden="true"></i> Local browser runtime</span><span><i class="led" aria-hidden="true"></i> <output id="compatibility">Checking WebGPU</output></span></div></div></section>
+
+      <aside id="system-drawer" class="system-drawer" role="dialog" aria-modal="true" aria-labelledby="system-title" aria-hidden="true"><header><div><span class="micro-label">Console details</span><h2 id="system-title">System</h2></div><button id="system-close" class="icon-button" type="button" aria-label="Close system drawer">×</button></header><div class="drawer-content"><dl class="system-list"><div><dt>WebGPU</dt><dd id="webgpu">—</dd></div><div><dt>Isolation</dt><dd id="isolation">—</dd></div><div><dt>Shared memory</dt><dd id="sab">—</dd></div><div><dt>OPFS model cache</dt><dd id="opfs">—</dd></div><div><dt>Runtime</dt><dd>wllama · local fork</dd></div><div><dt>Release base</dt><dd>Qwen3.5 2B · Q4_K_M</dd></div><div><dt>Model load</dt><dd id="model-load-time">—</dd></div><div><dt>Storage use</dt><dd id="storage-quota">Checking…</dd></div><div><dt>First token</dt><dd id="ttft">—</dd></div><div><dt>Total generation</dt><dd id="total-duration">—</dd></div></dl><ul id="blockers" class="blockers" aria-live="polite"></ul><details class="workspace-tools"><summary>Workspace</summary><div class="workspace-actions"><button id="import-session" class="text-button" type="button">Import JSON</button><button id="export-session" class="text-button" type="button">Export JSON</button><input id="session-file" class="sr-only" type="file" accept="application/json,.json" /></div></details><details class="developer-tools"><summary>Runtime artifacts</summary><output id="adapter-state" class="dev-status">Not staged</output><output id="adapter-message" class="inline-message">Adapter files have not been loaded.</output><button id="clear-storage" class="danger-button" type="button">Clear stored model cache</button></details><details class="diagnostics"><summary>Diagnostics</summary><button id="clear-log" class="text-button" type="button">Clear log</button><ol id="log" aria-live="polite"></ol><p>Diagnostics omit prompt and generated response content.</p></details></div></aside><button id="drawer-scrim" class="drawer-scrim" type="button" tabindex="-1" aria-label="Close system drawer" hidden></button>
+    </main>
+  </body>
+</html>

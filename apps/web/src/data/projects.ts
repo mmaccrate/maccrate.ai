@@ -1,4 +1,5 @@
 const configuredMiraUrl = import.meta.env.PUBLIC_MIRA_URL;
+const configuredCartridgesUrl = import.meta.env.PUBLIC_CARTRIDGES_URL;
 
 export type ProjectSection = { eyebrow: string; title: string; body: string };
 export type ProjectCredit = { label: string; value: string };
@@ -20,6 +21,31 @@ export type Project = {
 };
 
 export const PROJECTS: Project[] = [
+  {
+    sequence: 3,
+    slug: 'browser-lora-cartridges',
+    title: 'LoRA, On Demand',
+    year: 2026,
+    descriptor: 'Browser-local AI · runtime LoRA switching',
+    premise: 'One local model, multiple fine-tuned applications, and no inference server.',
+    disciplines: ['Local AI', 'Runtime engineering', 'Fine-tuning'],
+    role: 'Runtime fork, model training, product design, evaluation',
+    status: configuredCartridgesUrl || import.meta.env.DEV ? 'live' : 'case-study',
+    accent: '#176b4d',
+    cover: 'geometric',
+    liveUrl: configuredCartridgesUrl || (import.meta.env.DEV ? 'http://localhost:6342/' : undefined),
+    credits: [
+      { label: 'Shared model', value: 'Qwen3.5 2B · GGUF Q4_K_M · loaded once' },
+      { label: 'Adapters', value: 'Two fine-tuned GGUF LoRAs · Weather Radio and Stagehand' },
+      { label: 'Runtime', value: 'wllama-lora fork · llama.cpp · WebAssembly · WebGPU' },
+    ],
+    sections: [
+      { eyebrow: 'Distribution', title: 'The base model becomes shared local infrastructure.', body: 'The browser loads one compatible Qwen3.5 2B base model and applies smaller task-specific LoRA adapters around it. A new capability can ship as an adapter instead of another complete model or hosted inference endpoint.' },
+      { eyebrow: 'Runtime', title: 'The adapters run in the browser.', body: 'The wllama-lora fork carries llama.cpp LoRA support through WebAssembly and WebGPU. The app keeps the base loaded, fetches the selected release adapter from Hugging Face, and validates it before activation.' },
+      { eyebrow: 'Proof', title: 'The same request runs with and without the adapter.', body: 'Compare Mode holds the request and runtime settings steady while it shows the base response beside the adapted result. The difference is visible in the model output and task behavior.' },
+      { eyebrow: 'Demonstration', title: 'Two focused applications test the approach.', body: 'Weather Radio turns language into a bounded forecast request and grounds the result with Open-Meteo data. Stagehand turns language into strict actions for one authored broadcast scene. Base Console provides the no-adapter control.' },
+    ],
+  },
   {
     sequence: 2,
     slug: 'hello-world-ai-fine-tuning',

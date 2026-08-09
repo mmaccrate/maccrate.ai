@@ -1,0 +1,31 @@
+{
+  "name": "@maccrate/model-cartridges",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/copy-wllama-assets.mjs",
+    "artifact:sync": "node scripts/sync-local-artifact.mjs",
+    "dataset:weather-radio": "node scripts/build-weather-radio-dataset.mjs",
+    "predev": "npm run assets",
+    "dev": "vite --host 0.0.0.0 --port 6342",
+    "prebuild": "npm run assets",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 6342",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@wllama/wllama": "github:mmaccrate/wllama-lora#a9686571f7b46b068d969791efa8161976699a2b",
+    "hash-wasm": "4.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.1.0",
+    "typescript": "5.8.3",
+    "vite": "7.3.6",
+    "vitest": "3.2.7"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

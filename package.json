@@ -3,17 +3,20 @@
   "private": true,
   "version": "0.1.0",
   "engines": {
-    "node": "20.x"
+    "node": ">=22.0.0"
   },
   "workspaces": [
     "apps/web",
-    "apps/mira"
+    "apps/mira",
+    "apps/cartridges"
   ],
   "scripts": {
-    "build": "npm run build:web && npm run build:mira",
-    "build:web": "npm run build --workspace=@maccrate/web",
+    "build": "npm run build:web && npm run build:mira && npm run build:cartridges",
+    "build:web": "PUBLIC_MIRA_URL=/mira/ PUBLIC_CARTRIDGES_URL=/cartridges/ npm run build --workspace=@maccrate/web",
     "build:mira": "npm run build --workspace=@maccrate/mira && rm -f apps/mira/dist/ollama-mira-test.js",
+    "build:cartridges": "CARTRIDGE_BASE_PATH=/cartridges/ npm run build --workspace=@maccrate/model-cartridges",
     "test:web": "npm run test:release --workspace=@maccrate/web",
-    "test:mira": "npm run test:release --workspace=@maccrate/mira"
+    "test:mira": "npm run test:release --workspace=@maccrate/mira",
+    "test:cartridges": "npm test --workspace=@maccrate/model-cartridges"
   }
 }

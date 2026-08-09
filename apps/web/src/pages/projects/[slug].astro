@@ -5,7 +5,7 @@ import { PROJECTS, projectNumber, type Project } from '../../data/projects';
 
 export function getStaticPaths() {
   return PROJECTS
-    .filter((project) => project.slug !== 'hello-world-ai-fine-tuning')
+    .filter((project) => !['hello-world-ai-fine-tuning', 'browser-lora-cartridges'].includes(project.slug))
     .map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 interface Props { project: Project }
