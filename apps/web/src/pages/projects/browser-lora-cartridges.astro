@@ -1,0 +1,110 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ReleaseCover from '../../components/ReleaseCover.astro';
+import { PROJECTS } from '../../data/projects';
+
+const project = PROJECTS.find((item) => item.slug === 'browser-lora-cartridges')!;
+const title = 'I Made LoRA Adapters Hot-Swappable in the Browser';
+const description = 'One local Qwen model, two fine-tuned LoRA adapters, three browser experiences, and no inference server.';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: title,
+  description,
+  author: { '@type': 'Person', name: 'Max MacCrate', url: 'https://maccrate.ai/about' },
+  url: 'https://maccrate.ai/projects/browser-lora-cartridges',
+};
+---
+
+<SiteLayout title={title} description={description} type="article" jsonLd={jsonLd}>
+  <article class="story">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="label">BROWSER AI FIELD REPORT · LORA ADAPTERS · AUGUST 2026</p>
+        <h1>I made LoRA adapters <em>hot-swappable</em> in the browser.</h1>
+        <p class="intro">One local model, two fine-tuned adapters, three browser experiences, and no inference server.</p>
+        <p class="setup">Qwen3.5 2B · llama.cpp · wllama-lora · GGUF · WebAssembly · WebGPU</p>
+        <div class="hero-actions">
+          {project.liveUrl
+            ? <a class="launch" href={project.liveUrl} target="_blank" rel="noopener noreferrer">Open Model Cartridges <span aria-hidden="true">↗</span></a>
+            : <span class="pending">Interactive build forthcoming</span>}
+          <a href="https://huggingface.co/mmaccrate/model-cartidges" target="_blank" rel="noopener noreferrer">Download the adapters <span aria-hidden="true">↗</span></a>
+          <a href="#article">Read the article ↓</a>
+        </div>
+      </div>
+      <ReleaseCover project={project} />
+    </header>
+
+    <div class="body" id="article">
+      <section>
+        <p>Model Cartridges keeps one Qwen3.5 2B model loaded in the browser and switches two fine-tuned LoRA adapters around it. Each adapter teaches the small model a specific task and output format.</p>
+        <p>Base Console shows the original model. The adapted cartridges show what changes after fine-tuning. The base model is roughly 1.3 GB, while each adapter is tens of megabytes. Model inference runs on the user’s device.</p>
+      </section>
+
+      <section>
+        <h2>One model powers three experiences.</h2>
+        <ul class="cartridge-list">
+          <li><strong>Base Console</strong><span>The shared model runs without an adapter. It provides the baseline for every comparison.</span></li>
+          <li><strong>Weather Radio</strong><span>The adapter turns a weather question into the structured request the app needs. Open-Meteo supplies the forecast.</span></li>
+          <li><strong>Stagehand</strong><span>The adapter turns plain language into a command for one authored broadcast scene. The app applies commands that match its supported actions.</span></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>The adapter gives the model a specific job.</h2>
+        <p>A LoRA adapter changes a small set of weights around the shared model. <code>llama.cpp</code> applies those weights, and <code>wllama-lora</code> switches them in the browser without reloading the base.</p>
+        <p>Training focused each adapter on the behavior and format its application expects. The app checks that each result matches that format before using it.</p>
+        <p>The project source is on <a href="https://github.com/mmaccrate/maccrate.ai" target="_blank" rel="noopener noreferrer">GitHub</a>, along with the <a href="https://github.com/mmaccrate/wllama-lora" target="_blank" rel="noopener noreferrer">wllama-lora fork</a> that brings adapter loading into the browser.</p>
+      </section>
+
+      <section>
+        <h2>Compare Mode makes the adapter’s effect visible.</h2>
+        <p>Compare Mode sends the same request through the base model and the selected adapter. Both results use the same local runtime, and the base response stays visible beside the adapted result.</p>
+        <p>The base model can answer in general language, but it often misses the structure a task requires. The adapter follows the expected format and completes the workflow. That difference shows what the training added.</p>
+      </section>
+
+      <section>
+        <h2>Small adapters can turn local models into private tools.</h2>
+        <p>One base model can support many focused tasks by loading small adapters instead of another full model. The base handles language, while each adapter supplies the behavior needed for one application.</p>
+        <p>This approach fits laptops, phones, field devices, and other hardware with limited memory or connectivity. Model inference can stay on the device, which gives people more control over private data and removes the need for a cloud inference server.</p>
+        <p>Model Cartridges demonstrates the pattern with two different tasks. The larger opportunity is a library of compact task adapters that run privately on hardware people already own.</p>
+      </section>
+    </div>
+
+    <footer class="story-end">
+      <a href="/">← Back to projects</a>
+      {project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">Open Model Cartridges ↗</a>}
+    </footer>
+  </article>
+</SiteLayout>
+
+<style>
+.story{--accent:#176b4d;max-width:1050px;margin:auto}
+.hero{display:grid;grid-template-columns:minmax(0,.95fr) minmax(320px,1.05fr);gap:clamp(40px,7vw,90px);align-items:center;min-height:calc(100svh - 86px);padding:20px 0;border-bottom:1px solid}
+.hero :global(.release-cover){width:min(100%,calc(100svh - 150px));justify-self:end}
+.hero-copy{min-width:0}
+.label,.setup{font-size:11px;font-weight:700;line-height:1.35;letter-spacing:.1em;text-transform:uppercase}
+.hero h1{max-width:1000px;margin:20px 0;font:400 clamp(46px,4.5vw,68px)/.96 Georgia,serif;letter-spacing:-.045em}
+.hero h1 em{color:var(--accent);font-weight:400}
+.intro{max-width:700px;font-size:clamp(18px,1.6vw,22px);line-height:1.4}
+.setup{margin-top:22px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;margin-top:28px}
+.hero-actions a{font-size:13px;font-weight:700;text-decoration:none;border-bottom:1px solid;padding:8px 0}
+.hero-actions .launch{color:var(--accent);border-bottom-width:2px}
+.pending{font-size:12px;font-weight:700;color:#655f57}
+.body{max-width:760px;margin:auto}
+.body section{padding:58px 0;border-bottom:1px solid}
+.body section:last-child{border-bottom:0}
+.body h2{margin:0 0 26px;font:400 clamp(34px,4vw,48px)/1.08 Georgia,serif;letter-spacing:-.025em}
+.body p,.body li{font-size:clamp(17px,1.35vw,19px);line-height:1.7}
+.body p{margin:0 0 20px}
+.body p:last-child{margin-bottom:0}
+.body code{font-size:.9em}
+.cartridge-list{list-style:none;margin:8px 0 0;padding:0;border-top:1px solid}
+.cartridge-list li{display:grid;grid-template-columns:150px 1fr;gap:24px;margin:0;padding:22px 0;border-bottom:1px solid}
+.cartridge-list strong{font-size:inherit;color:var(--accent)}
+.story-end{display:flex;justify-content:space-between;gap:24px;margin-top:72px;padding:24px 0;border-block:1px solid}
+.story-end a{font-size:14px;font-weight:700;text-decoration:none}
+@media(max-width:900px){.hero{grid-template-columns:minmax(0,.95fr) minmax(280px,1.05fr);gap:35px}.hero h1{font-size:clamp(43px,6vw,60px)}}
+@media(max-width:700px){.hero{grid-template-columns:1fr;min-height:0;padding:34px 0;gap:30px}.hero :global(.release-cover){order:-1;width:100%}.hero h1{font-size:clamp(44px,13vw,64px)}.body section{padding:46px 0}.cartridge-list li{grid-template-columns:1fr;gap:6px}.story-end{flex-direction:column;margin-top:52px}}
+</style>

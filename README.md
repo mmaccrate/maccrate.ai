@@ -24,12 +24,19 @@ An interactive mystery built around a deterministic evidence system, with option
 
 [Play Mira Machine](https://maccrate.ai/mira/) · [Read about the project](https://maccrate.ai/projects/mira-machine/) · [Browse the source](./apps/mira)
 
+### Model Cartridges
+
+A browser-local AI application that keeps one Qwen3.5 2B model loaded and switches two fine-tuned LoRA adapters around it. Base Console is the no-adapter control. Weather Radio uses Open-Meteo forecast data, and Stagehand produces validated actions for one authored scene. The pinned base model and adapters are fetched from Hugging Face.
+
+[Open Model Cartridges](https://maccrate.ai/cartridges/) · [Read the field report](https://maccrate.ai/projects/browser-lora-cartridges/) · [Download the adapters](https://huggingface.co/mmaccrate/model-cartidges) · [Browse the source](./apps/cartridges) · [Browse wllama-lora](https://github.com/mmaccrate/wllama-lora)
+
 ## Repository structure
 
 ```text
 apps/
 ├── web/       # Main maccrate.ai website
-└── mira/      # Mira Machine application and supporting services
+├── mira/      # Mira Machine application and supporting services
+└── cartridges/ # Browser-local Model Cartridges application
 
 projects/
 └── hello-world-ai-fine-tuning/
@@ -42,7 +49,7 @@ As the site grows, this README will remain an index. Detailed setup instructions
 
 ## Development
 
-This repository uses npm workspaces and requires Node.js 20.
+This repository uses npm workspaces and requires Node.js 22 or newer.
 
 ```bash
 npm ci
@@ -54,7 +61,9 @@ Individual builds and release tests can be run from the repository root:
 ```bash
 npm run build:web
 npm run build:mira
+CARTRIDGE_BASE_PATH=/cartridges/ npm run build:cartridges
 
 npm run test:web
 npm run test:mira
+npm run test:cartridges
 ```

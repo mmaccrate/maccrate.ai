@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "fixture-support-tone-v1",
+  "name": "Fixture: support tone",
+  "version": "1.0.0",
+  "description": "Schema fixture only. This is not a downloadable or usable cartridge.",
+  "baseModel": {
+    "repository": "example/base-model",
+    "revision": "1111111111111111111111111111111111111111",
+    "file": "base-q4_k_m.gguf",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "adapter": {
+    "repository": "example/adapter",
+    "revision": "2222222222222222222222222222222222222222",
+    "file": "adapter.gguf",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "format": "gguf-lora",
+    "recommendedScale": 1
+  },
+  "runtime": { "minimumVersion": "0.1.0" },
+  "behavior": { "systemPrompt": "Fixture only.", "temperature": 0.2 },
+  "license": { "adapter": "UNLICENSED-FIXTURE", "baseModel": "UNLICENSED-FIXTURE" }
+}

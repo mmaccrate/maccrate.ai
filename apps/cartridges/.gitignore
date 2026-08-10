@@ -1,0 +1,11 @@
+node_modules/
+dist/
+public/wasm/
+*.gguf
+*.safetensors
+.local-artifacts/
+.env.local
+public/models/
+artifacts/
+datasets/
+scripts/__pycache__/
