@@ -1,11 +1,27 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
+import { MAX_PERSON, MAX_PERSON_REFERENCE, SITE_URL, WEBSITE_REFERENCE } from '../data/site';
+
+const description = 'About Max MacCrate, the engineer and builder behind maccrate.ai.';
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    '@id': `${SITE_URL}/about#profile`,
+    url: `${SITE_URL}/about`,
+    name: 'About Max MacCrate',
+    description,
+    isPartOf: WEBSITE_REFERENCE,
+    mainEntity: MAX_PERSON_REFERENCE,
+  },
+  MAX_PERSON,
+];
 ---
-<SiteLayout title="About" description="About Max and maccrate.ai.">
+<SiteLayout title="Max MacCrate" description={description} jsonLd={jsonLd}>
   <article class="about">
-    <header><p class="eyebrow">About</p><h1 class="display">Hello<em>.</em></h1></header>
+    <header><p class="eyebrow">About Max MacCrate</p><h1 class="display">Hello<em>.</em></h1></header>
     <div class="about-copy">
-      <p class="lead">I’m Max, an engineer interested in practical AI, useful software, and the systems behind both.</p>
+      <p class="lead">I’m Max MacCrate, an engineer interested in practical AI, useful software, and the systems behind both.</p>
       <p>maccrate.ai is where I document and share the projects, experiments, and ideas I spend time building. Most of it sits somewhere between software, AI, and the web.</p>
       <p>Away from the screen, I play saxophone, perform in a wind ensemble, practice jazz, read One Piece, follow Virginia Tech sports, and spend a fair amount of time drinking coffee.</p>
 
@@ -14,8 +30,9 @@ import SiteLayout from '../layouts/SiteLayout.astro';
         <h2 id="contact-title">Find me online.</h2>
         <div class="contact-links">
           <a href="https://github.com/mmaccrate" target="_blank" rel="noopener noreferrer"><span>GitHub</span><b>@mmaccrate ↗</b></a>
-          <div><span>Email</span><b>max@maccrate.ai</b><small>Mailbox coming soon</small></div>
+          <div><span>Email</span><b>max@maccrate.ai</b></div>
           <a href="https://www.linkedin.com/in/mmaccrate/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><b>mmaccrate ↗</b></a>
+          <a href="https://huggingface.co/mmaccrate" target="_blank" rel="noopener noreferrer"><span>Hugging Face</span><b>@mmaccrate ↗</b></a>
         </div>
       </section>
     </div>

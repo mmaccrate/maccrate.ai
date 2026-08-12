@@ -2,17 +2,25 @@
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import ReleaseCover from '../../components/ReleaseCover.astro';
 import { PROJECTS } from '../../data/projects';
+import { MAX_PERSON_REFERENCE, SITE_URL, WEBSITE_REFERENCE } from '../../data/site';
 
 const project = PROJECTS.find((item) => item.slug === 'browser-lora-cartridges')!;
 const title = 'I Made LoRA Adapters Hot-Swappable in the Browser';
 const description = 'One local Qwen model, two fine-tuned LoRA adapters, three browser experiences, and no inference server.';
+const canonical = `${SITE_URL}/projects/browser-lora-cartridges`;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
+  '@id': `${canonical}#article`,
   headline: title,
   description,
-  author: { '@type': 'Person', name: 'Max MacCrate', url: 'https://maccrate.ai/about' },
-  url: 'https://maccrate.ai/projects/browser-lora-cartridges',
+  author: MAX_PERSON_REFERENCE,
+  publisher: MAX_PERSON_REFERENCE,
+  url: canonical,
+  mainEntityOfPage: canonical,
+  isPartOf: WEBSITE_REFERENCE,
+  datePublished: '2026-08-09',
+  dateModified: '2026-08-09',
 };
 ---
 
@@ -20,7 +28,7 @@ const jsonLd = {
   <article class="story">
     <header class="hero">
       <div class="hero-copy">
-        <p class="label">BROWSER AI FIELD REPORT · LORA ADAPTERS · AUGUST 2026</p>
+        <p class="label">BROWSER AI FIELD REPORT · LORA ADAPTERS · AUGUST 2026 · <a href="/about">BY MAX MACCRATE</a></p>
         <h1>I made LoRA adapters <em>hot-swappable</em> in the browser.</h1>
         <p class="intro">One local model, two fine-tuned adapters, three browser experiences, and no inference server.</p>
         <p class="setup">Qwen3.5 2B · llama.cpp · wllama-lora · GGUF · WebAssembly · WebGPU</p>
@@ -83,7 +91,7 @@ const jsonLd = {
 .hero{display:grid;grid-template-columns:minmax(0,.95fr) minmax(320px,1.05fr);gap:clamp(40px,7vw,90px);align-items:center;min-height:calc(100svh - 86px);padding:20px 0;border-bottom:1px solid}
 .hero :global(.release-cover){width:min(100%,calc(100svh - 150px));justify-self:end}
 .hero-copy{min-width:0}
-.label,.setup{font-size:11px;font-weight:700;line-height:1.35;letter-spacing:.1em;text-transform:uppercase}
+.label,.setup{font-size:11px;font-weight:700;line-height:1.35;letter-spacing:.1em;text-transform:uppercase}.label a{color:inherit;text-underline-offset:3px}
 .hero h1{max-width:1000px;margin:20px 0;font:400 clamp(46px,4.5vw,68px)/.96 Georgia,serif;letter-spacing:-.045em}
 .hero h1 em{color:var(--accent);font-weight:400}
 .intro{max-width:700px;font-size:clamp(18px,1.6vw,22px);line-height:1.4}

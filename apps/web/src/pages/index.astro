@@ -2,13 +2,24 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import ReleaseCover from '../components/ReleaseCover.astro';
 import { PROJECTS, projectNumber } from '../data/projects';
+import { MAX_PERSON, MAX_PERSON_REFERENCE, SITE_URL, WEBSITE_ID } from '../data/site';
 const orderedProjects = [...PROJECTS].sort((a, b) => b.sequence - a.sequence);
+const description = "Max MacCrate's personal site for engineering projects, experiments, and technical work.";
 const jsonLd = [
-  {'@context':'https:' + '//schema.org','@type':'WebSite',name:'maccrate.ai',url:'https://maccrate.ai',description:'Working prototypes by Max.'},
-  {'@context':'https:' + '//schema.org','@type':'Person',name:'Max',url:'https://maccrate.ai'},
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': WEBSITE_ID,
+    name: 'maccrate.ai',
+    url: SITE_URL,
+    description,
+    publisher: MAX_PERSON_REFERENCE,
+    creator: MAX_PERSON_REFERENCE,
+  },
+  MAX_PERSON,
 ];
 ---
-<SiteLayout title="maccrate.ai" description="Working prototypes by Max." jsonLd={jsonLd}>
+<SiteLayout title="Max MacCrate" description={description} jsonLd={jsonLd}>
   <div class="project-shelf" aria-label="Projects">
     {orderedProjects.map((project, index) => <>
       {index > 0 && <div class="project-divider" aria-hidden="true"></div>}
@@ -16,13 +27,13 @@ const jsonLd = [
       <div class="project-copy">
         <p class="release-meta"><span>Build {projectNumber(project.sequence)}</span><span>{project.year}</span></p>
         {index === 0
-          ? <h1 class="display" id={`project-${project.slug}`}>{project.title}</h1>
+          ? <h1 class="display" id={`project-${project.slug}`} aria-describedby="site-identity">{project.title}</h1>
           : <h2 class="display" id={`project-${project.slug}`}>{project.title}</h2>}
         <p class="descriptor">{project.descriptor}</p>
         <p class="premise">{project.premise}</p>
         <div class="actions">
           {project.liveUrl && <a class="button-link" href={project.liveUrl} target="_blank" rel="noopener noreferrer">{project.slug === 'browser-lora-cartridges' ? 'Open Model Cartridges' : `Play ${project.title}`} <span aria-hidden="true">↗</span></a>}
-          <a class:list={[project.liveUrl ? 'notes' : 'button-link']} href={`/projects/${project.slug}`}>{project.liveUrl ? 'Project details' : 'Read the field report'} <span aria-hidden="true">→</span></a>
+          <a class:list={[project.liveUrl ? 'notes' : 'button-link']} href={`/projects/${project.slug}`}>{project.liveUrl ? `Read about ${project.title}` : `Read the ${project.title} field report`} <span aria-hidden="true">→</span></a>
         </div>
       </div>
       <ReleaseCover project={project} linked />
