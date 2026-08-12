@@ -30,10 +30,9 @@ const jsonLd = {
   <article class="project">
     <header class="project-head">
       <div>
-        <p class="eyebrow">MC–{projectNumber(p.sequence)} · {p.year} · {p.descriptor}</p>
+        <p class="eyebrow">MC–{projectNumber(p.sequence)} · {p.year} · {p.descriptor} · <a href="/about">BY MAX MACCRATE</a></p>
         <h1 class="display">{p.title}</h1>
         <p class="project-premise">{p.premise}</p>
-        <p class="project-byline">By <a href="/about">Max MacCrate</a></p>
         <div class="project-actions">
           {p.liveUrl && <a class="launch" href={p.liveUrl} target="_blank" rel="noopener noreferrer">Play {p.title} <span aria-hidden="true">↗</span></a>}
           <a href="#case-study">Read the project details ↓</a>
@@ -57,7 +56,7 @@ const jsonLd = {
   </article>
 </SiteLayout>
 <style>
-.project-head{display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(40px,7vw,105px);align-items:center;min-height:calc(100svh - 86px);padding:20px 0}.project-head :global(.release-cover){width:min(100%,calc(100svh - 150px));justify-self:end}.project-head h1{margin:0;font-size:clamp(64px,7.5vw,108px);line-height:.9}.project-head h1 em{font-weight:400;color:var(--accent,var(--blue))}.project-premise{max-width:550px;margin:28px 0 10px;font-size:clamp(18px,1.4vw,23px);line-height:1.4}.project-byline{margin:0 0 20px;font-size:13px}.project-byline a{font-weight:700;text-underline-offset:4px}.project-actions{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}.project-actions a{font-weight:700;text-decoration:none;border-bottom:1px solid currentColor;padding:8px 0}.project-actions .launch{color:var(--blue);border-bottom-width:2px}
+.project-head{display:grid;grid-template-columns:.78fr 1.22fr;gap:clamp(40px,7vw,105px);align-items:center;min-height:calc(100svh - 86px);padding:20px 0}.project-head :global(.release-cover){width:min(100%,calc(100svh - 150px));justify-self:end}.project-head h1{margin:0;font-size:clamp(64px,7.5vw,108px);line-height:.9}.project-head h1 em{font-weight:400;color:var(--accent,var(--blue))}.project-premise{max-width:550px;margin:28px 0 20px;font-size:clamp(18px,1.4vw,23px);line-height:1.4}.project-actions{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}.project-actions a{font-weight:700;text-decoration:none;border-bottom:1px solid currentColor;padding:8px 0}.project-actions .launch{color:var(--blue);border-bottom-width:2px}
 .credits{padding:24px 0;border-block:1px solid var(--ink)}.credits dl{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin:0}.credits dl div{min-width:0}.credits dt{margin-bottom:9px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.13em}.credits dd{margin:0;font-size:14px;line-height:1.45}
 .case{width:min(900px,100%);margin:0 auto;padding:clamp(80px,11vw,170px) 0}.case section{display:grid;grid-template-columns:180px 1fr;gap:30px;padding:clamp(45px,7vw,90px) 0;border-top:1px solid var(--rule)}.case h2{grid-column:2;margin:0;font-family:Georgia,'Times New Roman',serif;font-size:clamp(38px,5vw,72px);font-weight:400;line-height:.98;letter-spacing:-.04em}.case section>p:last-child{grid-column:2;margin:0;font-size:clamp(16px,1.25vw,20px);line-height:1.65}.project-end{display:flex;justify-content:space-between;gap:25px;padding:25px 0;border-block:1px solid var(--ink)}.project-end a{font-weight:700;text-decoration:none}
 @media(max-width:800px){.project-head{grid-template-columns:1fr;min-height:0;padding:28px 0;gap:28px}.project-head>div:first-child{order:2}.project-head :global(.release-cover){order:1;width:100%;justify-self:stretch}.project-head h1{font-size:18vw}.credits dl{grid-template-columns:1fr 1fr}.case section{grid-template-columns:1fr;gap:18px}.case h2,.case section>p:last-child{grid-column:1}.project-end{flex-direction:column}}
