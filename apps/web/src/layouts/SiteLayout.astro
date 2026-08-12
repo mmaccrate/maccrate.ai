@@ -9,8 +9,9 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 const { title, description, image = '/og.png', type = 'website', jsonLd } = Astro.props;
-const canonical = new URL(Astro.url.pathname, 'https://maccrate.ai');
-const pageTitle = title === 'maccrate.ai' ? 'maccrate.ai — Working prototypes by Max' : `${title} — maccrate.ai`;
+const canonicalPath = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '');
+const canonical = new URL(canonicalPath, 'https://maccrate.ai');
+const pageTitle = `${title} — maccrate.ai`;
 const path = Astro.url.pathname;
 ---
 <!doctype html>
@@ -42,7 +43,7 @@ const path = Astro.url.pathname;
   <div class="site-shell">
     <header class="site-head">
       <a class="wordmark" href="/" aria-label="maccrate.ai home">maccrate.ai</a>
-      <span class="brand-purpose">Engineer · learning by building</span>
+      <span class="brand-purpose" id="site-identity">Max MacCrate · Engineer / builder</span>
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="/" aria-current={path === '/' ? 'page' : undefined}>Projects</a>
         <a href="/about" aria-current={path === '/about' ? 'page' : undefined}>About</a>
