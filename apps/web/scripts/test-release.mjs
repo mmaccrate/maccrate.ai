@@ -29,12 +29,14 @@ check(/<h1[^>]*>[\s\S]*LoRA,[\s\S]*On Demand/i.test(home), 'homepage does not le
 check(home.indexOf('LoRA, On Demand') < home.indexOf('Hello, Fine-Tuning') && home.indexOf('Hello, Fine-Tuning') < home.indexOf('Mira Machine'), 'homepage projects are not newest-first');
 check(home.includes('Open Model Cartridges') && home.includes('/cartridges/'), 'homepage cartridge launch action is missing');
 check(home.includes('Play Mira Machine'), 'homepage play action is missing');
-check(home.includes('Engineer · learning by building'), 'site identity does not reflect Max');
+check(home.includes('Max MacCrate · Engineer / builder'), 'site identity does not reflect Max');
 check(!/Engineering Manager|focused research/i.test(home + about), 'private or inaccurate work language remains in public pages');
-check(/(?:I’m Max, an engineer interested in practical AI|I am an engineer, saxophonist, and coffee drinker)/i.test(about), 'About page is missing Max’s first-person introduction');
+check(/(?:I’m Max MacCrate, an engineer interested in practical AI|I am an engineer, saxophonist, and coffee drinker)/i.test(about), 'About page is missing Max’s first-person introduction');
 check(/wind ensemble/i.test(about) && /practice jazz/i.test(about), 'About page is missing Max’s musical life');
 check(about.includes('https://github.com/mmaccrate'), 'About page is missing Max’s verified GitHub link');
 check(about.includes('https://www.linkedin.com/in/mmaccrate/'), 'About page is missing Max’s verified LinkedIn link');
+check(about.includes('https://huggingface.co/mmaccrate'), 'About page is missing Max’s verified Hugging Face link');
+check(!/Mailbox coming soon/i.test(about), 'About page still says Max’s mailbox is coming soon');
 check(!/mailto:/i.test(combined), 'an unconfigured email action remains in production HTML');
 check(details.includes('Concept, design, engineering, story system'), 'project ownership is unclear');
 check(details.includes('The mystery is a deterministic evidence graph.'), 'case-study evidence architecture is missing');

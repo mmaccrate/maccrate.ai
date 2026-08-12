@@ -2,6 +2,7 @@
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import ReleaseCover from '../../components/ReleaseCover.astro';
 import { PROJECTS, projectNumber, type Project } from '../../data/projects';
+import { MAX_PERSON_REFERENCE, SITE_URL, WEBSITE_REFERENCE } from '../../data/site';
 
 export function getStaticPaths() {
   return PROJECTS
@@ -10,18 +11,31 @@ export function getStaticPaths() {
 }
 interface Props { project: Project }
 const { project: p } = Astro.props;
-const jsonLd = {'@context':'https:' + '//schema.org','@type':'SoftwareApplication',name:p.title,applicationCategory:'GameApplication',operatingSystem:'Web browser',description:p.premise,creator:{'@type':'Person',name:'Max',url:'https://maccrate.ai/about'},url:`https://maccrate.ai/projects/${p.slug}`};
+const canonical = `${SITE_URL}/projects/${p.slug}`;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  '@id': `${canonical}#software`,
+  name: p.title,
+  applicationCategory: 'GameApplication',
+  operatingSystem: 'Web browser',
+  description: p.premise,
+  creator: MAX_PERSON_REFERENCE,
+  url: canonical,
+  mainEntityOfPage: canonical,
+  isPartOf: WEBSITE_REFERENCE,
+};
 ---
 <SiteLayout title={p.title} description={p.premise} type="article" jsonLd={jsonLd}>
   <article class="project">
     <header class="project-head">
       <div>
-        <p class="eyebrow">MC–{projectNumber(p.sequence)} · {p.year} · {p.descriptor}</p>
+        <p class="eyebrow">MC–{projectNumber(p.sequence)} · {p.year} · {p.descriptor} · <a href="/about">BY MAX MACCRATE</a></p>
         <h1 class="display">{p.title}</h1>
         <p class="project-premise">{p.premise}</p>
         <div class="project-actions">
           {p.liveUrl && <a class="launch" href={p.liveUrl} target="_blank" rel="noopener noreferrer">Play {p.title} <span aria-hidden="true">↗</span></a>}
-          <a href="#case-study">Project details ↓</a>
+          <a href="#case-study">Read the project details ↓</a>
         </div>
       </div>
       <ReleaseCover project={p} />
