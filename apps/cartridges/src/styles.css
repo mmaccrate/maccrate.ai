@@ -40,7 +40,10 @@ button:disabled { cursor: not-allowed; }
 .brand { color: #d9d0c0; text-decoration: none; font: 600 .68rem "IBM Plex Mono", monospace; letter-spacing: .12em; }
 .product-lockup { display: flex; align-items: center; gap: 9px; font: 600 1rem "Playfair Display", Georgia, serif; }
 .product-mark { width: 11px; height: 11px; border-radius: 2px; background: var(--orange); box-shadow: inset 0 -2px 0 #8f391f; transform: rotate(45deg); }
-.system-toggle { justify-self: end; display: flex; align-items: center; gap: 8px; border: 0; background: transparent; padding: 10px 0; color: var(--muted); cursor: pointer; font: 600 .66rem "IBM Plex Mono", monospace; text-transform: uppercase; }
+.topbar-actions { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: clamp(12px, 2vw, 24px); min-width: 0; }
+.hub-link { color: #bdb5a8; text-decoration: none; font: 600 .66rem "IBM Plex Mono", monospace; white-space: nowrap; }
+.hub-link:hover, .hub-link:focus-visible { color: #f2ebdd; }
+.system-toggle { justify-self: end; display: flex; align-items: center; gap: 8px; border: 0; background: transparent; padding: 10px 0; color: var(--muted); cursor: pointer; font: 600 .66rem "IBM Plex Mono", monospace; text-transform: uppercase; white-space: nowrap; }
 .led { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: #454842; box-shadow: inset 0 1px 2px #000, 0 0 0 1px #090909; }
 .led.is-on { background: var(--green); box-shadow: 0 0 8px rgba(121,185,120,.75), inset 0 1px #d8ffd5; }
 .led--amber { background: var(--amber); box-shadow: 0 0 6px rgba(223,170,77,.5); }
@@ -194,9 +197,12 @@ summary { padding: 16px 0; cursor: pointer; color: #c5bcaf; font-weight: 600; }
 @media (max-width: 760px) {
   body { overflow-y: auto; overflow-x: hidden; }
   .console-app { min-height: 100dvh; height: auto; grid-template-rows: 50px minmax(calc(100dvh - 50px), auto); }
-  .topbar { height: 50px; grid-template-columns: auto 1fr auto; padding: 0 13px; }
+  .topbar { height: 50px; grid-template-columns: auto minmax(0, 1fr) auto; padding: 0 13px; }
   .brand { font-size: .56rem; }
-  .product-lockup { justify-self: center; font-size: .9rem; }
+  .product-lockup { grid-column: 2; justify-self: center; min-width: 0; font-size: .9rem; }
+  .topbar-actions { grid-column: 3; gap: 8px; }
+  .hub-link { font-size: .56rem; }
+  .system-toggle { gap: 5px; }
   .system-toggle #header-status { display: none; }
   .console-workspace { min-height: calc(100dvh - 50px); padding: 14px 10px 12px; overflow: visible; }
   .console-workspace, .cartridge-shelf, .console-deck { width: 100%; max-width: 100%; min-width: 0; }
