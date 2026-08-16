@@ -20,7 +20,7 @@ A reproducible experiment exploring the smallest useful “Hello World” for lo
 
 ### Hermes Builds maccrate.ai
 
-A privacy-safe field report on the models, tools, sessions, and repository work behind maccrate.ai.
+A field report on how Hermes Agent, models, tools, and review loops work together to build maccrate.ai.
 
 [Read the field report](https://maccrate.ai/projects/build-telemetry/) · [Browse the source](./apps/web)
 
