@@ -18,6 +18,12 @@ A reproducible experiment exploring the smallest useful “Hello World” for lo
 
 [Read the field report](https://maccrate.ai/projects/hello-world-ai-fine-tuning/) · [Open the project README](./projects/hello-world-ai-fine-tuning/README.md)
 
+### Hermes Builds maccrate.ai
+
+A privacy-safe field report on the models, tools, sessions, and repository work behind maccrate.ai.
+
+[Read the field report](https://maccrate.ai/projects/build-telemetry/) · [Browse the source](./apps/web)
+
 ### Mira Machine
 
 An interactive mystery built around a deterministic evidence system, with optional browser-local AI powered by Gemma 4 and WebGPU.
