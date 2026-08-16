@@ -45,7 +45,7 @@ const traceRuns = (representative?.events || []).reduce((runs: { name: string; c
 
     <div class="body" id="article">
       <section class="lead">
-        <p><a href="https://github.com/mmaccrate/maccrate.ai">maccrate.ai</a> is the result; this page follows the work behind it. Across the retained record, model requests move through files, shell, browser, and review while ideas are tested, revised, or cut. It contains <strong>{fmt(telemetry.totals.sessions)} work sessions</strong> after removing {fmt(telemetry.workflow.sessionsExcluded)} heartbeat artifacts.</p>
+        <p><a href="https://github.com/mmaccrate/maccrate.ai">maccrate.ai</a> is the result; this page follows the work behind it. Across the retained record, model requests move through files, shell, browser, and review while ideas are tested, revised, or cut. It contains <strong>{fmt(telemetry.totals.sessions)} work sessions</strong>.</p>
         <dl class="totals" aria-label="Activity in the maccrate.ai Hermes instance">
           <div><dt>{compact(telemetry.totals.tokens)}</dt><dd>recorded tokens<small>{compact(telemetry.totals.cacheRead)} cached context</small></dd></div>
           <div><dt>{compact(telemetry.totals.toolCalls)}</dt><dd>tool calls<small>files, shell, browser and more</small></dd></div>
