@@ -22,6 +22,27 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
+    sequence: 4,
+    slug: 'build-telemetry',
+    title: 'Hermes Builds maccrate.ai',
+    year: 2026,
+    descriptor: 'Hermes Agent · managed software delivery',
+    premise: 'How persistent context, model routing, tools, and review loops turn Hermes Agent sessions into maccrate.ai releases.',
+    disciplines: ['Agent systems', 'Data design', 'Interactive writing'],
+    role: 'Agent workflow design, telemetry normalization, engineering review',
+    status: 'case-study',
+    accent: '#6b3fb8',
+    cover: 'geometric',
+    credits: [
+      { label: 'Source', value: 'Local Hermes session records · all available retained history' },
+      { label: 'Output', value: 'Static privacy-safe snapshot · regenerated offline' },
+      { label: 'Coverage', value: 'Metadata and aggregates only · no conversation text' },
+    ],
+    sections: [
+      { eyebrow: 'Method', title: 'The words stay private; the shape remains.', body: 'This interactive article follows the measured session, model, route, project, and tool metadata behind maccrate.ai without publishing prompts, responses, paths, or arguments.' },
+    ],
+  },
+  {
     sequence: 3,
     slug: 'browser-lora-cartridges',
     title: 'LoRA, On Demand',

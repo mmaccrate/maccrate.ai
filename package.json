@@ -17,6 +17,7 @@
     "build:cartridges": "CARTRIDGE_BASE_PATH=/cartridges/ npm run build --workspace=@maccrate/model-cartridges",
     "test:web": "npm run test:release --workspace=@maccrate/web",
     "test:mira": "npm run test:release --workspace=@maccrate/mira",
-    "test:cartridges": "npm test --workspace=@maccrate/model-cartridges"
+    "test:cartridges": "npm test --workspace=@maccrate/model-cartridges",
+    "telemetry:update": "python3 scripts/update_build_telemetry.py"
   }
 }

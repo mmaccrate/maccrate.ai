@@ -6,7 +6,7 @@ import { MAX_PERSON_REFERENCE, SITE_URL, WEBSITE_REFERENCE } from '../../data/si
 
 export function getStaticPaths() {
   return PROJECTS
-    .filter((project) => !['hello-world-ai-fine-tuning', 'browser-lora-cartridges'].includes(project.slug))
+    .filter((project) => !['hello-world-ai-fine-tuning', 'browser-lora-cartridges', 'build-telemetry'].includes(project.slug))
     .map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 interface Props { project: Project }
