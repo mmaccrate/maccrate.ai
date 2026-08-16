@@ -4,6 +4,16 @@ The source for [maccrate.ai](https://maccrate.ai), my personal website and a gro
 
 Built by **Max MacCrate**.
 
+## Update Build Telemetry
+
+Run:
+
+```bash
+npm run telemetry:update
+```
+
+This reads the authoritative local Hermes SQLite history from `~/.hermes/state.db` (or `HERMES_STATE_DB`) through a read-only URI, regenerates the privacy-safe `apps/web/src/data/build-telemetry.json` snapshot, and validates it before an atomic write. Legacy JSON is not used by the current generator. Nothing is pushed or deployed automatically; review the diff before committing.
+
 ## Projects
 
 ### maccrate.ai

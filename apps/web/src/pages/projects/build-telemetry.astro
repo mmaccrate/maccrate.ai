@@ -1,0 +1,148 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ReleaseCover from '../../components/ReleaseCover.astro';
+import { PROJECTS } from '../../data/projects';
+import { MAX_PERSON_REFERENCE, SITE_URL, WEBSITE_REFERENCE } from '../../data/site';
+import telemetry from '../../data/build-telemetry.json';
+
+const project = PROJECTS.find((item) => item.slug === 'build-telemetry')!;
+const title = 'Building maccrate.ai with Hermes Agent';
+const description = 'An interactive view of the sessions, models, tools, and projects behind maccrate.ai—and the engineering process that connects them.';
+const canonical = `${SITE_URL}/projects/build-telemetry`;
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'TechArticle', '@id': `${canonical}#article`,
+  headline: title, description, author: MAX_PERSON_REFERENCE, publisher: MAX_PERSON_REFERENCE,
+  url: canonical, mainEntityOfPage: canonical, isPartOf: WEBSITE_REFERENCE, dateModified: telemetry.generatedAt,
+};
+const fmt = (n: number) => n.toLocaleString('en-US');
+const compact = (n: number) => n >= 1e9 ? `${(n / 1e9).toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}B` : n >= 1e6 ? `${(n / 1e6).toFixed(n >= 1e8 ? 1 : 2).replace(/\.0+$/, '')}M` : n >= 1e3 ? `${(n / 1e3).toFixed(n >= 1e5 ? 0 : 1).replace(/\.0$/, '')}K` : fmt(n);
+const tokenTotal = (item: { tokens: Record<string, number> }) => Object.values(item.tokens).reduce((sum, value) => sum + value, 0);
+const visibleRoute = (name: string) => name === 'Unspecified route' ? null : name;
+const maxModelTokens = Math.max(...telemetry.models.map(tokenTotal));
+const cartridgesProject = telemetry.projects.find((item) => item.name === 'LoRA, On Demand');
+const cartridgesTokens = cartridgesProject ? Object.values(cartridgesProject.tokens).reduce((sum, value) => sum + value, 0) : 0;
+const representative = telemetry.representativeSessions[0];
+const traceRuns = (representative?.events || []).reduce((runs: { name: string; count: number }[], event) => {
+  const name = event.toolFamily || event.skill || event.type;
+  const previous = runs[runs.length - 1];
+  if (previous?.name === name) previous.count += event.count || 1;
+  else runs.push({ name, count: event.count || 1 });
+  return runs;
+}, []).filter((run) => !['SESSION START', 'MODEL REQUEST'].includes(run.name)).slice(0, 10);
+---
+
+<SiteLayout title={title} description={description} type="article" jsonLd={jsonLd}>
+  <article class="story" data-telemetry={JSON.stringify(telemetry)}>
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="label">HERMES AGENT FIELD REPORT · AUGUST 2026 · <a href="/about">BY MAX MACCRATE</a></p>
+        <h1>Building maccrate.ai <em>with Hermes Agent.</em></h1>
+        <p class="intro">The activity beneath the site shows how persistent context, delegated work, repository tools, and engineering review fit together.</p>
+        <p class="setup">{telemetry.sourceCoverage.earliestAvailable.slice(0, 10)} → {telemetry.sourceCoverage.latestIncluded.slice(0, 10)}</p>
+      </div>
+      <ReleaseCover project={project} />
+    </header>
+
+    <div class="body" id="article">
+      <section class="lead">
+        <p>Hermes is the agent used to build and maintain <a href="https://github.com/mmaccrate/maccrate.ai">maccrate.ai</a>. It keeps project context attached to model work, repository tools, and review across sessions. This dedicated instance contains <strong>{fmt(telemetry.totals.sessions)} retained work sessions</strong> after removing {fmt(telemetry.workflow.sessionsExcluded)} sessions created by a heartbeat bug.</p>
+        <dl class="totals" aria-label="Activity in the maccrate.ai Hermes instance">
+          <div><dt>{compact(telemetry.totals.tokens)}</dt><dd>recorded tokens<small>{compact(telemetry.totals.cacheRead)} cached context</small></dd></div>
+          <div><dt>{compact(telemetry.totals.toolCalls)}</dt><dd>tool calls<small>files, shell, browser and more</small></dd></div>
+          <div><dt>{fmt(telemetry.totals.sessions)}</dt><dd>work sessions<small>retained history</small></dd></div>
+          <div><dt>{telemetry.totals.models}</dt><dd>models<small>{telemetry.routes.filter((item) => visibleRoute(item.name)).length} known routes</small></dd></div>
+          <div><dt>{telemetry.totals.skills}</dt><dd>skills used<small>repeatable procedures</small></dd></div>
+          <div><dt>{telemetry.totals.projects}</dt><dd>activity groups<small>named work plus other work</small></dd></div>
+        </dl>
+      </section>
+
+
+      <section>
+        <h2>Recorded activity by model.</h2>
+        <p>Switch between tokens, sessions, and tool calls. Model names describe inference; Codex, OpenRouter, and the local endpoint describe how those models were reached.</p>
+        <div class="metric-switch" role="group" aria-label="Model chart measure">
+          <button type="button" data-model-metric="tokens" aria-pressed="true">Tokens</button>
+          <button type="button" data-model-metric="sessions" aria-pressed="false">Sessions</button>
+          <button type="button" data-model-metric="toolCalls" aria-pressed="false">Tool calls</button>
+        </div>
+        <div class="model-chart exhibit" aria-label="Model participation">
+          {telemetry.models.map((model) => <button type="button" class="model-row" data-model={model.name} aria-pressed="false">
+            <strong>{model.name}</strong>
+            <span class="bar"><i style={`width:${Math.max(2, tokenTotal(model) / maxModelTokens * 100)}%`}></i></span>
+            <b data-model-value>{compact(tokenTotal(model))}</b>
+            <small>{model.routes.map((item) => visibleRoute(item.name)).filter(Boolean).join(' · ') || 'route metadata unavailable'}</small>
+          </button>)}
+        </div>
+        <p class="model-detail" aria-live="polite">Select a model for its projects and most-used tools.</p>
+      </section>
+
+      <section>
+        <h2>One project in focus: Browser Model Cartridges.</h2>
+        <p>From its first retained session to final recorded verification, <a href="/projects/browser-lora-cartridges">Browser Model Cartridges</a> spanned thirteen days and {compact(cartridgesTokens)} recorded tokens.</p>
+        {cartridgesProject && <div class="project-view exhibit">
+          <dl><div><dt>{cartridgesProject.sessions - cartridgesProject.childSessions}</dt><dd>main sessions</dd></div><div><dt>{cartridgesProject.childSessions}</dt><dd>child sessions</dd></div><div><dt>{fmt(cartridgesProject.toolCalls)}</dt><dd>tool calls</dd></div><div><dt>{cartridgesProject.browserSessions}</dt><dd>used the browser</dd></div></dl>
+          <p>{cartridgesProject.models.map((item) => item.name).join(' · ')} · <a href="/projects/browser-lora-cartridges">Read the project</a></p>
+        </div>}
+      </section>
+
+      <section>
+        <h2>A session with the words removed.</h2>
+        <p>The transcript is absent. The remaining sequence still shows context loading, model work, file operations, commands, and the return to verification. Consecutive events are collapsed to keep the shape readable.</p>
+        <div class="session-trace exhibit" aria-label="Privacy-safe session event trace">
+          <p><strong>Browser Model Cartridges</strong><span>{representative?.model} · {representative?.route} · {representative?.startedAt.slice(0, 10)}</span></p>
+          <ol>{traceRuns.map((run, index) => <li><b>{String(index + 1).padStart(2, '0')}</b><span>{run.name}</span>{run.count > 1 && <small>× {fmt(run.count)}</small>}</li>)}</ol>
+        </div>
+      </section>
+
+      <section>
+        <h2>Files, commands, and browser work dominate the pattern.</h2>
+        <p>The model × tool matrix zooms back out across the instance. Darker cells mean more recorded calls within that model’s work.</p>
+        <div class="matrix-wrap exhibit">
+          <table class="matrix">
+            <thead><tr><th>Model</th>{telemetry.tools.map((tool) => <th>{tool.name}</th>)}</tr></thead>
+            <tbody>{telemetry.models.map((model) => {
+              const row = telemetry.toolMatrix.filter((item) => item.model === model.name);
+              const max = Math.max(...row.map((item) => item.count), 1);
+              return <tr><th>{model.name}</th>{telemetry.tools.map((tool) => { const count = row.find((item) => item.toolFamily === tool.name)?.count || 0; return <td title={`${model.name} · ${tool.name}: ${fmt(count)}`}><i style={`opacity:${count ? .14 + (count / max) * .86 : 0}`}></i><span>{count ? compact(count) : '—'}</span></td>})}</tr>;
+            })}</tbody>
+          </table>
+        </div>
+        <div class="skills-line"><strong>Most-used skills</strong>{telemetry.skills.slice(0, 5).map((skill) => <span>{skill.name} <b>{fmt(skill.count)}</b></span>)}</div>
+      </section>
+
+      <section>
+        <h2>The discarded work is part of the project.</h2>
+        <p>This history includes ideas that shipped, experiments that taught something, and versions that were simply not good enough. Keeping them in context means the next attempt can begin with what was learned instead of repeating the same mistakes.</p>
+        <p>Hermes can carry those decisions forward and turn them into working changes. Choosing what deserves to remain is still the human part.</p>
+      </section>
+    </div>
+
+    <footer class="story-end"><a href="/">← Back to projects</a></footer>
+  </article>
+</SiteLayout>
+
+<script>
+  const root = document.querySelector('[data-telemetry]');
+  const data = JSON.parse(root?.dataset.telemetry || '{}');
+  const format = (n) => Number(n).toLocaleString('en-US');
+  const compactValue = (n) => n >= 1e9 ? `${(n / 1e9).toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}B` : n >= 1e6 ? `${(n / 1e6).toFixed(n >= 1e8 ? 1 : 2).replace(/\.0+$/, '')}M` : n >= 1e3 ? `${(n / 1e3).toFixed(n >= 1e5 ? 0 : 1).replace(/\.0$/, '')}K` : format(n);
+  const tokens = (item) => Object.values(item.tokens || {}).reduce((sum, value) => sum + Number(value), 0);
+  let modelMetric = 'tokens';
+  document.querySelectorAll('[data-model-metric]').forEach((button) => button.addEventListener('click', () => {
+    modelMetric = button.dataset.modelMetric;
+    document.querySelectorAll('[data-model-metric]').forEach((item) => item.setAttribute('aria-pressed', item === button ? 'true' : 'false'));
+    const values = data.models.map((item) => modelMetric === 'tokens' ? tokens(item) : item[modelMetric]); const max = Math.max(...values, 1);
+    document.querySelectorAll('[data-model]').forEach((row) => { const item = data.models.find((model) => model.name === row.dataset.model); const value = modelMetric === 'tokens' ? tokens(item) : item[modelMetric]; row.querySelector('.bar i').style.width = `${Math.max(2, value / max * 100)}%`; row.querySelector('[data-model-value]').textContent = compactValue(value); });
+  }));
+  document.querySelectorAll('[data-model]').forEach((button) => button.addEventListener('click', () => {
+    const item = data.models.find((model) => model.name === button.dataset.model); document.querySelectorAll('[data-model]').forEach((row) => row.setAttribute('aria-pressed', row === button ? 'true' : 'false'));
+    document.querySelector('.model-detail').innerHTML = `<strong>${item.name}</strong> worked across ${item.projects.map((p) => `${p.name} (${p.count})`).join(' · ')}. Most-used tools: ${item.tools.slice(0,4).map((t) => `${t.name} ${format(t.count)}`).join(' · ')}.`;
+  }));
+</script>
+
+<style>
+.story{--accent:#6b3fb8;max-width:1050px;margin:auto}.hero{display:grid;grid-template-columns:minmax(0,.95fr) minmax(320px,1.05fr);gap:clamp(40px,7vw,90px);align-items:center;min-height:calc(100svh - 86px);padding:20px 0;border-bottom:1px solid}.hero :global(.release-cover){width:min(100%,calc(100svh - 150px));justify-self:end}.hero-copy{min-width:0}.label,.setup{font-size:11px;font-weight:700;line-height:1.35;letter-spacing:.1em;text-transform:uppercase}.label a{color:inherit;text-underline-offset:3px}.hero h1{margin:20px 0;font:400 clamp(46px,4.5vw,68px)/.96 Georgia,serif;letter-spacing:-.045em}.hero h1 em{color:var(--accent);font-weight:400}.intro{max-width:700px;font-size:clamp(18px,1.6vw,22px);line-height:1.4}.setup{margin-top:22px}.body{max-width:790px;margin:auto}.body section{padding:64px 0;border-bottom:1px solid}.body section:last-child{padding-bottom:0;border-bottom:0}.body h2{margin:0 0 26px;font:400 clamp(34px,4vw,50px)/1.07 Georgia,serif;letter-spacing:-.025em}.body p,.body li{font-size:clamp(17px,1.35vw,19px);line-height:1.7}.body p{margin:0 0 20px}.body p:last-child{margin-bottom:0}.lead>p:first-child{font-size:clamp(19px,1.7vw,23px)}.exhibit{margin:34px 0}.totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px;margin:42px 0 0}.totals div{min-width:0}.totals dt{font:400 clamp(40px,5vw,62px)/1 Georgia,serif;letter-spacing:-.055em}.totals dd{margin:8px 0 0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.totals small{display:block;margin-top:5px;color:#625d55;font-size:10px;font-weight:400;text-transform:none;letter-spacing:0}.metric-switch{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 14px}.metric-switch button{min-height:44px;padding:9px 13px;border:1px solid;background:transparent;cursor:pointer}.metric-switch button[aria-pressed=true]{background:#e9ff52}.model-chart{border-top:1px solid}.model-row{display:grid;grid-template-columns:145px 1fr 76px;gap:14px;align-items:center;width:100%;min-height:62px;padding:12px 0;border:0;border-bottom:1px solid;background:transparent;text-align:left;cursor:pointer}.model-row[aria-pressed=true]{background:#f0ecdf}.model-row .bar{height:8px;background:#ded9ce}.model-row .bar i{display:block;height:100%;background:var(--accent)}.model-row>b{font:400 21px Georgia,serif;text-align:right}.model-row small{grid-column:2/4;color:#625d55}.model-detail,.timeline-detail{min-height:28px;font-size:13px!important;color:#625d55}.timeline{margin-top:18px}.timeline-bars{display:flex;align-items:end;height:190px;gap:3px;border-bottom:1px solid}.timeline-bars button{flex:1;min-width:3px;height:100%;display:flex;align-items:end;padding:0;border:0;background:transparent;cursor:pointer}.timeline-bars i{display:block;width:100%;min-height:3px;background:var(--accent)}.timeline-bars button[aria-pressed=true] i{background:#ef4b36}.timeline-axis{display:flex;justify-content:space-between;margin-top:8px;font-size:10px}.timeline-detail{margin-top:18px!important}.project-switch button{flex:1;min-width:135px;text-align:left}.project-view{padding:24px;background:#e9e3d7}.project-view :global(>div){display:flex;justify-content:space-between;gap:20px;align-items:baseline}.project-view :global(>div strong){font:400 28px Georgia,serif}.project-view :global(dl){display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:0 0 24px}.project-view :global(dt){font:400 28px Georgia,serif}.project-view :global(dd){margin:4px 0 0;font-size:9px;text-transform:uppercase}.project-view :global(p){font-size:13px!important}.session-trace>p{display:flex;justify-content:space-between;gap:18px;font-size:13px!important}.session-trace ol{display:grid;grid-template-columns:1fr 1fr;margin:16px 0 0;padding:0;list-style:none;border-top:1px solid}.session-trace li{display:grid;grid-template-columns:28px 1fr auto;gap:8px;padding:11px 12px 11px 0;border-bottom:1px solid}.session-trace li:nth-child(even){padding-left:12px;border-left:1px solid}.session-trace li b{font-size:9px;color:var(--accent)}.session-trace li span{font-size:11px;font-weight:800;letter-spacing:.06em}.session-trace li small{font-size:10px}.matrix-wrap{overflow-x:auto}.matrix{width:100%;border-collapse:collapse;font-size:10px}.matrix th,.matrix td{padding:7px;text-align:center;border-bottom:1px solid var(--rule)}.matrix thead th{writing-mode:vertical-rl;height:90px;text-align:left}.matrix thead th:first-child{writing-mode:initial;height:auto}.matrix tbody th{text-align:left;white-space:nowrap}.matrix td{position:relative;min-width:54px}.matrix td i{position:absolute;inset:4px;background:var(--accent)}.matrix td span{position:relative;z-index:1}.skills-line{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:22px;font-size:12px}.skills-line span b{color:var(--accent)}.story-end{max-width:790px;margin:32px auto 0;padding:0}.story-end a{font-size:14px;font-weight:700;text-decoration:none}:global(.site-foot){margin-top:44px}
+@media(max-width:700px){.hero{grid-template-columns:1fr;min-height:0;padding:34px 0;gap:30px}.hero :global(.release-cover){order:-1;width:100%}.hero h1{font-size:clamp(44px,13vw,64px)}.body section{padding:50px 0}.body section:last-child{padding-bottom:0}.totals{grid-template-columns:1fr 1fr}.model-row{grid-template-columns:minmax(0,1fr) auto}.model-row .bar{grid-column:1;grid-row:2}.model-row>b{grid-column:2;grid-row:1}.model-row small{grid-column:1/3}.timeline-bars{height:150px;gap:2px}.project-view :global(dl){grid-template-columns:1fr 1fr}.session-trace>p{display:block}.session-trace>p span{display:block;margin-top:6px}.session-trace ol{grid-template-columns:1fr}.session-trace li:nth-child(even){padding-left:0;border-left:0}.matrix{min-width:0}.matrix tr>*:nth-child(n+6){display:none}.matrix td{min-width:0}.story-end{margin-top:28px}}
+@media(max-width:350px){.totals dt{font-size:37px}.hero h1{font-size:43px}}
+@media(prefers-reduced-motion:reduce){.story *{transition:none!important}}
+</style>
