@@ -7,7 +7,7 @@ import telemetry from '../../data/build-telemetry.json';
 
 const project = PROJECTS.find((item) => item.slug === 'build-telemetry')!;
 const title = 'Building maccrate.ai with Hermes Agent';
-const description = 'A privacy-safe field report about the decisions, detours, and release loops behind maccrate.ai.';
+const description = 'An interactive view of the sessions, models, tools, and projects behind maccrate.ai—and the engineering process that connects them.';
 const canonical = `${SITE_URL}/projects/build-telemetry`;
 const jsonLd = {
   '@context': 'https://schema.org', '@type': 'TechArticle', '@id': `${canonical}#article`,
@@ -36,8 +36,8 @@ const traceRuns = (representative?.events || []).reduce((runs: { name: string; c
     <header class="hero">
       <div class="hero-copy">
         <p class="label">HERMES AGENT FIELD REPORT · AUGUST 2026 · <a href="/about">BY MAX MACCRATE</a></p>
-        <h1>The work leaves <em>a shape.</em></h1>
-        <p class="intro">A private transcript can still reveal how a project gets made.</p>
+        <h1>Building maccrate.ai <em>with Hermes Agent.</em></h1>
+        <p class="intro">The activity beneath the site shows how persistent context, delegated work, repository tools, and engineering review fit together.</p>
         <p class="setup">{telemetry.sourceCoverage.earliestAvailable.slice(0, 10)} → {telemetry.sourceCoverage.latestIncluded.slice(0, 10)}</p>
       </div>
       <ReleaseCover project={project} />
@@ -45,8 +45,8 @@ const traceRuns = (representative?.events || []).reduce((runs: { name: string; c
 
     <div class="body" id="article">
       <section class="lead">
-        <p>MacCrate.ai is the visible result. Behind it is a record of an agentic build: model requests move through files, shell, browser, and review, with successful ideas kept and weak ones cut. In the period shown here, the retained record contains <strong>{fmt(telemetry.totals.sessions)} work sessions</strong>; {fmt(telemetry.workflow.sessionsExcluded)} heartbeat artifacts were left out. The totals below are a map of the work, not the work itself.</p>
-        <dl class="totals" aria-label="Retained activity in the Hermes source record">
+        <p><a href="https://github.com/mmaccrate/maccrate.ai">maccrate.ai</a> is the result; this page follows the work behind it. Across the retained record, model requests move through files, shell, browser, and review while ideas are tested, revised, or cut. It contains <strong>{fmt(telemetry.totals.sessions)} work sessions</strong> after removing {fmt(telemetry.workflow.sessionsExcluded)} heartbeat artifacts.</p>
+        <dl class="totals" aria-label="Activity in the maccrate.ai Hermes instance">
           <div><dt>{compact(telemetry.totals.tokens)}</dt><dd>recorded tokens<small>{compact(telemetry.totals.cacheRead)} cached context</small></dd></div>
           <div><dt>{compact(telemetry.totals.toolCalls)}</dt><dd>tool calls<small>files, shell, browser and more</small></dd></div>
           <div><dt>{fmt(telemetry.totals.sessions)}</dt><dd>work sessions<small>retained history</small></dd></div>
@@ -56,9 +56,10 @@ const traceRuns = (representative?.events || []).reduce((runs: { name: string; c
         </dl>
       </section>
 
+
       <section>
-        <h2>The scale is large. The pattern is not random.</h2>
-        <p>Different kinds of work leave different traces. Switch between tokens, sessions, and tool calls to see how the models divide the load. Model names describe inference; Codex, OpenRouter, and the local endpoint describe how those models were reached.</p>
+        <h2>Recorded activity by model.</h2>
+        <p>Switch between tokens, sessions, and tool calls. Model names describe inference; Codex, OpenRouter, and the local endpoint describe how those models were reached.</p>
         <div class="metric-switch" role="group" aria-label="Model chart measure">
           <button type="button" data-model-metric="tokens" aria-pressed="true">Tokens</button>
           <button type="button" data-model-metric="sessions" aria-pressed="false">Sessions</button>
@@ -76,17 +77,17 @@ const traceRuns = (representative?.events || []).reduce((runs: { name: string; c
       </section>
 
       <section>
-        <h2>One thread: making a local model feel swappable.</h2>
-        <p>The Browser Model Cartridges project makes the larger pattern tangible. The goal was not another hosted chatbot, but one local model that could take on different jobs in the browser. The work moved between runtime plumbing, adapter experiments, interface decisions, and the tests that decided which versions deserved to stay.</p>
+        <h2>One project in focus: Browser Model Cartridges.</h2>
+        <p>From its first retained session to final recorded verification, <a href="/projects/browser-lora-cartridges">Browser Model Cartridges</a> spanned thirteen days and {compact(cartridgesTokens)} recorded tokens.</p>
         {cartridgesProject && <div class="project-view exhibit">
           <dl><div><dt>{cartridgesProject.sessions - cartridgesProject.childSessions}</dt><dd>main sessions</dd></div><div><dt>{cartridgesProject.childSessions}</dt><dd>child sessions</dd></div><div><dt>{fmt(cartridgesProject.toolCalls)}</dt><dd>tool calls</dd></div><div><dt>{cartridgesProject.browserSessions}</dt><dd>used the browser</dd></div></dl>
-          <p>{compact(cartridgesTokens)} recorded tokens · {cartridgesProject.models.map((item) => item.name).join(' · ')} · <a href="/projects/browser-lora-cartridges">Read the project</a></p>
+          <p>{cartridgesProject.models.map((item) => item.name).join(' · ')} · <a href="/projects/browser-lora-cartridges">Read the project</a></p>
         </div>}
       </section>
 
       <section>
-        <h2>Inside one long turn.</h2>
-        <p>The words are gone, but the sequence remains. A representative cartridge session starts with skills and agent state, moves into files and shell commands, then returns to the browser for a check. Consecutive events are collapsed here so the rhythm is visible without exposing the transcript.</p>
+        <h2>A session with the words removed.</h2>
+        <p>The transcript is absent. The remaining sequence still shows context loading, model work, file operations, commands, and the return to verification. Consecutive events are collapsed to keep the shape readable.</p>
         <div class="session-trace exhibit" aria-label="Privacy-safe session event trace">
           <p><strong>Browser Model Cartridges</strong><span>{representative?.model} · {representative?.route} · {representative?.startedAt.slice(0, 10)}</span></p>
           <ol>{traceRuns.map((run, index) => <li><b>{String(index + 1).padStart(2, '0')}</b><span>{run.name}</span>{run.count > 1 && <small>× {fmt(run.count)}</small>}</li>)}</ol>
@@ -94,8 +95,8 @@ const traceRuns = (representative?.events || []).reduce((runs: { name: string; c
       </section>
 
       <section>
-        <h2>The build has a division of labor.</h2>
-        <p>Across the full record, files, commands, and browser work dominate for a reason: an idea is not finished when a model describes it. It has to become a changed file, a running page, a tested interaction, or a release that survives review. Darker cells show more recorded calls within that model’s work.</p>
+        <h2>Files, commands, and browser work dominate the pattern.</h2>
+        <p>The model × tool matrix zooms back out across the instance. Darker cells mean more recorded calls within that model’s work.</p>
         <div class="matrix-wrap exhibit">
           <table class="matrix">
             <thead><tr><th>Model</th>{telemetry.tools.map((tool) => <th>{tool.name}</th>)}</tr></thead>
@@ -110,9 +111,9 @@ const traceRuns = (representative?.events || []).reduce((runs: { name: string; c
       </section>
 
       <section>
-        <h2>The useful part is what survives.</h2>
-        <p>A count cannot explain why one idea made it into maccrate.ai and another was cut. It can show the conditions around that decision: repeated returns, delegated detours, tool work, browser checks, and the quiet accumulation of context.</p>
-        <p>The discarded work is part of the project too. It gives the next attempt somewhere better to begin.</p>
+        <h2>The discarded work is part of the project.</h2>
+        <p>This history includes ideas that shipped, experiments that taught something, and versions that were simply not good enough. Keeping them in context means the next attempt can begin with what was learned instead of repeating the same mistakes.</p>
+        <p>Hermes can carry those decisions forward and turn them into working changes. Choosing what deserves to remain is still the human part.</p>
       </section>
     </div>
 
