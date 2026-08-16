@@ -1,0 +1,4224 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-16T14:56:18Z",
+  "sourceCoverage": {
+    "earliestAvailable": "2026-04-07T21:00:55Z",
+    "latestIncluded": "2026-08-16T14:55:21Z",
+    "sessionsInspected": 1164,
+    "source": "Hermes SQLite state database"
+  },
+  "attribution": {
+    "scope": "dedicated maccrate.ai Hermes instance",
+    "methodVersion": 2,
+    "method": "All retained sessions are included except the heartbeat bug and its child session. Exact metadata labels organize named projects; remaining sessions are grouped as Other maccrate.ai work.",
+    "rules": [
+      {
+        "project": "Build Telemetry",
+        "markers": [
+          "build-telemetry",
+          "build telemetry"
+        ]
+      },
+      {
+        "project": "LoRA, On Demand",
+        "markers": [
+          "browser-lora-cartridges",
+          "model cartridges",
+          "model-cartridges",
+          "cartridges"
+        ]
+      },
+      {
+        "project": "Mira Machine",
+        "markers": [
+          "mira-machine",
+          "mira machine",
+          "mars diorama infinite craft"
+        ]
+      },
+      {
+        "project": "Hello, Fine-Tuning",
+        "markers": [
+          "hello-world-ai-fine-tuning",
+          "hello, fine-tuning",
+          "hello fine-tuning"
+        ]
+      },
+      {
+        "project": "maccrate.ai site work",
+        "markers": [
+          "maccrate.ai",
+          "maccrate-ai"
+        ]
+      }
+    ],
+    "totalHermesSessionsInspected": 1164,
+    "includedSessions": 920,
+    "methodCounts": [
+      {
+        "name": "inherited-parent",
+        "count": 632
+      },
+      {
+        "name": "instance-scope",
+        "count": 273
+      },
+      {
+        "name": "explicit-marker",
+        "count": 15
+      }
+    ]
+  },
+  "coverageNotes": [
+    "Heartbeat sessions are excluded.",
+    "A session with no model, token, route, or tool metadata remains in the session total but is omitted from model comparisons.",
+    "Token totals use session_model_usage when present and fall back to session totals only when no usage rows exist.",
+    "Model session counts are participation counts, so a model-switched session can appear under more than one model.",
+    "Costs, durations, success/failure, and stages are not published because coverage is not comparable."
+  ],
+  "tokenCoverage": {
+    "fields": {
+      "input": {
+        "sessionsWithValue": 886,
+        "sessionsInspected": 920,
+        "complete": false
+      },
+      "output": {
+        "sessionsWithValue": 886,
+        "sessionsInspected": 920,
+        "complete": false
+      },
+      "cacheRead": {
+        "sessionsWithValue": 763,
+        "sessionsInspected": 920,
+        "complete": false
+      },
+      "cacheWrite": {
+        "sessionsWithValue": 2,
+        "sessionsInspected": 920,
+        "complete": false
+      },
+      "reasoning": {
+        "sessionsWithValue": 358,
+        "sessionsInspected": 920,
+        "complete": false
+      }
+    },
+    "aggregateSessionsWithUsage": 886
+  },
+  "workflow": {
+    "sessionsInspected": 1164,
+    "sessionsIncluded": 920,
+    "sessionsExcluded": 244,
+    "childSessions": 632,
+    "multiModelSessions": 9,
+    "sessionsWithSkills": 38,
+    "sessionsWithFileWork": 505,
+    "sessionsWithExecution": 417,
+    "sessionsWithBrowserActivity": 258,
+    "sessionsWithRepositoryLoop": 189
+  },
+  "totals": {
+    "sessions": 920,
+    "toolCalls": 51218,
+    "models": 10,
+    "projects": 5,
+    "skills": 10,
+    "tokens": 1663729797,
+    "input": 246099963,
+    "output": 8841397,
+    "cacheRead": 1407220707,
+    "cacheWrite": 395227,
+    "reasoning": 1172503
+  },
+  "routes": [
+    {
+      "name": "Local endpoint",
+      "count": 541
+    },
+    {
+      "name": "Codex route",
+      "count": 352
+    },
+    {
+      "name": "OpenRouter",
+      "count": 6
+    }
+  ],
+  "tools": [
+    {
+      "name": "Files",
+      "count": 21546
+    },
+    {
+      "name": "Shell",
+      "count": 13818
+    },
+    {
+      "name": "Browser",
+      "count": 8780
+    },
+    {
+      "name": "Skills",
+      "count": 2290
+    },
+    {
+      "name": "Agent state",
+      "count": 1970
+    },
+    {
+      "name": "Python",
+      "count": 1466
+    },
+    {
+      "name": "Other",
+      "count": 1348
+    }
+  ],
+  "skills": [
+    {
+      "name": "hermes-agent",
+      "count": 40
+    },
+    {
+      "name": "project-state-workflow",
+      "count": 38
+    },
+    {
+      "name": "web-search",
+      "count": 27
+    },
+    {
+      "name": "github",
+      "count": 26
+    },
+    {
+      "name": "local-coding-workstation",
+      "count": 18
+    },
+    {
+      "name": "evidence-first-finetuning",
+      "count": 15
+    },
+    {
+      "name": "browser-local-llm-runtime",
+      "count": 12
+    },
+    {
+      "name": "interactive-prototype-accessibility",
+      "count": 10
+    },
+    {
+      "name": "evidence-first-ml-experiments",
+      "count": 3
+    },
+    {
+      "name": "frontend-product-ux-iteration",
+      "count": 1
+    }
+  ],
+  "models": [
+    {
+      "name": "Qwen",
+      "sessions": 566,
+      "toolCalls": 7290,
+      "tokens": {
+        "input": 136736418,
+        "output": 2856883,
+        "cacheRead": 162878190,
+        "cacheWrite": 0,
+        "reasoning": 47718
+      },
+      "routes": [
+        {
+          "name": "Local endpoint",
+          "count": 541
+        },
+        {
+          "name": "Unspecified route",
+          "count": 27
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 563
+        },
+        {
+          "name": "LoRA, On Demand",
+          "count": 2
+        }
+      ],
+      "tools": [
+        {
+          "name": "Files",
+          "count": 2854
+        },
+        {
+          "name": "Browser",
+          "count": 1710
+        },
+        {
+          "name": "Shell",
+          "count": 1673
+        },
+        {
+          "name": "Agent state",
+          "count": 316
+        },
+        {
+          "name": "Python",
+          "count": 290
+        },
+        {
+          "name": "Other",
+          "count": 244
+        },
+        {
+          "name": "Skills",
+          "count": 203
+        }
+      ],
+      "skills": [
+        {
+          "name": "evidence-first-finetuning",
+          "count": 3
+        },
+        {
+          "name": "hermes-agent",
+          "count": 2
+        }
+      ],
+      "firstSeen": "2026-04-07T21:00:55Z",
+      "lastSeen": "2026-07-31T04:01:29Z"
+    },
+    {
+      "name": "GPT-5.5",
+      "sessions": 209,
+      "toolCalls": 17865,
+      "tokens": {
+        "input": 53671517,
+        "output": 2531639,
+        "cacheRead": 372381515,
+        "cacheWrite": 0,
+        "reasoning": 237078
+      },
+      "routes": [
+        {
+          "name": "Codex route",
+          "count": 205
+        },
+        {
+          "name": "Unspecified route",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 199
+        },
+        {
+          "name": "maccrate.ai site work",
+          "count": 5
+        },
+        {
+          "name": "Mira Machine",
+          "count": 3
+        }
+      ],
+      "tools": [
+        {
+          "name": "Files",
+          "count": 7197
+        },
+        {
+          "name": "Shell",
+          "count": 4916
+        },
+        {
+          "name": "Browser",
+          "count": 3396
+        },
+        {
+          "name": "Agent state",
+          "count": 848
+        },
+        {
+          "name": "Skills",
+          "count": 779
+        },
+        {
+          "name": "Other",
+          "count": 479
+        },
+        {
+          "name": "Python",
+          "count": 250
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 15
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 14
+        },
+        {
+          "name": "local-coding-workstation",
+          "count": 8
+        },
+        {
+          "name": "evidence-first-finetuning",
+          "count": 7
+        },
+        {
+          "name": "interactive-prototype-accessibility",
+          "count": 4
+        },
+        {
+          "name": "github",
+          "count": 3
+        }
+      ],
+      "firstSeen": "2026-05-02T17:13:08Z",
+      "lastSeen": "2026-08-01T04:04:06Z"
+    },
+    {
+      "name": "GPT-5.6 Sol",
+      "sessions": 94,
+      "toolCalls": 11240,
+      "tokens": {
+        "input": 29749247,
+        "output": 2263503,
+        "cacheRead": 605828224,
+        "cacheWrite": 0,
+        "reasoning": 487457
+      },
+      "routes": [
+        {
+          "name": "Codex route",
+          "count": 104
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 85
+        },
+        {
+          "name": "Build Telemetry",
+          "count": 6
+        },
+        {
+          "name": "LoRA, On Demand",
+          "count": 3
+        }
+      ],
+      "tools": [
+        {
+          "name": "Files",
+          "count": 5390
+        },
+        {
+          "name": "Shell",
+          "count": 3266
+        },
+        {
+          "name": "Browser",
+          "count": 1082
+        },
+        {
+          "name": "Skills",
+          "count": 678
+        },
+        {
+          "name": "Agent state",
+          "count": 434
+        },
+        {
+          "name": "Python",
+          "count": 246
+        },
+        {
+          "name": "Other",
+          "count": 144
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 15
+        },
+        {
+          "name": "web-search",
+          "count": 14
+        },
+        {
+          "name": "github",
+          "count": 10
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 4
+        }
+      ],
+      "firstSeen": "2026-07-07T13:33:33Z",
+      "lastSeen": "2026-08-16T14:55:21Z"
+    },
+    {
+      "name": "GPT-5.6 Luna",
+      "sessions": 24,
+      "toolCalls": 13084,
+      "tokens": {
+        "input": 11552243,
+        "output": 643652,
+        "cacheRead": 175477120,
+        "cacheWrite": 0,
+        "reasoning": 237019
+      },
+      "routes": [
+        {
+          "name": "Codex route",
+          "count": 30
+        },
+        {
+          "name": "Unspecified route",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 14
+        },
+        {
+          "name": "Build Telemetry",
+          "count": 4
+        },
+        {
+          "name": "LoRA, On Demand",
+          "count": 4
+        },
+        {
+          "name": "maccrate.ai site work",
+          "count": 2
+        }
+      ],
+      "tools": [
+        {
+          "name": "Files",
+          "count": 5702
+        },
+        {
+          "name": "Shell",
+          "count": 3762
+        },
+        {
+          "name": "Browser",
+          "count": 1540
+        },
+        {
+          "name": "Python",
+          "count": 676
+        },
+        {
+          "name": "Skills",
+          "count": 606
+        },
+        {
+          "name": "Other",
+          "count": 454
+        },
+        {
+          "name": "Agent state",
+          "count": 344
+        }
+      ],
+      "skills": [
+        {
+          "name": "project-state-workflow",
+          "count": 20
+        },
+        {
+          "name": "github",
+          "count": 13
+        },
+        {
+          "name": "web-search",
+          "count": 13
+        },
+        {
+          "name": "browser-local-llm-runtime",
+          "count": 12
+        },
+        {
+          "name": "local-coding-workstation",
+          "count": 10
+        },
+        {
+          "name": "hermes-agent",
+          "count": 8
+        },
+        {
+          "name": "interactive-prototype-accessibility",
+          "count": 6
+        },
+        {
+          "name": "evidence-first-finetuning",
+          "count": 5
+        },
+        {
+          "name": "evidence-first-ml-experiments",
+          "count": 3
+        },
+        {
+          "name": "frontend-product-ux-iteration",
+          "count": 1
+        }
+      ],
+      "firstSeen": "2026-07-10T15:56:18Z",
+      "lastSeen": "2026-08-13T12:50:38Z"
+    },
+    {
+      "name": "GPT-5.6 Terra",
+      "sessions": 18,
+      "toolCalls": 1030,
+      "tokens": {
+        "input": 1212212,
+        "output": 53203,
+        "cacheRead": 6743552,
+        "cacheWrite": 0,
+        "reasoning": 15107
+      },
+      "routes": [
+        {
+          "name": "Codex route",
+          "count": 18
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 18
+        }
+      ],
+      "tools": [
+        {
+          "name": "Browser",
+          "count": 952
+        },
+        {
+          "name": "Files",
+          "count": 78
+        }
+      ],
+      "skills": [],
+      "firstSeen": "2026-07-10T15:31:17Z",
+      "lastSeen": "2026-07-16T12:58:59Z"
+    },
+    {
+      "name": "GPT-5.4",
+      "sessions": 16,
+      "toolCalls": 126,
+      "tokens": {
+        "input": 3448837,
+        "output": 45411,
+        "cacheRead": 2488752,
+        "cacheWrite": 0,
+        "reasoning": 8419
+      },
+      "routes": [
+        {
+          "name": "Codex route",
+          "count": 12
+        },
+        {
+          "name": "Unspecified route",
+          "count": 4
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 16
+        }
+      ],
+      "tools": [
+        {
+          "name": "Files",
+          "count": 93
+        },
+        {
+          "name": "Skills",
+          "count": 22
+        },
+        {
+          "name": "Shell",
+          "count": 9
+        },
+        {
+          "name": "Agent state",
+          "count": 2
+        }
+      ],
+      "skills": [],
+      "firstSeen": "2026-04-08T22:35:11Z",
+      "lastSeen": "2026-07-04T19:57:59Z"
+    },
+    {
+      "name": "DeepSeek",
+      "sessions": 4,
+      "toolCalls": 16,
+      "tokens": {
+        "input": 233018,
+        "output": 16309,
+        "cacheRead": 93568,
+        "cacheWrite": 0,
+        "reasoning": 92
+      },
+      "routes": [
+        {
+          "name": "OpenRouter",
+          "count": 4
+        }
+      ],
+      "projects": [
+        {
+          "name": "Mira Machine",
+          "count": 4
+        }
+      ],
+      "tools": [
+        {
+          "name": "Shell",
+          "count": 10
+        },
+        {
+          "name": "Files",
+          "count": 6
+        }
+      ],
+      "skills": [],
+      "firstSeen": "2026-07-04T23:00:08Z",
+      "lastSeen": "2026-07-05T16:16:44Z"
+    },
+    {
+      "name": "Gemma",
+      "sessions": 2,
+      "toolCalls": 0,
+      "tokens": {
+        "input": 947870,
+        "output": 12886,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "routes": [
+        {
+          "name": "Local endpoint",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 2
+        }
+      ],
+      "tools": [],
+      "skills": [],
+      "firstSeen": "2026-07-21T14:08:30Z",
+      "lastSeen": "2026-07-26T04:01:43Z"
+    },
+    {
+      "name": "Claude",
+      "sessions": 1,
+      "toolCalls": 0,
+      "tokens": {
+        "input": 17219,
+        "output": 64,
+        "cacheRead": 128,
+        "cacheWrite": 26591,
+        "reasoning": 0
+      },
+      "routes": [
+        {
+          "name": "OpenRouter",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 1
+        }
+      ],
+      "tools": [],
+      "skills": [],
+      "firstSeen": "2026-07-04T20:30:37Z",
+      "lastSeen": "2026-07-04T20:34:25Z"
+    },
+    {
+      "name": "GLM",
+      "sessions": 1,
+      "toolCalls": 567,
+      "tokens": {
+        "input": 8531382,
+        "output": 417847,
+        "cacheRead": 81329658,
+        "cacheWrite": 368636,
+        "reasoning": 139613
+      },
+      "routes": [
+        {
+          "name": "OpenRouter",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Mira Machine",
+          "count": 1
+        }
+      ],
+      "tools": [
+        {
+          "name": "Files",
+          "count": 226
+        },
+        {
+          "name": "Shell",
+          "count": 182
+        },
+        {
+          "name": "Browser",
+          "count": 100
+        },
+        {
+          "name": "Other",
+          "count": 27
+        },
+        {
+          "name": "Agent state",
+          "count": 26
+        },
+        {
+          "name": "Python",
+          "count": 4
+        },
+        {
+          "name": "Skills",
+          "count": 2
+        }
+      ],
+      "skills": [],
+      "firstSeen": "2026-07-04T20:32:02Z",
+      "lastSeen": "2026-07-05T19:23:52Z"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Other maccrate.ai work",
+      "sessions": 887,
+      "toolCalls": 44901,
+      "tokens": {
+        "input": 225099220,
+        "output": 7682037,
+        "cacheRead": 1143412841,
+        "cacheWrite": 26591,
+        "reasoning": 835124
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 564
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 201
+        },
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 85
+        },
+        {
+          "name": "GPT-5.6 Terra",
+          "count": 18
+        },
+        {
+          "name": "GPT-5.4",
+          "count": 16
+        },
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 14
+        },
+        {
+          "name": "Gemma",
+          "count": 2
+        },
+        {
+          "name": "Claude",
+          "count": 1
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 38
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 33
+        },
+        {
+          "name": "web-search",
+          "count": 25
+        },
+        {
+          "name": "local-coding-workstation",
+          "count": 16
+        },
+        {
+          "name": "github",
+          "count": 15
+        },
+        {
+          "name": "browser-local-llm-runtime",
+          "count": 12
+        },
+        {
+          "name": "evidence-first-finetuning",
+          "count": 12
+        },
+        {
+          "name": "interactive-prototype-accessibility",
+          "count": 10
+        },
+        {
+          "name": "evidence-first-ml-experiments",
+          "count": 3
+        }
+      ],
+      "childSessions": 614,
+      "browserSessions": 247,
+      "repositoryLoops": 180,
+      "href": null
+    },
+    {
+      "name": "Build Telemetry",
+      "sessions": 10,
+      "toolCalls": 1684,
+      "tokens": {
+        "input": 2377715,
+        "output": 239196,
+        "cacheRead": 45462912,
+        "cacheWrite": 0,
+        "reasoning": 40635
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 6
+        },
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 4
+        }
+      ],
+      "skills": [
+        {
+          "name": "github",
+          "count": 2
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 1
+        }
+      ],
+      "childSessions": 5,
+      "browserSessions": 5,
+      "repositoryLoops": 4,
+      "href": "/projects/build-telemetry"
+    },
+    {
+      "name": "LoRA, On Demand",
+      "sessions": 8,
+      "toolCalls": 3324,
+      "tokens": {
+        "input": 7548052,
+        "output": 388432,
+        "cacheRead": 111822848,
+        "cacheWrite": 0,
+        "reasoning": 122593
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 4
+        },
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 3
+        },
+        {
+          "name": "Qwen",
+          "count": 2
+        }
+      ],
+      "skills": [
+        {
+          "name": "evidence-first-finetuning",
+          "count": 3
+        },
+        {
+          "name": "github",
+          "count": 3
+        },
+        {
+          "name": "hermes-agent",
+          "count": 1
+        }
+      ],
+      "childSessions": 5,
+      "browserSessions": 3,
+      "repositoryLoops": 2,
+      "href": "/projects/browser-lora-cartridges"
+    },
+    {
+      "name": "Mira Machine",
+      "sessions": 8,
+      "toolCalls": 587,
+      "tokens": {
+        "input": 8789575,
+        "output": 437538,
+        "cacheRead": 81443706,
+        "cacheWrite": 368636,
+        "reasoning": 139824
+      },
+      "models": [
+        {
+          "name": "DeepSeek",
+          "count": 4
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 3
+        },
+        {
+          "name": "GLM",
+          "count": 1
+        }
+      ],
+      "skills": [],
+      "childSessions": 7,
+      "browserSessions": 1,
+      "repositoryLoops": 1,
+      "href": "/projects/mira-machine"
+    },
+    {
+      "name": "maccrate.ai site work",
+      "sessions": 7,
+      "toolCalls": 722,
+      "tokens": {
+        "input": 2285401,
+        "output": 94194,
+        "cacheRead": 25078400,
+        "cacheWrite": 0,
+        "reasoning": 34327
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 5
+        },
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 2
+        }
+      ],
+      "skills": [
+        {
+          "name": "github",
+          "count": 6
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 4
+        },
+        {
+          "name": "local-coding-workstation",
+          "count": 2
+        },
+        {
+          "name": "web-search",
+          "count": 2
+        },
+        {
+          "name": "frontend-product-ux-iteration",
+          "count": 1
+        },
+        {
+          "name": "hermes-agent",
+          "count": 1
+        }
+      ],
+      "childSessions": 1,
+      "browserSessions": 2,
+      "repositoryLoops": 2,
+      "href": null
+    }
+  ],
+  "timeline": [
+    {
+      "date": "2026-04-07",
+      "sessions": 4,
+      "toolCalls": 69,
+      "tokens": {
+        "input": 92566,
+        "output": 26148,
+        "cacheRead": 1417129,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 4
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 4
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-08",
+      "sessions": 55,
+      "toolCalls": 304,
+      "tokens": {
+        "input": 1864456,
+        "output": 84922,
+        "cacheRead": 6138738,
+        "cacheWrite": 0,
+        "reasoning": 3153
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 54
+        },
+        {
+          "name": "GPT-5.4",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 55
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-09",
+      "sessions": 14,
+      "toolCalls": 82,
+      "tokens": {
+        "input": 1136757,
+        "output": 56241,
+        "cacheRead": 3137871,
+        "cacheWrite": 0,
+        "reasoning": 3342
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 11
+        },
+        {
+          "name": "GPT-5.4",
+          "count": 3
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 14
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-10",
+      "sessions": 15,
+      "toolCalls": 86,
+      "tokens": {
+        "input": 203613,
+        "output": 130812,
+        "cacheRead": 2614689,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 15
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 15
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-11",
+      "sessions": 11,
+      "toolCalls": 132,
+      "tokens": {
+        "input": 587576,
+        "output": 106870,
+        "cacheRead": 4611298,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 11
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 11
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-12",
+      "sessions": 71,
+      "toolCalls": 370,
+      "tokens": {
+        "input": 4026164,
+        "output": 254753,
+        "cacheRead": 22298555,
+        "cacheWrite": 0,
+        "reasoning": 5152
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 70
+        },
+        {
+          "name": "GPT-5.4",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 71
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-13",
+      "sessions": 58,
+      "toolCalls": 288,
+      "tokens": {
+        "input": 603834,
+        "output": 81132,
+        "cacheRead": 12142435,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 58
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 58
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-14",
+      "sessions": 67,
+      "toolCalls": 229,
+      "tokens": {
+        "input": 308636,
+        "output": 53306,
+        "cacheRead": 7652027,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 67
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 67
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-15",
+      "sessions": 22,
+      "toolCalls": 156,
+      "tokens": {
+        "input": 355485,
+        "output": 43994,
+        "cacheRead": 4311093,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 22
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 22
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-16",
+      "sessions": 27,
+      "toolCalls": 216,
+      "tokens": {
+        "input": 439743,
+        "output": 129284,
+        "cacheRead": 11064702,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 27
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 27
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-17",
+      "sessions": 6,
+      "toolCalls": 226,
+      "tokens": {
+        "input": 155196,
+        "output": 38938,
+        "cacheRead": 5770659,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 6
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-21",
+      "sessions": 3,
+      "toolCalls": 44,
+      "tokens": {
+        "input": 45805748,
+        "output": 263610,
+        "cacheRead": 12497309,
+        "cacheWrite": 0,
+        "reasoning": 29801
+      },
+      "models": [
+        {
+          "name": "GPT-5.4",
+          "count": 1
+        },
+        {
+          "name": "Qwen",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 3
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-22",
+      "sessions": 14,
+      "toolCalls": 242,
+      "tokens": {
+        "input": 426100,
+        "output": 92589,
+        "cacheRead": 7668691,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 14
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 14
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-23",
+      "sessions": 4,
+      "toolCalls": 16,
+      "tokens": {
+        "input": 94265,
+        "output": 12078,
+        "cacheRead": 210574,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 4
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 4
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-04-30",
+      "sessions": 12,
+      "toolCalls": 119,
+      "tokens": {
+        "input": 479056,
+        "output": 78731,
+        "cacheRead": 7264690,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 12
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 12
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-05-01",
+      "sessions": 36,
+      "toolCalls": 311,
+      "tokens": {
+        "input": 1298288,
+        "output": 334526,
+        "cacheRead": 19043143,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 36
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 36
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-05-02",
+      "sessions": 24,
+      "toolCalls": 342,
+      "tokens": {
+        "input": 1404616,
+        "output": 175308,
+        "cacheRead": 28782095,
+        "cacheWrite": 0,
+        "reasoning": 8882
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 22
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 24
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-05-07",
+      "sessions": 18,
+      "toolCalls": 732,
+      "tokens": {
+        "input": 2716673,
+        "output": 217760,
+        "cacheRead": 46973423,
+        "cacheWrite": 0,
+        "reasoning": 21783
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 9
+        },
+        {
+          "name": "Qwen",
+          "count": 9
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 18
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-05-08",
+      "sessions": 12,
+      "toolCalls": 294,
+      "tokens": {
+        "input": 724826,
+        "output": 88501,
+        "cacheRead": 17491730,
+        "cacheWrite": 0,
+        "reasoning": 6117
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 12
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-05-09",
+      "sessions": 15,
+      "toolCalls": 368,
+      "tokens": {
+        "input": 1273383,
+        "output": 105953,
+        "cacheRead": 22703159,
+        "cacheWrite": 0,
+        "reasoning": 11089
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 8
+        },
+        {
+          "name": "Qwen",
+          "count": 7
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 15
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-05-10",
+      "sessions": 8,
+      "toolCalls": 119,
+      "tokens": {
+        "input": 534248,
+        "output": 27447,
+        "cacheRead": 5614159,
+        "cacheWrite": 0,
+        "reasoning": 4401
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 8
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-05-11",
+      "sessions": 13,
+      "toolCalls": 203,
+      "tokens": {
+        "input": 791551,
+        "output": 53070,
+        "cacheRead": 11472896,
+        "cacheWrite": 0,
+        "reasoning": 8067
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 7
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 13
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-05-12",
+      "sessions": 10,
+      "toolCalls": 108,
+      "tokens": {
+        "input": 514266,
+        "output": 26492,
+        "cacheRead": 6341120,
+        "cacheWrite": 0,
+        "reasoning": 4926
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 4
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 10
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-05-13",
+      "sessions": 7,
+      "toolCalls": 84,
+      "tokens": {
+        "input": 536581,
+        "output": 20986,
+        "cacheRead": 3368692,
+        "cacheWrite": 0,
+        "reasoning": 2503
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 7
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-05-14",
+      "sessions": 5,
+      "toolCalls": 44,
+      "tokens": {
+        "input": 283690,
+        "output": 30788,
+        "cacheRead": 1290316,
+        "cacheWrite": 0,
+        "reasoning": 933
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 4
+        },
+        {
+          "name": "Qwen",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 5
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-05",
+      "sessions": 9,
+      "toolCalls": 576,
+      "tokens": {
+        "input": 19939595,
+        "output": 234175,
+        "cacheRead": 1068544,
+        "cacheWrite": 0,
+        "reasoning": 1855
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 7
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 9
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-06",
+      "sessions": 10,
+      "toolCalls": 456,
+      "tokens": {
+        "input": 1056240,
+        "output": 59795,
+        "cacheRead": 15906304,
+        "cacheWrite": 0,
+        "reasoning": 10937
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 8
+        },
+        {
+          "name": "Qwen",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 10
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-07",
+      "sessions": 8,
+      "toolCalls": 310,
+      "tokens": {
+        "input": 686307,
+        "output": 30853,
+        "cacheRead": 6993408,
+        "cacheWrite": 0,
+        "reasoning": 2398
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 8
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-08",
+      "sessions": 9,
+      "toolCalls": 288,
+      "tokens": {
+        "input": 907450,
+        "output": 31850,
+        "cacheRead": 5853184,
+        "cacheWrite": 0,
+        "reasoning": 2709
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 3
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 9
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-09",
+      "sessions": 8,
+      "toolCalls": 238,
+      "tokens": {
+        "input": 1251491,
+        "output": 27518,
+        "cacheRead": 4486656,
+        "cacheWrite": 0,
+        "reasoning": 2404
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 8
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-10",
+      "sessions": 12,
+      "toolCalls": 320,
+      "tokens": {
+        "input": 1217898,
+        "output": 67415,
+        "cacheRead": 5736960,
+        "cacheWrite": 0,
+        "reasoning": 2364
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 12
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-11",
+      "sessions": 6,
+      "toolCalls": 136,
+      "tokens": {
+        "input": 377830,
+        "output": 9618,
+        "cacheRead": 2116096,
+        "cacheWrite": 0,
+        "reasoning": 1568
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 6
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-12",
+      "sessions": 6,
+      "toolCalls": 132,
+      "tokens": {
+        "input": 456947,
+        "output": 8814,
+        "cacheRead": 2109952,
+        "cacheWrite": 0,
+        "reasoning": 1476
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 6
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-13",
+      "sessions": 6,
+      "toolCalls": 110,
+      "tokens": {
+        "input": 433257,
+        "output": 7850,
+        "cacheRead": 1611776,
+        "cacheWrite": 0,
+        "reasoning": 1326
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 6
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-14",
+      "sessions": 6,
+      "toolCalls": 126,
+      "tokens": {
+        "input": 392578,
+        "output": 7396,
+        "cacheRead": 1814528,
+        "cacheWrite": 0,
+        "reasoning": 1206
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 6
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-15",
+      "sessions": 6,
+      "toolCalls": 128,
+      "tokens": {
+        "input": 401668,
+        "output": 7745,
+        "cacheRead": 1906688,
+        "cacheWrite": 0,
+        "reasoning": 1132
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 6
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-16",
+      "sessions": 7,
+      "toolCalls": 174,
+      "tokens": {
+        "input": 543421,
+        "output": 14727,
+        "cacheRead": 2470400,
+        "cacheWrite": 0,
+        "reasoning": 1505
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 7
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-17",
+      "sessions": 3,
+      "toolCalls": 70,
+      "tokens": {
+        "input": 200205,
+        "output": 3755,
+        "cacheRead": 911872,
+        "cacheWrite": 0,
+        "reasoning": 625
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 3
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 3
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-24",
+      "sessions": 3,
+      "toolCalls": 329,
+      "tokens": {
+        "input": 12068452,
+        "output": 64616,
+        "cacheRead": 1489408,
+        "cacheWrite": 0,
+        "reasoning": 743
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 2
+        },
+        {
+          "name": "Qwen",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 3
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-25",
+      "sessions": 7,
+      "toolCalls": 343,
+      "tokens": {
+        "input": 5369135,
+        "output": 79320,
+        "cacheRead": 9073664,
+        "cacheWrite": 0,
+        "reasoning": 5175
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 7
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-26",
+      "sessions": 17,
+      "toolCalls": 318,
+      "tokens": {
+        "input": 948801,
+        "output": 56181,
+        "cacheRead": 5262336,
+        "cacheWrite": 0,
+        "reasoning": 2673
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 9
+        },
+        {
+          "name": "Qwen",
+          "count": 8
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 17
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-27",
+      "sessions": 10,
+      "toolCalls": 378,
+      "tokens": {
+        "input": 1490226,
+        "output": 69943,
+        "cacheRead": 7474688,
+        "cacheWrite": 0,
+        "reasoning": 3459
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        },
+        {
+          "name": "Qwen",
+          "count": 4
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 10
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-28",
+      "sessions": 14,
+      "toolCalls": 1371,
+      "tokens": {
+        "input": 23876911,
+        "output": 217414,
+        "cacheRead": 23649792,
+        "cacheWrite": 0,
+        "reasoning": 6568
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 7
+        },
+        {
+          "name": "Qwen",
+          "count": 7
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 14
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-29",
+      "sessions": 18,
+      "toolCalls": 988,
+      "tokens": {
+        "input": 8977442,
+        "output": 203943,
+        "cacheRead": 29309952,
+        "cacheWrite": 0,
+        "reasoning": 9918
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 11
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 7
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 18
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-06-30",
+      "sessions": 14,
+      "toolCalls": 781,
+      "tokens": {
+        "input": 1686453,
+        "output": 98766,
+        "cacheRead": 24847872,
+        "cacheWrite": 0,
+        "reasoning": 6853
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 8
+        },
+        {
+          "name": "Qwen",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 14
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-01",
+      "sessions": 3,
+      "toolCalls": 122,
+      "tokens": {
+        "input": 220918,
+        "output": 10417,
+        "cacheRead": 2849792,
+        "cacheWrite": 0,
+        "reasoning": 1365
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 3
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 3
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-07-03",
+      "sessions": 14,
+      "toolCalls": 6977,
+      "tokens": {
+        "input": 19030627,
+        "output": 526131,
+        "cacheRead": 95233024,
+        "cacheWrite": 0,
+        "reasoning": 102091
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 10
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 4
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 14
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 9
+        }
+      ]
+    },
+    {
+      "date": "2026-07-04",
+      "sessions": 23,
+      "toolCalls": 1036,
+      "tokens": {
+        "input": 10258553,
+        "output": 485386,
+        "cacheRead": 86041722,
+        "cacheWrite": 395227,
+        "reasoning": 144550
+      },
+      "models": [
+        {
+          "name": "GPT-5.4",
+          "count": 10
+        },
+        {
+          "name": "Qwen",
+          "count": 6
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 4
+        },
+        {
+          "name": "Claude",
+          "count": 1
+        },
+        {
+          "name": "DeepSeek",
+          "count": 1
+        },
+        {
+          "name": "GLM",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 18
+        },
+        {
+          "name": "Mira Machine",
+          "count": 5
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-05",
+      "sessions": 3,
+      "toolCalls": 8,
+      "tokens": {
+        "input": 68627,
+        "output": 3296,
+        "cacheRead": 93568,
+        "cacheWrite": 0,
+        "reasoning": 92
+      },
+      "models": [
+        {
+          "name": "DeepSeek",
+          "count": 3
+        }
+      ],
+      "projects": [
+        {
+          "name": "Mira Machine",
+          "count": 3
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-07-07",
+      "sessions": 1,
+      "toolCalls": 4348,
+      "tokens": {
+        "input": 7197191,
+        "output": 395665,
+        "cacheRead": 149815296,
+        "cacheWrite": 0,
+        "reasoning": 98059
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 1
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 8
+        },
+        {
+          "name": "github",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "date": "2026-07-10",
+      "sessions": 9,
+      "toolCalls": 744,
+      "tokens": {
+        "input": 910323,
+        "output": 28770,
+        "cacheRead": 6086656,
+        "cacheWrite": 0,
+        "reasoning": 9505
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Terra",
+          "count": 8
+        },
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 9
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-07-15",
+      "sessions": 4,
+      "toolCalls": 98,
+      "tokens": {
+        "input": 99321,
+        "output": 6671,
+        "cacheRead": 207360,
+        "cacheWrite": 0,
+        "reasoning": 1915
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 3
+        },
+        {
+          "name": "GPT-5.6 Terra",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 4
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-07-16",
+      "sessions": 21,
+      "toolCalls": 948,
+      "tokens": {
+        "input": 974692,
+        "output": 66941,
+        "cacheRead": 6199296,
+        "cacheWrite": 0,
+        "reasoning": 9739
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 9
+        },
+        {
+          "name": "GPT-5.6 Terra",
+          "count": 9
+        },
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 3
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 21
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-07-18",
+      "sessions": 6,
+      "toolCalls": 374,
+      "tokens": {
+        "input": 411776,
+        "output": 25347,
+        "cacheRead": 3371008,
+        "cacheWrite": 0,
+        "reasoning": 2641
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 6
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 6
+        }
+      ],
+      "skills": [
+        {
+          "name": "github",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-19",
+      "sessions": 4,
+      "toolCalls": 1522,
+      "tokens": {
+        "input": 1872551,
+        "output": 165494,
+        "cacheRead": 46427648,
+        "cacheWrite": 0,
+        "reasoning": 33752
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 4
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 4
+        }
+      ],
+      "skills": [
+        {
+          "name": "github",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "date": "2026-07-21",
+      "sessions": 3,
+      "toolCalls": 90,
+      "tokens": {
+        "input": 2469128,
+        "output": 34051,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 4
+        },
+        {
+          "name": "Gemma",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 3
+        }
+      ],
+      "skills": [
+        {
+          "name": "hermes-agent",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "date": "2026-07-22",
+      "sessions": 17,
+      "toolCalls": 2742,
+      "tokens": {
+        "input": 4788538,
+        "output": 283111,
+        "cacheRead": 79547392,
+        "cacheWrite": 0,
+        "reasoning": 44848
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 17
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 1
+        },
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 1
+        },
+        {
+          "name": "Qwen",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 17
+        }
+      ],
+      "skills": [
+        {
+          "name": "web-search",
+          "count": 10
+        },
+        {
+          "name": "hermes-agent",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "date": "2026-07-23",
+      "sessions": 3,
+      "toolCalls": 262,
+      "tokens": {
+        "input": 930253,
+        "output": 19234,
+        "cacheRead": 2082304,
+        "cacheWrite": 0,
+        "reasoning": 2938
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 3
+        },
+        {
+          "name": "Qwen",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 3
+        }
+      ],
+      "skills": [
+        {
+          "name": "project-state-workflow",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-07-25",
+      "sessions": 2,
+      "toolCalls": 91,
+      "tokens": {
+        "input": 1246971,
+        "output": 25279,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 0
+      },
+      "models": [
+        {
+          "name": "Qwen",
+          "count": 2
+        },
+        {
+          "name": "Gemma",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 2
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-07-27",
+      "sessions": 14,
+      "toolCalls": 8962,
+      "tokens": {
+        "input": 16665504,
+        "output": 1524287,
+        "cacheRead": 241354752,
+        "cacheWrite": 0,
+        "reasoning": 232088
+      },
+      "models": [
+        {
+          "name": "GPT-5.5",
+          "count": 7
+        },
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 7
+        },
+        {
+          "name": "Qwen",
+          "count": 3
+        },
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 9
+        },
+        {
+          "name": "maccrate.ai site work",
+          "count": 5
+        }
+      ],
+      "skills": [
+        {
+          "name": "project-state-workflow",
+          "count": 16
+        },
+        {
+          "name": "web-search",
+          "count": 12
+        },
+        {
+          "name": "browser-local-llm-runtime",
+          "count": 11
+        },
+        {
+          "name": "local-coding-workstation",
+          "count": 8
+        },
+        {
+          "name": "hermes-agent",
+          "count": 6
+        },
+        {
+          "name": "interactive-prototype-accessibility",
+          "count": 6
+        },
+        {
+          "name": "evidence-first-finetuning",
+          "count": 5
+        },
+        {
+          "name": "github",
+          "count": 5
+        },
+        {
+          "name": "evidence-first-ml-experiments",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-07-28",
+      "sessions": 32,
+      "toolCalls": 1480,
+      "tokens": {
+        "input": 14456774,
+        "output": 277299,
+        "cacheRead": 7029248,
+        "cacheWrite": 0,
+        "reasoning": 16348
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 25
+        },
+        {
+          "name": "Qwen",
+          "count": 7
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 30
+        },
+        {
+          "name": "LoRA, On Demand",
+          "count": 2
+        }
+      ],
+      "skills": [
+        {
+          "name": "evidence-first-finetuning",
+          "count": 3
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "date": "2026-07-29",
+      "sessions": 11,
+      "toolCalls": 436,
+      "tokens": {
+        "input": 683557,
+        "output": 44781,
+        "cacheRead": 3199488,
+        "cacheWrite": 0,
+        "reasoning": 6342
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 11
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 11
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-07-30",
+      "sessions": 17,
+      "toolCalls": 636,
+      "tokens": {
+        "input": 1047196,
+        "output": 122027,
+        "cacheRead": 7228416,
+        "cacheWrite": 0,
+        "reasoning": 20997
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 17
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 17
+        }
+      ],
+      "skills": [
+        {
+          "name": "web-search",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "date": "2026-07-31",
+      "sessions": 4,
+      "toolCalls": 1678,
+      "tokens": {
+        "input": 2556987,
+        "output": 250004,
+        "cacheRead": 43744256,
+        "cacheWrite": 0,
+        "reasoning": 63770
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 4
+        },
+        {
+          "name": "GPT-5.5",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Other maccrate.ai work",
+          "count": 4
+        }
+      ],
+      "skills": [
+        {
+          "name": "project-state-workflow",
+          "count": 14
+        },
+        {
+          "name": "local-coding-workstation",
+          "count": 8
+        },
+        {
+          "name": "evidence-first-finetuning",
+          "count": 7
+        },
+        {
+          "name": "interactive-prototype-accessibility",
+          "count": 4
+        },
+        {
+          "name": "browser-local-llm-runtime",
+          "count": 1
+        },
+        {
+          "name": "web-search",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-08-08",
+      "sessions": 2,
+      "toolCalls": 3440,
+      "tokens": {
+        "input": 6488502,
+        "output": 375669,
+        "cacheRead": 129814912,
+        "cacheWrite": 0,
+        "reasoning": 129059
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 2
+        },
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "LoRA, On Demand",
+          "count": 1
+        },
+        {
+          "name": "Other maccrate.ai work",
+          "count": 1
+        }
+      ],
+      "skills": [
+        {
+          "name": "github",
+          "count": 3
+        },
+        {
+          "name": "hermes-agent",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-08-09",
+      "sessions": 5,
+      "toolCalls": 98,
+      "tokens": {
+        "input": 169252,
+        "output": 11473,
+        "cacheRead": 539264,
+        "cacheWrite": 0,
+        "reasoning": 1458
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 3
+        },
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "LoRA, On Demand",
+          "count": 5
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-08-11",
+      "sessions": 1,
+      "toolCalls": 366,
+      "tokens": {
+        "input": 1337208,
+        "output": 41955,
+        "cacheRead": 14785920,
+        "cacheWrite": 0,
+        "reasoning": 16520
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "maccrate.ai site work",
+          "count": 1
+        }
+      ],
+      "skills": [
+        {
+          "name": "github",
+          "count": 3
+        },
+        {
+          "name": "local-coding-workstation",
+          "count": 2
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-08-12",
+      "sessions": 4,
+      "toolCalls": 1460,
+      "tokens": {
+        "input": 2446916,
+        "output": 210158,
+        "cacheRead": 44409984,
+        "cacheWrite": 0,
+        "reasoning": 42296
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 3
+        },
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Build Telemetry",
+          "count": 3
+        },
+        {
+          "name": "maccrate.ai site work",
+          "count": 1
+        }
+      ],
+      "skills": [
+        {
+          "name": "github",
+          "count": 4
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 3
+        },
+        {
+          "name": "web-search",
+          "count": 2
+        },
+        {
+          "name": "frontend-product-ux-iteration",
+          "count": 1
+        },
+        {
+          "name": "hermes-agent",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "date": "2026-08-13",
+      "sessions": 5,
+      "toolCalls": 270,
+      "tokens": {
+        "input": 328819,
+        "output": 38154,
+        "cacheRead": 1958912,
+        "cacheWrite": 0,
+        "reasoning": 3113
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 3
+        },
+        {
+          "name": "GPT-5.6 Luna",
+          "count": 2
+        }
+      ],
+      "projects": [
+        {
+          "name": "Build Telemetry",
+          "count": 5
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-08-14",
+      "sessions": 1,
+      "toolCalls": 234,
+      "tokens": {
+        "input": 410283,
+        "output": 31905,
+        "cacheRead": 9025536,
+        "cacheWrite": 0,
+        "reasoning": 11489
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Build Telemetry",
+          "count": 1
+        }
+      ],
+      "skills": []
+    },
+    {
+      "date": "2026-08-16",
+      "sessions": 1,
+      "toolCalls": 40,
+      "tokens": {
+        "input": 89872,
+        "output": 1959,
+        "cacheRead": 199680,
+        "cacheWrite": 0,
+        "reasoning": 485
+      },
+      "models": [
+        {
+          "name": "GPT-5.6 Sol",
+          "count": 1
+        }
+      ],
+      "projects": [
+        {
+          "name": "Build Telemetry",
+          "count": 1
+        }
+      ],
+      "skills": [
+        {
+          "name": "github",
+          "count": 1
+        },
+        {
+          "name": "project-state-workflow",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "toolMatrix": [
+    {
+      "model": "DeepSeek",
+      "toolFamily": "Files",
+      "count": 6
+    },
+    {
+      "model": "DeepSeek",
+      "toolFamily": "Shell",
+      "count": 10
+    },
+    {
+      "model": "GLM",
+      "toolFamily": "Agent state",
+      "count": 26
+    },
+    {
+      "model": "GLM",
+      "toolFamily": "Browser",
+      "count": 100
+    },
+    {
+      "model": "GLM",
+      "toolFamily": "Files",
+      "count": 226
+    },
+    {
+      "model": "GLM",
+      "toolFamily": "Other",
+      "count": 27
+    },
+    {
+      "model": "GLM",
+      "toolFamily": "Python",
+      "count": 4
+    },
+    {
+      "model": "GLM",
+      "toolFamily": "Shell",
+      "count": 182
+    },
+    {
+      "model": "GLM",
+      "toolFamily": "Skills",
+      "count": 2
+    },
+    {
+      "model": "GPT-5.4",
+      "toolFamily": "Agent state",
+      "count": 2
+    },
+    {
+      "model": "GPT-5.4",
+      "toolFamily": "Files",
+      "count": 93
+    },
+    {
+      "model": "GPT-5.4",
+      "toolFamily": "Shell",
+      "count": 9
+    },
+    {
+      "model": "GPT-5.4",
+      "toolFamily": "Skills",
+      "count": 22
+    },
+    {
+      "model": "GPT-5.5",
+      "toolFamily": "Agent state",
+      "count": 848
+    },
+    {
+      "model": "GPT-5.5",
+      "toolFamily": "Browser",
+      "count": 3396
+    },
+    {
+      "model": "GPT-5.5",
+      "toolFamily": "Files",
+      "count": 7197
+    },
+    {
+      "model": "GPT-5.5",
+      "toolFamily": "Other",
+      "count": 479
+    },
+    {
+      "model": "GPT-5.5",
+      "toolFamily": "Python",
+      "count": 250
+    },
+    {
+      "model": "GPT-5.5",
+      "toolFamily": "Shell",
+      "count": 4916
+    },
+    {
+      "model": "GPT-5.5",
+      "toolFamily": "Skills",
+      "count": 779
+    },
+    {
+      "model": "GPT-5.6 Luna",
+      "toolFamily": "Agent state",
+      "count": 344
+    },
+    {
+      "model": "GPT-5.6 Luna",
+      "toolFamily": "Browser",
+      "count": 1540
+    },
+    {
+      "model": "GPT-5.6 Luna",
+      "toolFamily": "Files",
+      "count": 5702
+    },
+    {
+      "model": "GPT-5.6 Luna",
+      "toolFamily": "Other",
+      "count": 454
+    },
+    {
+      "model": "GPT-5.6 Luna",
+      "toolFamily": "Python",
+      "count": 676
+    },
+    {
+      "model": "GPT-5.6 Luna",
+      "toolFamily": "Shell",
+      "count": 3762
+    },
+    {
+      "model": "GPT-5.6 Luna",
+      "toolFamily": "Skills",
+      "count": 606
+    },
+    {
+      "model": "GPT-5.6 Sol",
+      "toolFamily": "Agent state",
+      "count": 434
+    },
+    {
+      "model": "GPT-5.6 Sol",
+      "toolFamily": "Browser",
+      "count": 1082
+    },
+    {
+      "model": "GPT-5.6 Sol",
+      "toolFamily": "Files",
+      "count": 5390
+    },
+    {
+      "model": "GPT-5.6 Sol",
+      "toolFamily": "Other",
+      "count": 144
+    },
+    {
+      "model": "GPT-5.6 Sol",
+      "toolFamily": "Python",
+      "count": 246
+    },
+    {
+      "model": "GPT-5.6 Sol",
+      "toolFamily": "Shell",
+      "count": 3266
+    },
+    {
+      "model": "GPT-5.6 Sol",
+      "toolFamily": "Skills",
+      "count": 678
+    },
+    {
+      "model": "GPT-5.6 Terra",
+      "toolFamily": "Browser",
+      "count": 952
+    },
+    {
+      "model": "GPT-5.6 Terra",
+      "toolFamily": "Files",
+      "count": 78
+    },
+    {
+      "model": "Qwen",
+      "toolFamily": "Agent state",
+      "count": 316
+    },
+    {
+      "model": "Qwen",
+      "toolFamily": "Browser",
+      "count": 1710
+    },
+    {
+      "model": "Qwen",
+      "toolFamily": "Files",
+      "count": 2854
+    },
+    {
+      "model": "Qwen",
+      "toolFamily": "Other",
+      "count": 244
+    },
+    {
+      "model": "Qwen",
+      "toolFamily": "Python",
+      "count": 290
+    },
+    {
+      "model": "Qwen",
+      "toolFamily": "Shell",
+      "count": 1673
+    },
+    {
+      "model": "Qwen",
+      "toolFamily": "Skills",
+      "count": 203
+    }
+  ],
+  "representativeSessions": [
+    {
+      "id": "session-1",
+      "project": "LoRA, On Demand",
+      "startedAt": "2026-08-08T20:56:25Z",
+      "endedAt": "2026-08-10T04:02:28Z",
+      "model": "GPT-5.6 Luna",
+      "route": "Codex route",
+      "tokens": {
+        "input": 5457648,
+        "output": 344716,
+        "cacheRead": 111283584,
+        "cacheWrite": 0,
+        "reasoning": 121135
+      },
+      "events": [
+        {
+          "type": "SESSION START",
+          "model": "GPT-5.6 Luna",
+          "route": "Codex route"
+        },
+        {
+          "type": "MODEL REQUEST",
+          "model": "GPT-5.6 Luna",
+          "route": "Codex route"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "github"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "hermes-agent"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "EVENTS OMITTED",
+          "count": 3036
+        },
+        {
+          "type": "SESSION END"
+        }
+      ]
+    },
+    {
+      "id": "session-2",
+      "project": "Other maccrate.ai work",
+      "startedAt": "2026-07-27T16:27:44Z",
+      "endedAt": "2026-07-31T04:01:29Z",
+      "model": "GPT-5.6 Luna",
+      "route": "Codex route",
+      "tokens": {
+        "input": 16258072,
+        "output": 1481581,
+        "cacheRead": 239875072,
+        "cacheWrite": 0,
+        "reasoning": 227118
+      },
+      "events": [
+        {
+          "type": "SESSION START",
+          "model": "GPT-5.6 Luna",
+          "route": "Codex route"
+        },
+        {
+          "type": "MODEL REQUEST",
+          "model": "GPT-5.6 Luna",
+          "route": "Codex route"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "browser-local-llm-runtime"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "evidence-first-finetuning"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "evidence-first-ml-experiments"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "github"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "hermes-agent"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "interactive-prototype-accessibility"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "local-coding-workstation"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "project-state-workflow"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "web-search"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Python"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Python"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Python"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Python"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Python"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Python"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "EVENTS OMITTED",
+          "count": 8662
+        },
+        {
+          "type": "SESSION END"
+        }
+      ]
+    },
+    {
+      "id": "session-3",
+      "project": "Other maccrate.ai work",
+      "startedAt": "2026-07-03T22:42:21Z",
+      "endedAt": "2026-07-04T20:31:25Z",
+      "model": "GPT-5.5",
+      "route": "Codex route",
+      "tokens": {
+        "input": 16090682,
+        "output": 369236,
+        "cacheRead": 69571584,
+        "cacheWrite": 0,
+        "reasoning": 66943
+      },
+      "events": [
+        {
+          "type": "SESSION START",
+          "model": "GPT-5.5",
+          "route": "Codex route"
+        },
+        {
+          "type": "MODEL REQUEST",
+          "model": "GPT-5.5",
+          "route": "Codex route"
+        },
+        {
+          "type": "SKILL LOAD",
+          "skill": "hermes-agent"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Other"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Other"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Skills"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Files"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Shell"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "TOOL",
+          "toolFamily": "Agent state"
+        },
+        {
+          "type": "EVENTS OMITTED",
+          "count": 5934
+        },
+        {
+          "type": "SESSION END"
+        }
+      ]
+    }
+  ]
+}
