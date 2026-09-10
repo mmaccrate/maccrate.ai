@@ -36,18 +36,10 @@ const jsonLd = {
       <ReleaseCover project={project} />
     </header>
 
-    <section class="credits" aria-label="Experiment summary">
-      <dl>
-        <div><dt>Reference</dt><dd>Original F16 model</dd></div>
-        <div><dt>Baseline</dt><dd>Ordinary PTQ Q4_0</dd></div>
-        <div><dt>Method</dt><dd>QAD Q4_0</dd></div>
-        <div><dt>Test</dt><dd>ARC + HellaSwag</dd></div>
-      </dl>
-    </section>
-
     <div class="body">
       <section class="lead">
-        <p>The evaluation found QAD scored higher than ordinary Q4_0 quantization on both tests. The largest difference was on ARC, where it moved most of the way back toward the original F16 reference.</p>
+        <p>Quantization makes a language model smaller by storing its weights with fewer bits, but that compression can change how it answers. Quantization-aware distillation gives the low-precision student a full-precision teacher while it learns, so it can adapt to that loss before deployment.</p>
+        <p>In this experiment, the resulting Q4_0 model scored higher than ordinary post-training quantization on both ARC-Challenge and HellaSwag. The gain was 3.84 percentage points on ARC and 2.60 points on HellaSwag.</p>
         <div class="score-line" aria-label="QAD compared with ordinary PTQ">
           <div><small>ARC OVER PTQ</small><strong>+3.84</strong><span>percentage points</span></div>
           <div><small>HELLASWAG OVER PTQ</small><strong>+2.60</strong><span>percentage points</span></div>
@@ -64,7 +56,7 @@ const jsonLd = {
 
       <section class="comparison">
         <p class="label">THE ANSWER</p>
-        <h2>Three models. One clean comparison.</h2>
+        <h2>Three versions. One comparison.</h2>
         <p>These percentages come from the same native evaluation. ARC-Challenge used all 1,172 questions available to the run; HellaSwag used a 1,000-row sample.</p>
         <div class="table-wrap">
           <table>
