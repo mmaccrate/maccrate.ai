@@ -22,7 +22,7 @@ A reproducible experiment exploring the smallest useful “Hello World” for lo
 
 A reproducible experiment asking whether a 4-bit language model can learn from the full-precision model it came from. The project includes the exact data recipe, training implementation, native evaluation, export path, and Hugging Face model card.
 
-[Read the field report](https://maccrate.ai/projects/quantization-aware-distillation/) · [Open the project README](./projects/quantization-aware-distillation/README.md)
+[Read the field report](https://maccrate.ai/projects/quantization-aware-distillation/) · [Download the HF model](https://huggingface.co/mmaccrate/gemma-4-E2B-it-QAD-GGUF) · [Open the project README](./projects/quantization-aware-distillation/README.md)
 
 ### Hermes Builds maccrate.ai
 
