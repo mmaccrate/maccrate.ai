@@ -20,11 +20,13 @@ A Q4_0 GGUF of [Google's Gemma 4 E2B IT](https://huggingface.co/google/gemma-4-E
 QAD trains a quantized student against token-level distributions from a frozen full-precision teacher. This lets the student adapt to the precision loss introduced by quantization instead of applying quantization only after training is complete.
 
 - **Model file:** `gemma-4-e2b-it-qad-q4_0.gguf`
-- **Format:** GGUF, Q4_0 with Q6_K embedding/output tensors
+- **Format:** Q4_0 GGUF
 - **Base model:** `google/gemma-4-E2B-it`
 - **Runtime tested:** `llama.cpp`
 - **Project article:** [QAD, Distilled](https://maccrate.ai/projects/quantization-aware-distillation/)
 - **Source repository:** [mmaccrate/maccrate.ai](https://github.com/mmaccrate/maccrate.ai)
+
+The GGUF uses a mixed layout: Q4_0 for most layers, with Q6_K for the token embedding and final vocabulary projection to preserve stability.
 
 ## Run with llama.cpp
 
