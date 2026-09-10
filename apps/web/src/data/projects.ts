@@ -14,13 +14,36 @@ export type Project = {
   role: string;
   status: 'live' | 'case-study';
   accent: string;
-  cover: 'mira' | 'geometric';
+  cover: 'mira' | 'geometric' | 'qad';
   liveUrl?: string;
   credits: ProjectCredit[];
   sections: ProjectSection[];
 };
 
 export const PROJECTS: Project[] = [
+  {
+    sequence: 5,
+    slug: 'quantization-aware-distillation',
+    title: 'QAD, Distilled',
+    year: 2026,
+    descriptor: 'Local AI · deployment-matched distillation',
+    premise: 'Can a 4-bit language model learn from the full-precision model it came from?',
+    disciplines: ['Local AI', 'Experiment design', 'Model systems'],
+    role: 'Experiment design, training, export, evaluation, technical writing',
+    status: 'case-study',
+    accent: '#861f4d',
+    cover: 'qad',
+    credits: [
+      { label: 'Base model', value: 'Gemma 4 E2B · original F16 reference' },
+      { label: 'Method', value: 'Full-language QAD · ordinary PTQ Q4_0 comparison' },
+      { label: 'Evidence', value: 'HF export · Q4_0 GGUF · 8,688 native rows' },
+    ],
+    sections: [
+      { eyebrow: 'Result', title: 'Training through quantization narrowed the loss.', body: 'QAD Q4_0 scored higher than ordinary PTQ on ARC-Challenge and HellaSwag under both raw and length-normalized native scoring.' },
+      { eyebrow: 'Method', title: 'Deployment became part of training.', body: 'The student trained through deployment-matched fake quantization with persistent FP32 master weights, then became the same kind of Q4_0 artifact used for evaluation.' },
+      { eyebrow: 'Boundary', title: 'The chain had to survive the export.', body: 'Model updates, checkpoint state, HF reconstruction, GGUF conversion, native loading, and benchmark scoring were verified as separate gates.' },
+    ],
+  },
   {
     sequence: 4,
     slug: 'build-telemetry',
