@@ -18,6 +18,12 @@ A reproducible experiment exploring the smallest useful “Hello World” for lo
 
 [Read the field report](https://maccrate.ai/projects/hello-world-ai-fine-tuning/) · [Open the project README](./projects/hello-world-ai-fine-tuning/README.md)
 
+### Quantization-Aware Distillation
+
+A reproducible experiment asking whether a 4-bit language model can learn from the full-precision model it came from. The project includes the exact data recipe, training implementation, native evaluation, export path, and Hugging Face model card.
+
+[Read the field report](https://maccrate.ai/projects/quantization-aware-distillation/) · [Open the project README](./projects/quantization-aware-distillation/README.md)
+
 ### Hermes Builds maccrate.ai
 
 A field report on how Hermes Agent, models, tools, and review loops work together to build maccrate.ai.
@@ -45,8 +51,10 @@ apps/
 └── cartridges/ # Browser-local Model Cartridges application
 
 projects/
-└── hello-world-ai-fine-tuning/
-               # Notebook, datasets, evaluations, and experiment evidence
+├── hello-world-ai-fine-tuning/
+│              # Notebook, datasets, evaluations, and experiment evidence
+└── quantization-aware-distillation/
+               # Exact QAD data, training, export, and evaluation workflow
 ```
 
 Deployable applications live under `apps/`. Research materials and supporting artifacts for published work live under `projects/`.

@@ -13,12 +13,13 @@ const titleWords = project.title.toUpperCase().split(/\s+/);
   <span class="cover-orbit orbit-one" aria-hidden="true"></span>
   <span class="cover-orbit orbit-two" aria-hidden="true"></span>
   {project.cover === 'mira' && <span class="cover-sample" aria-hidden="true"><i></i></span>}
+  {project.cover === 'qad' && <span class="qad-outline" aria-hidden="true">Q</span>}
   <span class="cover-title" aria-hidden="true">{titleWords.map((word) => <b>{word}</b>)}</span>
   <span class="cover-caption">{project.descriptor}</span>
 </Tag>
 
 <style>
-.release-cover{position:relative;display:block;aspect-ratio:1/1;overflow:hidden;background:var(--accent);color:#f1eadb;isolation:isolate;text-decoration:none;transition:transform .18s ease,filter .18s ease}
+.release-cover{position:relative;display:block;container-type:inline-size;aspect-ratio:1/1;overflow:hidden;background:var(--accent);color:#f1eadb;isolation:isolate;text-decoration:none;transition:transform .18s ease,filter .18s ease}
 .release-cover:focus-visible{outline:4px solid #141210;outline-offset:5px}
 .release-cover[href]:hover{transform:translateY(-3px);filter:saturate(1.08)}
 .cover-band{position:absolute;inset:0 0 auto;height:27%;background:#e9ff52;z-index:-1}
@@ -28,6 +29,10 @@ const titleWords = project.title.toUpperCase().split(/\s+/);
 .cover-title b:last-child{transform:translateX(.31em)}
 .cover-geometric .cover-title{font-size:clamp(40px,5.35vw,86px);line-height:.94;letter-spacing:-.06em;row-gap:7px}
 .cover-geometric .cover-title b:last-child{font-size:.76em;transform:none}
+.cover-qad .cover-orbit{display:none}
+.cover-qad .qad-outline{position:absolute;right:-4.5%;top:-9%;z-index:1;color:transparent;font-family:Arial,Helvetica,sans-serif;font-size:60cqw;font-weight:900;line-height:1;-webkit-text-stroke:max(1px,.3cqw) rgba(241,234,219,.72)}
+.cover-qad .cover-title{z-index:2;font-size:11.6cqw;line-height:.94;letter-spacing:-.06em;row-gap:7px;mix-blend-mode:normal}
+.cover-qad .cover-title b:last-child{font-size:.76em;transform:none}
 .cover-caption{position:absolute;left:5%;bottom:5%;padding-top:7px;border-top:1px solid currentColor;font-size:clamp(9px,.95vw,14px);text-transform:uppercase;letter-spacing:.12em}
 .cover-sample{position:absolute;right:11%;top:16%;width:29%;aspect-ratio:1;border-radius:50%;background:#91d6ff;box-shadow:inset -22px -22px 44px rgba(0,15,77,.28),0 0 0 2px rgba(241,234,219,.7);animation:breathe 5s ease-in-out infinite}
 .cover-sample i{position:absolute;width:28%;aspect-ratio:1;left:26%;top:24%;border-radius:50%;background:rgba(255,255,255,.8);filter:blur(3px)}
